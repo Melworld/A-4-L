@@ -182,15 +182,13 @@ function renderDashboard(){
   }else{
     document.title='Vory V — Espace Membre';$('dashboardTitle').textContent='Vory V — Espace Membre';$('dashboardKicker').textContent=currentProfile.role==='moderator'?'Espace Modérateur':'Espace Membre';
   }
-  // Accès RP : admin/modérateur voient les espaces.
-  // Pour un membre, Entreprise + Véhicule nécessitent company_rank='employee'
-  // et Gang nécessite gang_rank='gang_member'.
   const staff=['admin','moderator'].includes(currentProfile.role);
-  const isEmployee=['employee','associate','manager'].includes(currentProfile.company_rank);
+  const isEmployee=['employee','associate','manager','pdg'].includes(currentProfile.company_rank);
+  const isStaff=['manager','pdg'].includes(currentProfile.company_rank);
   const isGangMember=['gang_member','right_hand','leader'].includes(currentProfile.gang_rank);
 
   setTileLocked('tileEntreprise','lockEntreprise',!(staff||isEmployee),'Accès réservé aux membres de l’entreprise');
-  setTileLocked('tileVehicule','lockVehicule',!(staff||isEmployee),'Accès réservé aux membres de l’entreprise');
+  setTileLocked('tileVehicule','lockVehicule',!(staff||isStaff),'Accès réservé aux gestionnaires de l’entreprise');
   setTileLocked('tileGang','lockGang',!(staff||isGangMember),'Accès réservé aux membres du gang');
 
   if(currentProfile.role==='member'){
