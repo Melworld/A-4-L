@@ -96,14 +96,17 @@ a{color:inherit}
     <div class="row"><label>Mot de passe</label><input id="loginPassword" type="password"></div>
     <div class="login-error" id="loginMsg"></div>
     <div class="actions" style="justify-content:center"><button class="btn primary" id="loginBtn">Se connecter</button></div>
-    <a class="login-home-link" href="../index.html">← Retour au site principal</a>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:16px">
+  <a class="login-home-link" style="margin:0" href="inscription/">Créer un compte</a>
+  <a class="login-home-link" style="margin:0" href="../index.html">← Retour au site principal</a>
+</div>
   </div>
 </section>
 
 <section id="appView" class="hidden">
   <div class="dashboard-head">
     <div class="dashboard-title"><div class="kicker" id="dashboardKicker">Vory V</div><h1 id="dashboardTitle">Espace Membre</h1></div>
-    <button class="btn secondary" id="logoutBtn">Déconnexion</button>
+    <div class="actions"><a class="btn secondary" href="../index.html">Page principale</a><button class="btn secondary" id="logoutBtn">Déconnexion</button></div>
   </div>
   
 <div class="member-panel">
@@ -120,12 +123,19 @@ a{color:inherit}
 </div>
 
   <div class="dashboard-grid">
+    <a class="dashboard-tile" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulter tes informations, ta photo de profil et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder aux informations et à la gestion de ton entreprise.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang.</p></div><div class="dashboard-arrow">→</div></a>
+
     <a class="dashboard-tile" id="tilePoints" href="points/"><div><div class="dashboard-icon">📍</div><h3>Points de carte</h3><p>Ajouter, modifier et organiser les points visibles sur la carte.</p></div><div class="dashboard-arrow">→</div></a>
-    <a class="dashboard-tile" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon profil</h3><p>Consulter tes informations, ta PDP et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
-    <a class="dashboard-tile" id="tileAccounts" href="comptes/"><div><div class="dashboard-icon">👥</div><h3>Comptes & rôles</h3><p>Gérer les administrateurs, modérateurs et membres.</p></div><div class="dashboard-arrow">→</div></a>
+
     <a class="dashboard-tile" id="tileSite" href="site/"><div><div class="dashboard-icon">🌐</div><h3>Gestion du site</h3><p>Modifier progressivement les contenus et images du site.</p></div><div class="dashboard-arrow">→</div></a>
-    <a class="dashboard-tile" href="../carte.html"><div><div class="dashboard-icon">🗺️</div><h3>Carte publique</h3><p>Ouvrir la carte telle qu'elle est visible par les joueurs.</p></div><div class="dashboard-arrow">→</div></a>
-    <a class="dashboard-tile" href="../index.html"><div><div class="dashboard-icon">🏠</div><h3>Page principale</h3><p>Retourner directement à l'accueil de Vory V.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileAccounts" href="comptes/"><div><div class="dashboard-icon">👥</div><h3>Compte & Rôle</h3><p>Gérer les comptes, administrateurs, modérateurs et membres.</p></div><div class="dashboard-arrow">→</div></a>
   </div>
 </section>
 </div>
@@ -166,6 +176,12 @@ async function showApp(session){
   if(error||!data||!['member','moderator','admin'].includes(data.role)){$('loginMsg').textContent='Ce compte n’a pas accès à cet espace.';return}
   currentProfile=data;$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');renderDashboard();
 }
+$('loginPassword').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    $('loginBtn').click();
+  }
+});
 $('loginBtn').onclick=async()=>{
   $('loginMsg').textContent='';const identifier=$('loginIdentifier').value.trim(),password=$('loginPassword').value;if(!identifier||!password)return;
   const email=await resolveEmail(identifier);if(!email){$('loginMsg').textContent='Identifiant ou mot de passe incorrect.';return}
