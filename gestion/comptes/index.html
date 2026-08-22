@@ -85,13 +85,17 @@ a{color:inherit}
   <select id="accCompanyRank">
     <option value="">Aucun</option>
     <option value="employee">Employé</option>
+    <option value="associate">Associé</option>
+    <option value="manager">Gestionnaire</option>
   </select>
 </div>
 <div class="row">
   <label>Gang</label>
   <select id="accGangRank">
     <option value="">Aucun</option>
-    <option value="gang_member">Membre du gang</option>
+    <option value="gang_member">Membre</option>
+    <option value="right_hand">Bras droit</option>
+    <option value="leader">Leader</option>
   </select>
 </div>
   </div>
@@ -163,8 +167,18 @@ async function loadAccounts(){
   }
 
   $('accountsList').innerHTML=loadedProfiles.map(p=>{
-    const company=p.company_rank==='employee'?'Employé':'Aucun';
-    const gang=p.gang_rank==='gang_member'?'Membre du gang':'Aucun';
+    const companyLabels={
+      employee:'Employé',
+      associate:'Associé',
+      manager:'Gestionnaire'
+    };
+    const gangLabels={
+      gang_member:'Membre',
+      right_hand:'Bras droit',
+      leader:'Leader'
+    };
+    const company=companyLabels[p.company_rank]||'Aucun';
+    const gang=gangLabels[p.gang_rank]||'Aucun';
 
     return '<div class="card" style="margin:8px 0;padding:13px">'+
       '<b>'+esc(p.rp_name||'Sans Nom RP')+'</b>'+
