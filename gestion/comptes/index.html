@@ -147,11 +147,22 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 
 
 function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+let loadedProfiles=[];
+
 async function loadAccounts(){
   const {data,error}=await db.from('profiles').select('*').order('rp_name');
   if(error){$('accountMsg').textContent=error.message;return}
 
-  $('accountsList').innerHTML=(data||[]).map(p=>{
+  loadedProfiles=data||[];
+  const rpList=$('rpNamesList');
+  if(rpList){
+    rpList.innerHTML=loadedProfiles
+      .filter(p=>p.rp_name)
+      .map(p=>'<option value="'+esc(p.rp_name)+'"></option>')
+      .join('');
+  }
+
+  $('accountsList').innerHTML=loadedProfiles.map(p=>{
     const company=p.company_rank==='employee'?'Employé':'Aucun';
     const gang=p.gang_rank==='gang_member'?'Membre du gang':'Aucun';
 
@@ -163,6 +174,40 @@ async function loadAccounts(){
     '</div>';
   }).join('');
 }
+
+function fillAccountFromRp(){
+  const name=$('accRp').value.trim().toLowerCase();
+  const msg=$('rpLookupMsg');
+  if(!name){
+    if(msg)msg.textContent='Choisis ou écris un Nom RP existant.';
+    return;
+  }
+
+  const profile=loadedProfiles.find(p=>
+    String(p.rp_name||'').trim().toLowerCase()===name
+  );
+
+  if(!profile){
+    if(msg)msg.textContent='Aucun compte trouvé avec ce Nom RP.';
+    return;
+  }
+
+  $('accUid').value=profile.id||'';
+  $('accNumber').value=profile.member_number||'';
+  $('accRole').value=profile.role||'member';
+
+  if($('accCompanyRank'))
+    $('accCompanyRank').value=profile.company_rank||'';
+
+  if($('accGangRank'))
+    $('accGangRank').value=profile.gang_rank||'';
+
+  if(msg)msg.textContent='Compte trouvé : User ID et numéro remplis automatiquement.';
+}
+
+$('accRp').addEventListener('change',fillAccountFromRp);
+$('accRp').addEventListener('blur',fillAccountFromRp);
+
 $('saveAccount').onclick=async()=>{
   const id=$('accUid').value.trim();
   if(!id)return;
