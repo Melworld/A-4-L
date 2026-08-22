@@ -127,7 +127,14 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 
 function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 async function loadAccounts(){const {data,error}=await db.from('profiles').select('*').order('rp_name');if(error){$('accountMsg').textContent=error.message;return}$('accountsList').innerHTML=(data||[]).map(p=>'<div class="card" style="margin:8px 0;padding:13px"><b>'+esc(p.rp_name||'Sans Nom RP')+'</b><div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div><small class="muted">'+esc(p.id)+'</small></div>').join('')}
-$('saveAccount').onclick=async()=>{const id=$('accUid').value.trim();if(!id)return;const payload={id,rp_name:$('accRp').value.trim()||null,member_number:$('accNumber').value.trim()||null,role:$('accRole').value};const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});$('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';if(!error)loadAccounts()}
+$('saveAccount').onclick=async()=>{const id=$('accUid').value.trim();if(!id)return;const payload={
+  id,
+  rp_name:$('accRp').value.trim()||null,
+  member_number:$('accNumber').value.trim()||null,
+  role:$('accRole').value,
+  company_rank:$('accCompanyRank').value||null,
+  gang_rank:$('accGangRank').value||null
+};const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});$('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';if(!error)loadAccounts()}
 async function initPage(){await loadAccounts()}
 
 (async()=>{if(await loadIdentity(['admin'])){if(typeof initPage==='function')await initPage();}})();
