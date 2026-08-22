@@ -183,9 +183,13 @@ function renderDashboard(){
     document.title='Vory V — Espace Membre';$('dashboardTitle').textContent='Vory V — Espace Membre';$('dashboardKicker').textContent=currentProfile.role==='moderator'?'Espace Modérateur':'Espace Membre';
   }
   const staff=['admin','moderator'].includes(currentProfile.role);
-  const isEmployee=['employee','associate','manager','pdg'].includes(currentProfile.company_rank);
-  const isStaff=['manager','pdg'].includes(currentProfile.company_rank);
-  const isGangMember=['gang_member','right_hand','leader'].includes(currentProfile.gang_rank);
+  const companyRanks=['employee','associate','manager','pdg'];
+  const companyVehicleRanks=['manager','pdg'];
+  const gangRanks=['gang_member','right_hand','leader'];
+
+  const isEmployee=companyRanks.includes(currentProfile.company_rank);
+  const isStaff=companyVehicleRanks.includes(currentProfile.company_rank);
+  const isGangMember=gangRanks.includes(currentProfile.gang_rank);
 
   setTileLocked('tileEntreprise','lockEntreprise',!(staff||isEmployee),'Accès réservé aux membres de l’entreprise');
   setTileLocked('tileVehicule','lockVehicule',!(staff||isStaff),'Accès réservé aux gestionnaires de l’entreprise');
