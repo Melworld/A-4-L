@@ -88,6 +88,7 @@
         <div class="card">
           <h3>Attribuer un rôle</h3>
           <div class="notice">Pour des raisons de sécurité, cette page ne peut pas créer directement un utilisateur Supabase avec une clé publique. Crée d'abord le compte dans <b>Supabase → Authentication → Users</b>, puis colle son <b>User UID</b> ici.</div>
+          <div class="row"><label>Nom RP</label><input id="roleRpName" placeholder="Ex. Jack Sparrow"></div>
           <div class="row"><label>User UID</label><input id="roleUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
           <div class="row"><label>Rôle</label><select id="roleSelect"><option value="moderator">Modérateur</option><option value="admin">Administrateur</option></select></div>
           <div class="actions"><button class="btn primary" id="saveRoleBtn">Enregistrer le rôle</button></div>
@@ -139,7 +140,7 @@ async function showApp(session){
 $('loginBtn').onclick=async()=>{
   if(!configured){$('loginMsg').textContent='Configure d’abord database.js.';return}
   const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-  $('loginMsg').textContent=error?"Ce n'est pas le bon mdp":'';
+  $('loginMsg').textContent=error?'Mot de passe incorrect. Vérifiez votre mot de passe et réessayez.':'';
 };
 $('logoutBtn').onclick=()=>db.auth.signOut();
 
@@ -212,24 +213,25 @@ $('refreshAccountsBtn').onclick=loadAccounts;
 async function loadAccounts(){
   if(currentRole!=='admin'){$('accountsDenied').classList.remove('hidden');$('accountsContent').classList.add('hidden');return}
   $('accountsDenied').classList.add('hidden');$('accountsContent').classList.remove('hidden');
-  const {data,error}=await db.from('profiles').select('id,role,created_at').order('created_at',{ascending:true});
+  const {data,error}=await db.from('profiles').select('id,role,rp_name,created_at').order('created_at',{ascending:true});
   const list=$('rolesList');
   if(error){list.innerHTML=`<div class="notice">Impossible de lire les rôles : ${esc(error.message)}<br>Il faudra autoriser l'admin à lire la table <b>profiles</b> avec une policy RLS.</div>`;return}
   const rows=data||[];list.innerHTML='';
   rows.forEach(r=>{
     const self=r.id===currentUser.id;const el=document.createElement('div');el.className='item';
-    el.innerHTML=`<div><b>${self?'Ton compte':esc(r.id)}</b><br><small>${esc(r.id)} · <span class="role-badge">${esc(r.role)}</span></small></div><div class="actions">${self?'':`<button class="btn danger">Retirer</button>`}</div>`;
+    el.innerHTML=`<div><b>${self?'Ton compte':esc(r.rp_name||'Nom RP non défini')}</b><br><small>${esc(r.id)} · <span class="role-badge">${esc(r.role)}</span></small></div><div class="actions">${self?'':`<button class="btn danger">Retirer</button>`}</div>`;
     const del=el.querySelector('button');if(del)del.onclick=()=>removeRole(r);list.appendChild(el);
   });
   if(!rows.length)list.innerHTML='<div class="notice">Aucun rôle enregistré.</div>';
 }
 $('saveRoleBtn').onclick=async()=>{
   if(currentRole!=='admin')return;
-  const id=$('roleUserId').value.trim();const role=$('roleSelect').value;
+  const rp_name=$('roleRpName').value.trim();const id=$('roleUserId').value.trim();const role=$('roleSelect').value;
+  if(!rp_name){$('roleMsg').textContent='Nom RP requis.';return}
   if(!/^[0-9a-fA-F-]{36}$/.test(id)){$('roleMsg').textContent='User UID invalide.';return}
-  const {error}=await db.from('profiles').upsert({id,role},{onConflict:'id'});
+  const {error}=await db.from('profiles').upsert({id,role,rp_name},{onConflict:'id'});
   $('roleMsg').textContent=error?'Erreur : '+error.message:'Rôle enregistré.';
-  if(!error){$('roleUserId').value='';loadAccounts()}
+  if(!error){$('roleRpName').value='';$('roleUserId').value='';loadAccounts()}
 };
 async function removeRole(r){
   if(r.id===currentUser.id)return alert('Tu ne peux pas retirer ton propre rôle ici.');
