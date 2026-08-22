@@ -49,6 +49,17 @@ a{color:inherit}
   .page-shell{padding:24px 14px 60px}.page-top{margin-bottom:36px}.grid,.stat-grid{grid-template-columns:1fr}
   .member-panel{align-items:flex-start}.member-details{display:grid;gap:5px}.page-top h1{font-size:28px}
 }
+
+.profile-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.profile-info-grid .stat{min-width:0}
+.profile-info-grid .stat b{display:block;overflow-wrap:anywhere;word-break:break-word;white-space:normal;line-height:1.35}
+.profile-info-grid .email-stat b{font-size:15px}
+.profile-info-grid .empty-stat{visibility:hidden}
+@media(max-width:650px){
+  .profile-info-grid{grid-template-columns:1fr}
+  .profile-info-grid .empty-stat{display:none}
+}
+
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
@@ -79,7 +90,6 @@ a{color:inherit}
     <button class="member-avatar" id="profileAvatar" type="button" style="cursor:pointer;color:#fff">👤</button>
     <div>
       <div class="member-name" id="profileName">—</div>
-      <div class="member-role" id="profileRole">—</div>
       <div class="muted" id="avatarMsg" style="margin-top:6px">Clique sur la photo pour la modifier.</div>
     </div>
   </div>
@@ -87,17 +97,18 @@ a{color:inherit}
 </div>
 <div class="card">
   <h2 style="margin-top:0">Mes informations</h2>
-  <div class="stat-grid">
+  <div class="profile-info-grid">
     <div class="stat"><span>Numéro</span><b id="profileNumber">—</b></div>
-    <div class="stat"><span>Email</span><b id="profileEmail">—</b></div>
+    <div class="stat email-stat"><span>Email</span><b id="profileEmail">—</b></div>
     <div class="stat"><span>Argent</span><b id="profileMoney">0 $</b></div>
-    <div class="stat"><span>Rang</span><b id="profileRank">—</b></div>
+    <div class="stat empty-stat" aria-hidden="true"></div>
   </div>
 </div>
 <div class="card">
   <h2 style="margin-top:0">Modifier mon mot de passe</h2>
+  <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
   <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
-  <div class="row"><label>Confirmer le mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
+  <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
   <button class="btn primary" id="changePw">Enregistrer</button><div class="muted" id="pwMsg" style="margin-top:10px"></div>
 </div>
 
@@ -160,10 +171,61 @@ $('avatarInput').onchange=async e=>{
   const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
   currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
 }
-$('changePw').onclick=async()=>{const a=$('pw1').value,b=$('pw2').value;if(a.length<8){$('pwMsg').textContent='8 caractères minimum.';return}if(a!==b){$('pwMsg').textContent='Les mots de passe ne correspondent pas.';return}const {error}=await db.auth.updateUser({password:a});$('pwMsg').textContent=error?'Erreur : '+error.message:'Mot de passe modifié.';if(!error){$('pw1').value='';$('pw2').value=''}}
+$('changePw').onclick=async()=>{
+  const oldPassword=$('oldPw').value;
+  const newPassword=$('pw1').value;
+  const confirmPassword=$('pw2').value;
+  const msg=$('pwMsg');
+
+  msg.textContent='';
+
+  if(!oldPassword){
+    msg.textContent='Entre ton ancien mot de passe.';
+    return;
+  }
+  if(newPassword.length<8){
+    msg.textContent='Le nouveau mot de passe doit contenir au moins 8 caractères.';
+    return;
+  }
+  if(newPassword!==confirmPassword){
+    msg.textContent='Les deux nouveaux mots de passe ne correspondent pas.';
+    return;
+  }
+  if(oldPassword===newPassword){
+    msg.textContent='Le nouveau mot de passe doit être différent de l’ancien.';
+    return;
+  }
+
+  msg.textContent='Vérification de l’ancien mot de passe...';
+
+  const {error:verifyError}=await db.auth.signInWithPassword({
+    email:currentUser.email,
+    password:oldPassword
+  });
+
+  if(verifyError){
+    msg.textContent='Ancien mot de passe incorrect.';
+    return;
+  }
+
+  const {error:updateError}=await db.auth.updateUser({password:newPassword});
+
+  if(updateError){
+    msg.textContent='Impossible de modifier le mot de passe : '+updateError.message;
+    return;
+  }
+
+  $('oldPw').value='';
+  $('pw1').value='';
+  $('pw2').value='';
+  msg.textContent='Mot de passe modifié avec succès.';
+}
 async function initPage(){
-  $('profileName').textContent=currentProfile.rp_name||'Sans Nom RP';$('profileRole').textContent=roleLabel(currentProfile.role);
-  $('profileNumber').textContent=currentProfile.member_number||'Non attribué';$('profileEmail').textContent=currentUser.email||'—';$('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';$('profileRank').textContent=roleLabel(currentProfile.role);setProfileAvatar(currentProfile.avatar_url);
+  $('profileName').textContent=currentProfile.rp_name||'Sans Nom RP';
+  $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
+  $('profileEmail').textContent=currentUser.email||'—';
+  $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
+  setProfileAvatar(currentProfile.avatar_url);
 }
 
 (async()=>{if(await loadIdentity(['member','moderator','admin'])){if(typeof initPage==='function')await initPage();}})();
