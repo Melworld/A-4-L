@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Vory V — Gestion</title>
-<style>
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Vory V — Gestion</title><style>
 :root{--bg:#09090b;--panel:#111113;--muted:#8b8b94;--line:#25252b;--accent:#f97316;--danger:#7f1d1d;--ok:#166534}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}.hidden{display:none!important}
 .shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}
@@ -52,356 +46,66 @@
 .dashboard-row:hover{transform:translateY(-1px);border-color:#4a4a53;background:#15151a}
 .dashboard-row-main{display:flex;align-items:center;gap:16px;min-width:0}.dashboard-row-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#1c1c21;border:1px solid #303038;font-size:22px;flex:0 0 auto}.dashboard-row-title{font-size:17px;font-weight:850}.dashboard-row-sub{margin-top:3px;font-size:12px;color:var(--muted)}.dashboard-row-arrow{font-size:24px;color:#6f6f78}.dashboard-row.disabled{opacity:.42;cursor:default}.dashboard-row.disabled:hover{transform:none;border-color:var(--line);background:linear-gradient(180deg,#121216,#0f0f12)}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.grid,.dashboard-grid{grid-template-columns:1fr}.main{padding:18px}.item{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .row{width:100%}}
-</style>
-</head>
-<body>
-<div id="loginView" class="login">
-  <div class="card">
-    <div class="brand">Vory V</div>
-    <h2>Connexion à son compte</h2>
-    <div id="configWarn" class="notice hidden">Supabase n'est pas configuré. Vérifie <b>database.js</b>.</div>
-    <div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" type="text" autocomplete="username" placeholder="email@a4l.fr ou Nom RP (ex: Jean Pascal)"></div>
-    <div class="row"><label>Mot de passe</label><input id="password" type="password" autocomplete="current-password"></div>
-    <div class="actions"><button class="btn primary" id="loginBtn">Se connecter</button><a class="btn secondary" href="../index.html" style="text-decoration:none">Annuler</a></div>
-    <p id="loginMsg" class="login-error"></p>
-  </div>
-</div>
 
-<div id="appView" class="shell hidden">
-  <aside class="side">
-    <div class="brand">Vory V</div>
-    <div class="nav">
-      <button class="active" data-section="dashboard">Gestion</button>
-      <button data-section="points">Points de carte</button>
-      <button id="accountsNav" data-section="accounts">Comptes & rôles</button>
-      <div class="spacer"></div>
-      <button id="logoutBtn">Déconnexion</button>
-    </div>
-  </aside>
 
-  <main class="main">
-    <section id="dashboardSection" class="section active">
-      <div class="dashboard-head">
-        <h1 class="dashboard-title">Gestion</h1>
-        <div class="dashboard-rule"></div>
+.page-shell{max-width:1180px;margin:0 auto;padding:28px 22px 70px}
+.page-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.page-top h1{margin:0;font-size:30px}.page-kicker{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.12em}
+.back-link{color:#aaa;text-decoration:none;font-weight:800}.back-link:hover{color:#fff}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.section-nav a{padding:9px 12px;border:1px solid var(--line);border-radius:9px;color:#aaa;text-decoration:none;font-size:13px;font-weight:700}
+.section-nav a:hover,.section-nav a.active{background:#18181b;color:#fff}
+.profile-strip{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.profile-strip-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;background:#18181b;display:grid;place-items:center;font-size:24px;border:1px solid var(--line)}
+.profile-strip-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-strip-name{font-size:20px;font-weight:900}.info-line{color:var(--muted);font-size:13px;margin-top:3px}
 
-        <div class="profile-strip">
-          <div id="profileAvatar" class="profile-avatar" title="Cliquer pour changer la photo de profil"><svg class="avatar-default" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c.7-4.4 3.4-7 8-7s7.3 2.6 8 7" fill="currentColor"/></svg></div><input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
-          <div class="profile-info">
-            <div id="profileRpName" class="profile-name">Nom RP</div>
-            <div class="profile-meta">Rang : <b id="profileRole">—</b></div>
-            <div class="profile-details">
-              <div class="profile-meta">N° : <b id="profileNumber">—</b></div>
-              <div class="profile-meta">Email : <b id="profileEmail">—</b></div>
-              <div class="profile-meta">Argent : <b id="profileMoney">0 $</b></div>
-              <div class="profile-meta">Agent : <b id="profileAgent">—</b></div>
-            </div>
-            <button class="profile-password-btn" id="togglePasswordBtn" type="button">Modifier mon mot de passe</button>
-            <div class="password-box" id="passwordBox">
-              <input id="newPassword" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe">
-              <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirmer le mot de passe">
-              <button class="btn primary" id="savePasswordBtn" type="button">Enregistrer</button>
-              <div id="passwordMsg" class="password-msg"></div>
-            </div>
-            <div id="avatarMsg" class="avatar-status"></div>
-          </div>
-        </div>
+.dashboard-shell{max-width:1050px;margin:0 auto;padding:28px 22px 70px}.dashboard-list{display:grid;gap:10px}.dashboard-row{text-decoration:none}
+</style></head><body><div class="dashboard-shell">
+<section id="loginView" class="login-wrap"><div class="login card">
+<div style="text-align:center;margin-bottom:22px"><div class="brand" style="font-size:30px;margin:0">Vory V</div><h2 style="margin:12px 0 0">Connexion à son compte</h2></div>
+<div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" placeholder="email@a4l.fr ou Nom RP (ex: Jean Pascal)"></div>
+<div class="row"><label>Mot de passe</label><input id="loginPassword" type="password"></div>
+<div class="login-error" id="loginMsg"></div>
+<div class="actions" style="justify-content:center"><button class="btn primary" id="loginBtn">Se connecter</button></div>
+<a href="../index.html" class="login-home-link">← Retour au site principal</a>
+</div></section>
 
-        <div class="dashboard-rule"></div>
-      </div>
-
-      <div class="dashboard-list">
-        <button class="dashboard-row" data-open="points">
-          <span class="dashboard-row-main"><span class="dashboard-row-icon">📍</span><span><span class="dashboard-row-title">Points de carte</span><span class="dashboard-row-sub">Ajouter, modifier, filtrer et supprimer les points enregistrés.</span></span></span><span class="dashboard-row-arrow">›</span>
-        </button>
-        <button class="dashboard-row" onclick="location.href='../carte.html'">
-          <span class="dashboard-row-main"><span class="dashboard-row-icon">🗺️</span><span><span class="dashboard-row-title">Carte publique</span><span class="dashboard-row-sub">Ouvrir la carte telle qu'elle est visible par les joueurs.</span></span></span><span class="dashboard-row-arrow">›</span>
-        </button>
-        <button class="dashboard-row" onclick="location.href='../index.html'">
-          <span class="dashboard-row-main"><span class="dashboard-row-icon">🏠</span><span><span class="dashboard-row-title">Page principale</span><span class="dashboard-row-sub">Retourner à l'accueil de Vory V.</span></span></span><span class="dashboard-row-arrow">›</span>
-        </button>
-        <button class="dashboard-row" id="accountsTile" data-open="accounts">
-          <span class="dashboard-row-main"><span class="dashboard-row-icon">👥</span><span><span class="dashboard-row-title">Comptes & rôles</span><span class="dashboard-row-sub">Gérer les administrateurs, modérateurs et leurs rôles.</span></span></span><span class="dashboard-row-arrow">›</span>
-        </button>
-        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 1</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
-        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 2</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
-        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 3</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
-        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 4</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
-        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 5</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
-      </div>
-    </section>
-
-    <section id="pointsSection" class="section">
-      <div class="top"><div><h1>Points de carte</h1><div class="muted">Gère les points enregistrés dans Supabase.</div></div><button class="btn secondary" id="refreshBtn">Actualiser</button></div>
-      <div class="grid">
-        <div class="card stat"><span class="muted">Points</span><b id="pointCount">0</b></div>
-        <div class="card stat"><span class="muted">Catégories utilisées</span><b id="catCount">0</b></div>
-        <div class="card stat"><span class="muted">Stockage</span><b style="font-size:18px">Supabase</b></div>
-      </div>
-      <div class="card">
-        <h3>Ajouter un point</h3>
-        <div class="row"><label>Nom</label><input id="name"></div>
-        <div class="row"><label>Description</label><textarea id="description"></textarea></div>
-        <div class="grid">
-          <div class="row"><label>Catégorie</label><input id="category" list="categorySuggestions" placeholder="Ex. Commerce"><datalist id="categorySuggestions"></datalist></div>
-          <div class="row"><label>X</label><input id="x" type="number" min="0" max="7744"></div>
-          <div class="row"><label>Y</label><input id="y" type="number" min="0" max="7744"></div>
-        </div>
-        <div class="row"><label>Logo / icône (URL publique)</label><input id="iconUrl" placeholder="https://..."></div>
-        <div class="actions"><button class="btn primary" id="addBtn">Ajouter</button><button class="btn secondary" id="importLocalBtn">Importer les anciens points locaux</button></div>
-        <p id="formMsg" class="muted"></p>
-      </div>
-      <div class="card">
-        <div class="toolbar">
-          <div><h3 style="margin:0 0 5px">Points enregistrés</h3><div class="muted">Affiche uniquement la catégorie qui t'intéresse.</div></div>
-          <div class="row"><label>Filtrer par catégorie</label><select id="pointsCategoryFilter"><option value="__all__">Toutes les catégories</option></select></div>
-        </div>
-        <div id="pointsList" class="table" style="margin-top:14px"></div>
-      </div>
-    </section>
-
-    <section id="accountsSection" class="section">
-      <div class="top"><div><h1>Comptes & rôles</h1><div class="muted">Réservé aux administrateurs.</div></div><button class="btn secondary" id="refreshAccountsBtn">Actualiser</button></div>
-      <div id="accountsDenied" class="card hidden"><div class="notice admin-only-note">Cette section est accessible uniquement avec le rôle <b>admin</b>.</div></div>
-      <div id="accountsContent">
-        <div class="card">
-          <h3>Attribuer un rôle</h3>
-          <div class="notice">Pour des raisons de sécurité, cette page ne peut pas créer directement un utilisateur Supabase avec une clé publique. Crée d'abord le compte dans <b>Supabase → Authentication → Users</b>, puis colle son <b>User UID</b> ici.</div>
-          <div class="row"><label>Nom RP</label><input id="roleRpName" placeholder="Ex. Jack Sparrow"></div>
-          <div class="row"><label>User UID</label><input id="roleUserId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
-          <div class="row"><label>Rôle</label><select id="roleSelect"><option value="moderator">Modérateur</option><option value="admin">Administrateur</option></select></div>
-          <div class="actions"><button class="btn primary" id="saveRoleBtn">Enregistrer le rôle</button></div>
-          <p id="roleMsg" class="muted"></p>
-        </div>
-        <div class="card">
-          <h3>Comptes autorisés</h3>
-          <div id="rolesList" class="table"></div>
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../database.js"></script>
-<script>
-const STORAGE_KEY='customMapPoints';
-const TABLE='map_points';
-const configured=window.vorySupabaseConfigured&&window.vorySupabaseConfigured();
-const db=configured?window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY):null;
-let points=[];let currentRole=null;let currentUser=null;
-const $=id=>document.getElementById(id);
-const esc=(s='')=>String(s).replace(/[&<>\'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-
-async function init(){
-  if(!configured){$('configWarn').classList.remove('hidden');return}
-  const {data}=await db.auth.getSession();
-  if(data.session)await showApp(data.session);
-  db.auth.onAuthStateChange(async(_e,s)=>s?await showApp(s):showLogin());
+<section id="appView" class="hidden">
+<div class="page-top"><div><div class="page-kicker">VORY V</div><h1>Gestion</h1></div><button class="btn secondary" id="logoutBtn">Déconnexion</button></div>
+<div class="card"><div class="profile-strip"><div class="profile-strip-avatar" id="dashAvatar">👤</div><div><div class="profile-strip-name" id="dashName">—</div><div class="info-line" id="dashInfo">—</div></div></div></div>
+<div class="dashboard-list">
+<a class="dashboard-row" href="points/"><span class="dashboard-row-main"><span class="dashboard-row-icon">📍</span><span><span class="dashboard-row-title">Points de carte</span><span class="dashboard-row-sub">Ajouter, modifier, filtrer et supprimer les marqueurs.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+<a class="dashboard-row" id="accountsRow" href="comptes/"><span class="dashboard-row-main"><span class="dashboard-row-icon">👥</span><span><span class="dashboard-row-title">Comptes & rôles</span><span class="dashboard-row-sub">Gérer les administrateurs et modérateurs.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+<a class="dashboard-row" href="profil/"><span class="dashboard-row-main"><span class="dashboard-row-icon">👤</span><span><span class="dashboard-row-title">Mon profil</span><span class="dashboard-row-sub">Photo, numéro, email, argent et mot de passe.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+<a class="dashboard-row" href="site/"><span class="dashboard-row-main"><span class="dashboard-row-icon">🌐</span><span><span class="dashboard-row-title">Gestion du site</span><span class="dashboard-row-sub">Contenus et images de la page principale.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+<a class="dashboard-row" href="../carte.html"><span class="dashboard-row-main"><span class="dashboard-row-icon">🗺️</span><span><span class="dashboard-row-title">Carte publique</span><span class="dashboard-row-sub">Ouvrir la carte telle que les joueurs la voient.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+<a class="dashboard-row" href="../index.html"><span class="dashboard-row-main"><span class="dashboard-row-icon">🏠</span><span><span class="dashboard-row-title">Page principale</span><span class="dashboard-row-sub">Retourner au site principal Vory V.</span></span></span><span class="dashboard-row-arrow">›</span></a>
+</div></section></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script><script>
+const $=id=>document.getElementById(id);let db=null,currentUser=null,currentProfile=null;
+if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured()) db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+async function resolveEmail(identifier){
+  if(identifier.includes('@')) return identifier;
+  const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
+  return error?null:data;
 }
-function showLogin(){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden')}
 async function showApp(session){
-  currentUser=session.user;
-  const {data:profile,error}=await db.from('profiles').select('role,rp_name,avatar_url,member_number,money').eq('id',currentUser.id).maybeSingle();
-  if(error||!profile||!['admin','moderator'].includes(profile.role)){
-    await db.auth.signOut();
-    $('loginMsg').textContent='Ce compte n’a pas accès à la gestion.';
-    return;
-  }
-  currentRole=profile.role;
-  const roleLabel=currentRole==='admin'?'Administrateur':'Modérateur';
-  const rpName=(profile.rp_name||currentUser.email||'Compte').trim();
-  if($('currentRoleBadge'))$('currentRoleBadge').textContent=roleLabel;
-  if($('profileRpName'))$('profileRpName').textContent=rpName;
-  if($('profileRole'))$('profileRole').textContent=roleLabel;
-  if($('profileNumber'))$('profileNumber').textContent=profile.member_number||'Non attribué';
-  if($('profileEmail'))$('profileEmail').textContent=currentUser.email||'—';
-  if($('profileMoney'))$('profileMoney').textContent=new Intl.NumberFormat('fr-FR').format(Number(profile.money||0))+' $';
-  renderAvatar(profile.avatar_url, true);
-  if($('profileAgent'))$('profileAgent').textContent='Connecté';
-  $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
-  const admin=currentRole==='admin';
-  $('accountsNav').classList.toggle('hidden',!admin);$('accountsTile').classList.toggle('hidden',!admin);
-  await loadPoints();
+  currentUser=session?.user||null;if(!currentUser)return;
+  const {data:profile,error}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+  if(error||!profile||!['admin','moderator'].includes(profile.role)){ $('loginMsg').textContent='Ce compte n’a pas accès à la gestion.'; return; }
+  currentProfile=profile;$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
+  $('dashName').textContent=profile.rp_name||'Sans Nom RP';
+  $('dashInfo').textContent=(profile.role==='admin'?'Administrateur':'Modérateur')+' • '+(profile.member_number||'Sans numéro')+' • '+(currentUser.email||'—')+' • '+Number(profile.money||0).toLocaleString('fr-FR')+' $';
+  if(profile.avatar_url){ const clean=String(profile.avatar_url).split('?v=')[0]; $('dashAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" style="width:100%;height:100%;object-fit:cover" alt="Photo">'; }
+  if(profile.role!=='admin') $('accountsRow').style.display='none';
 }
-
 $('loginBtn').onclick=async()=>{
-  if(!configured){$('loginMsg').textContent='Configure d’abord database.js.';return}
-  $('loginMsg').textContent='';
-  const identifier=$('loginIdentifier').value.trim();
-  const password=$('password').value;
-  if(!identifier||!password){$('loginMsg').textContent='Renseigne ton email ou ton nom RP ainsi que ton mot de passe.';return}
-
-  let email=identifier;
-  if(!identifier.includes('@')){
-    const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
-    if(error){$('loginMsg').textContent='Impossible de vérifier ce nom RP pour le moment.';return}
-    if(!data){$('loginMsg').textContent='Aucun compte trouvé avec ce nom RP.';return}
-    email=data;
-  }
-
-  const {error}=await db.auth.signInWithPassword({email,password});
-  $('loginMsg').textContent=error?'Identifiant ou mot de passe incorrect. Vérifie tes informations et réessaie.':'';
+  $('loginMsg').textContent='';const identifier=$('loginIdentifier').value.trim(),password=$('loginPassword').value;if(!identifier||!password)return;
+  const email=await resolveEmail(identifier);if(!email){$('loginMsg').textContent='Identifiant ou mot de passe incorrect. Vérifie tes informations et réessaie.';return;}
+  const {data,error}=await db.auth.signInWithPassword({email,password});if(error){$('loginMsg').textContent='Identifiant ou mot de passe incorrect. Vérifie tes informations et réessaie.';return;}
+  await showApp(data.session);
 };
-$('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
-$('loginIdentifier').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
-$('logoutBtn').onclick=()=>db.auth.signOut();
-
-function openSection(name){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav button[data-section]').forEach(b=>b.classList.remove('active'));
-  $(name+'Section').classList.add('active');
-  const nav=document.querySelector(`.nav button[data-section="${name}"]`);if(nav)nav.classList.add('active');
-  if(name==='points')loadPoints();
-  if(name==='accounts')loadAccounts();
-}
-document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>openSection(b.dataset.section));
-document.querySelectorAll('[data-open]').forEach(t=>t.onclick=()=>openSection(t.dataset.open));
-
-
-function renderAvatar(url, bustCache=false){
-  const box=$('profileAvatar');
-  if(!box)return;
-  if(url){
-    const clean=String(url).split('?v=')[0];
-    const shown=bustCache?clean+(clean.includes('?')?'&':'?')+'v='+Date.now():clean;
-    box.innerHTML=`<img src="${esc(shown)}" alt="Photo de profil" referrerpolicy="no-referrer">`;
-  }else{
-    box.innerHTML='<svg class="avatar-default" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c.7-4.4 3.4-7 8-7s7.3 2.6 8 7" fill="currentColor"/></svg>';
-  }
-}
-
-$('profileAvatar').onclick=()=>{
-  if(!currentUser)return;
-  $('avatarInput').click();
-};
-
-$('avatarInput').onchange=async e=>{
-  const file=e.target.files&&e.target.files[0];
-  if(!file||!currentUser)return;
-  const msg=$('avatarMsg');
-  const allowed=['image/png','image/jpeg','image/webp'];
-  if(!allowed.includes(file.type)){msg.textContent='Format accepté : PNG, JPG ou WEBP.';e.target.value='';return}
-  if(file.size>5*1024*1024){msg.textContent='Image trop lourde (5 Mo maximum).';e.target.value='';return}
-  msg.textContent='Envoi de la photo...';
-  const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');
-  const path=`${currentUser.id}/avatar.${ext}`;
-  const {error:uploadError}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
-  if(uploadError){msg.textContent='Erreur lors de l’envoi : '+uploadError.message;e.target.value='';return}
-  const {data:publicData}=db.storage.from('avatars').getPublicUrl(path);
-  const publicUrl=publicData?.publicUrl||null;
-  if(!publicUrl){msg.textContent='Impossible de récupérer l’URL de la photo.';e.target.value='';return}
-  const {error:updateError}=await db.from('profiles').update({avatar_url:publicUrl}).eq('id',currentUser.id);
-  if(updateError){msg.textContent='Photo envoyée, mais profil non mis à jour : '+updateError.message;e.target.value='';return}
-  renderAvatar(publicUrl, true);
-  msg.textContent='Photo de profil mise à jour.';
-  e.target.value='';
-  setTimeout(()=>{if(msg.textContent==='Photo de profil mise à jour.')msg.textContent=''},2500);
-};
-
-
-$('togglePasswordBtn').onclick=()=>{
-  $('passwordBox').classList.toggle('open');
-  $('passwordMsg').textContent='';
-};
-$('savePasswordBtn').onclick=async()=>{
-  const p1=$('newPassword').value;
-  const p2=$('confirmPassword').value;
-  const msg=$('passwordMsg');
-  msg.textContent='';
-  if(p1.length<8){msg.textContent='Le mot de passe doit contenir au moins 8 caractères.';return}
-  if(p1!==p2){msg.textContent='Les deux mots de passe ne correspondent pas.';return}
-  const {error}=await db.auth.updateUser({password:p1});
-  if(error){msg.textContent='Impossible de modifier le mot de passe : '+error.message;return}
-  msg.textContent='Mot de passe modifié avec succès.';
-  $('newPassword').value='';$('confirmPassword').value='';
-  setTimeout(()=>{$('passwordBox').classList.remove('open');msg.textContent=''},1800);
-};
-
-$('refreshBtn').onclick=loadPoints;
-async function loadPoints(){
-  const {data,error}=await db.from(TABLE).select('*').order('created_at',{ascending:false});
-  if(error){$('formMsg').textContent='Erreur : '+error.message;return}
-  points=data||[];renderPoints();
-}
-function categories(){return [...new Set(points.map(p=>String(p.category||'Sans catégorie')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'fr'))}
-function renderCategoryControls(){
-  const cats=categories();
-  $('categorySuggestions').innerHTML=cats.map(c=>`<option value="${esc(c)}"></option>`).join('');
-  const previous=$('pointsCategoryFilter').value;
-  $('pointsCategoryFilter').innerHTML='<option value="__all__">Toutes les catégories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-  if([...$('pointsCategoryFilter').options].some(o=>o.value===previous))$('pointsCategoryFilter').value=previous;
-}
-function renderPoints(){
-  $('pointCount').textContent=points.length;$('catCount').textContent=categories().length;renderCategoryControls();renderPointsList();
-}
-function renderPointsList(){
-  const filter=$('pointsCategoryFilter').value;
-  const shown=filter==='__all__'?points:points.filter(p=>String(p.category||'Sans catégorie')===filter);
-  const list=$('pointsList');list.innerHTML='';
-  shown.forEach(p=>{
-    const el=document.createElement('div');el.className='item';
-    const logo=p.icon_url?`<img src="${esc(p.icon_url)}" alt="" style="width:34px;height:34px;object-fit:contain;border-radius:8px;margin-right:10px;vertical-align:middle">`:'';
-    el.innerHTML=`<div>${logo}<b>${esc(p.name)}</b><br><small>${esc(p.category||'Sans catégorie')} · x ${Math.round(p.x)} · y ${Math.round(p.y)}</small></div><div class="actions"><button class="btn secondary">Modifier</button><button class="btn danger">Supprimer</button></div>`;
-    const [edit,del]=el.querySelectorAll('button');edit.onclick=()=>editPoint(p);del.onclick=()=>deletePoint(p);list.appendChild(el);
-  });
-  if(!shown.length)list.innerHTML='<div class="notice">Aucun point dans cette catégorie.</div>';
-}
-$('pointsCategoryFilter').onchange=renderPointsList;
-
-$('addBtn').onclick=async()=>{
-  const payload={name:$('name').value.trim(),description:$('description').value.trim(),category:$('category').value.trim()||'Sans catégorie',x:Number($('x').value),y:Number($('y').value),icon_url:$('iconUrl').value.trim()||null};
-  if(!payload.name||!Number.isFinite(payload.x)||!Number.isFinite(payload.y)||payload.x<0||payload.y<0||payload.x>7744||payload.y>7744){$('formMsg').textContent='Nom et coordonnées valides requis.';return}
-  const {error}=await db.from(TABLE).insert(payload);$('formMsg').textContent=error?'Erreur : '+error.message:'Point ajouté.';
-  if(!error){['name','description','x','y','iconUrl'].forEach(id=>$(id).value='');await loadPoints()}
-};
-async function deletePoint(p){if(!confirm(`Supprimer « ${p.name} » ?`))return;const {error}=await db.from(TABLE).delete().eq('id',p.id);if(error)alert(error.message);else loadPoints()}
-async function editPoint(p){
-  const name=prompt('Nom',p.name);if(name===null)return;
-  const description=prompt('Description',p.description||'');if(description===null)return;
-  const category=prompt('Catégorie',p.category||'Sans catégorie');if(category===null)return;
-  const x=Number(prompt('X',p.x));const y=Number(prompt('Y',p.y));if(!Number.isFinite(x)||!Number.isFinite(y))return alert('Coordonnées invalides');
-  const icon_url=prompt('URL du logo / icône',p.icon_url||'');if(icon_url===null)return;
-  const {error}=await db.from(TABLE).update({name:name.trim(),description,category:category.trim()||'Sans catégorie',x,y,icon_url:icon_url.trim()||null}).eq('id',p.id);
-  if(error)alert(error.message);else loadPoints();
-}
-$('importLocalBtn').onclick=async()=>{
-  const local=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');if(!local.length)return alert('Aucun ancien point local trouvé sur ce navigateur.');
-  if(!confirm(`Importer ${local.length} point(s) dans Supabase ?`))return;
-  const rows=local.map(p=>({name:String(p.name||'Point'),description:String(p.desc||''),category:String(p.cat||'Sans catégorie'),x:Number(p.x),y:Number(p.y),icon_url:p.icon_url||null}));
-  const {error}=await db.from(TABLE).insert(rows);if(error)alert(error.message);else{alert('Import terminé.');loadPoints()}
-};
-
-$('refreshAccountsBtn').onclick=loadAccounts;
-async function loadAccounts(){
-  if(currentRole!=='admin'){$('accountsDenied').classList.remove('hidden');$('accountsContent').classList.add('hidden');return}
-  $('accountsDenied').classList.add('hidden');$('accountsContent').classList.remove('hidden');
-  const {data,error}=await db.from('profiles').select('id,role,rp_name,created_at').order('created_at',{ascending:true});
-  const list=$('rolesList');
-  if(error){list.innerHTML=`<div class="notice">Impossible de lire les rôles : ${esc(error.message)}<br>Il faudra autoriser l'admin à lire la table <b>profiles</b> avec une policy RLS.</div>`;return}
-  const rows=data||[];list.innerHTML='';
-  rows.forEach(r=>{
-    const self=r.id===currentUser.id;const el=document.createElement('div');el.className='item';
-    el.innerHTML=`<div><b>${self?'Ton compte':esc(r.rp_name||'Nom RP non défini')}</b><br><small>${esc(r.id)} · <span class="role-badge">${esc(r.role)}</span></small></div><div class="actions">${self?'':`<button class="btn danger">Retirer</button>`}</div>`;
-    const del=el.querySelector('button');if(del)del.onclick=()=>removeRole(r);list.appendChild(el);
-  });
-  if(!rows.length)list.innerHTML='<div class="notice">Aucun rôle enregistré.</div>';
-}
-$('saveRoleBtn').onclick=async()=>{
-  if(currentRole!=='admin')return;
-  const rp_name=$('roleRpName').value.trim();const id=$('roleUserId').value.trim();const role=$('roleSelect').value;
-  if(!rp_name){$('roleMsg').textContent='Nom RP requis.';return}
-  if(!/^[0-9a-fA-F-]{36}$/.test(id)){$('roleMsg').textContent='User UID invalide.';return}
-  const {error}=await db.from('profiles').upsert({id,role,rp_name},{onConflict:'id'});
-  $('roleMsg').textContent=error?'Erreur : '+error.message:'Rôle enregistré.';
-  if(!error){$('roleRpName').value='';$('roleUserId').value='';loadAccounts()}
-};
-async function removeRole(r){
-  if(r.id===currentUser.id)return alert('Tu ne peux pas retirer ton propre rôle ici.');
-  if(!confirm(`Retirer l'accès de ${r.id} ?`))return;
-  const {error}=await db.from('profiles').delete().eq('id',r.id);if(error)alert(error.message);else loadAccounts();
-}
-init();
-</script>
-</body>
-</html>
+$('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload()};
+(async()=>{if(!db)return;const {data:{session}}=await db.auth.getSession();if(session)await showApp(session)})();
+</script></body></html>
