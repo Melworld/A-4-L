@@ -7,7 +7,9 @@
 <style>
 :root{--bg:#09090b;--panel:#111113;--muted:#8b8b94;--line:#25252b;--accent:#f97316;--danger:#7f1d1d;--ok:#166534}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}.hidden{display:none!important}
-.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:white}.secondary{background:#222228;color:#fff}.danger{background:var(--danger);color:#fff}.success{background:var(--ok);color:#fff}.table{display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px;background:#0d0d0f}.item small{color:var(--muted)}.login{min-height:100vh;display:grid;place-items:center;padding:18px}.login .card{width:min(420px,100%)}.login .brand{text-align:center;font-size:30px;margin-bottom:22px}.notice{padding:11px;border-radius:10px;background:#18181b;color:#c5c5cb;font-size:12px;line-height:1.5;margin-bottom:14px}.error{color:#fca5a5}.ok{color:#86efac}.section{display:none}.section.active{display:block}.section-title{margin:0 0 5px}.toolbar{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}.toolbar .row{margin:0;min-width:230px}.role-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:#27272a;color:#ddd;font-size:12px}.admin-only-note{border-left:3px solid var(--accent)}
+.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}
+.login-home-link{display:block;width:max-content;margin:16px auto 0;color:#8b8b94;font-size:13px;font-weight:700;text-decoration:none;transition:.15s color,.15s transform}
+.login-home-link:hover{color:#fff;transform:translateX(-2px)}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:white}.secondary{background:#222228;color:#fff}.danger{background:var(--danger);color:#fff}.success{background:var(--ok);color:#fff}.table{display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px;background:#0d0d0f}.item small{color:var(--muted)}.login{min-height:100vh;display:grid;place-items:center;padding:18px}.login .card{width:min(420px,100%)}.login .brand{text-align:center;font-size:30px;margin-bottom:22px}.notice{padding:11px;border-radius:10px;background:#18181b;color:#c5c5cb;font-size:12px;line-height:1.5;margin-bottom:14px}.error{color:#fca5a5}.ok{color:#86efac}.section{display:none}.section.active{display:block}.section-title{margin:0 0 5px}.toolbar{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}.toolbar .row{margin:0;min-width:230px}.role-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:#27272a;color:#ddd;font-size:12px}.admin-only-note{border-left:3px solid var(--accent)}
 
 .login{position:relative;overflow:hidden;background:
   radial-gradient(circle at 20% 15%,rgba(249,115,22,.14),transparent 28%),
@@ -37,7 +39,14 @@
 .dashboard-rule{height:2px;background:linear-gradient(90deg,var(--accent),#3f3f46 45%,transparent);border-radius:999px;margin:0 0 22px}
 .profile-strip{display:flex;align-items:center;gap:22px;padding:6px 4px 22px}
 .profile-avatar{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:#17171b;border:2px solid #3a3a42;box-shadow:0 0 0 6px rgba(249,115,22,.06);font-size:34px;font-weight:900;color:#f97316;flex:0 0 auto;overflow:hidden;cursor:pointer;position:relative;transition:.16s transform,.16s border-color}.profile-avatar:hover{transform:scale(1.025);border-color:var(--accent)}.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}.profile-avatar::after{content:'Modifier';position:absolute;inset:auto 0 0;background:rgba(0,0,0,.72);color:#fff;font-size:10px;font-weight:800;text-align:center;padding:5px 2px;opacity:0;transition:.15s opacity}.profile-avatar:hover::after{opacity:1}.avatar-default{width:46px;height:46px;opacity:.78}.avatar-status{font-size:11px;color:var(--muted);margin-top:2px}
-.profile-info{display:grid;gap:6px}.profile-name{font-size:26px;font-weight:900}.profile-meta{font-size:15px;color:#c8c8cf}.profile-meta b{color:#fff}
+.profile-info{display:grid;gap:6px;min-width:0}.profile-name{font-size:26px;font-weight:900}.profile-meta{font-size:15px;color:#c8c8cf}.profile-meta b{color:#fff}
+.profile-details{display:grid;grid-template-columns:repeat(2,minmax(190px,auto));gap:5px 24px;margin-top:2px}
+.profile-password-btn{margin-top:7px;width:max-content;border:1px solid #34343b;background:#18181d;color:#fff;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.profile-password-btn:hover{border-color:var(--accent)}
+.password-box{display:none;margin-top:9px;padding:12px;border:1px solid #2e2e35;background:#0d0d10;border-radius:12px;max-width:430px}
+.password-box.open{display:block}.password-box input{width:100%;background:#09090b;color:#fff;border:1px solid #303038;border-radius:9px;padding:9px 10px;margin-bottom:8px;outline:none}.password-box input:focus{border-color:var(--accent)}
+.password-msg{font-size:11px;color:var(--muted);min-height:15px;margin-top:4px}
+@media(max-width:650px){.profile-details{grid-template-columns:1fr}}
 .dashboard-list{display:grid;gap:12px;margin-top:18px}
 .dashboard-row{width:100%;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,#121216,#0f0f12);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:18px;color:#fff;text-align:left;cursor:pointer;transition:.16s transform,.16s border-color,.16s background}
 .dashboard-row:hover{transform:translateY(-1px);border-color:#4a4a53;background:#15151a}
@@ -51,7 +60,7 @@
     <div class="brand">Vory V</div>
     <h2>Connexion à son compte</h2>
     <div id="configWarn" class="notice hidden">Supabase n'est pas configuré. Vérifie <b>database.js</b>.</div>
-    <div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" type="text" autocomplete="username" placeholder="email@exemple.fr ou Nom RP"></div>
+    <div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" type="text" autocomplete="username" placeholder="email@a4l.fr ou Nom RP (ex: Jean Pascal)"></div>
     <div class="row"><label>Mot de passe</label><input id="password" type="password" autocomplete="current-password"></div>
     <div class="actions"><button class="btn primary" id="loginBtn">Se connecter</button><a class="btn secondary" href="../index.html" style="text-decoration:none">Annuler</a></div>
     <p id="loginMsg" class="login-error"></p>
@@ -81,7 +90,20 @@
           <div class="profile-info">
             <div id="profileRpName" class="profile-name">Nom RP</div>
             <div class="profile-meta">Rang : <b id="profileRole">—</b></div>
-            <div class="profile-meta">Agent : <b id="profileAgent">—</b></div><div id="avatarMsg" class="avatar-status"></div>
+            <div class="profile-details">
+              <div class="profile-meta">N° : <b id="profileNumber">—</b></div>
+              <div class="profile-meta">Email : <b id="profileEmail">—</b></div>
+              <div class="profile-meta">Argent : <b id="profileMoney">0 $</b></div>
+              <div class="profile-meta">Agent : <b id="profileAgent">—</b></div>
+            </div>
+            <button class="profile-password-btn" id="togglePasswordBtn" type="button">Modifier mon mot de passe</button>
+            <div class="password-box" id="passwordBox">
+              <input id="newPassword" type="password" autocomplete="new-password" placeholder="Nouveau mot de passe">
+              <input id="confirmPassword" type="password" autocomplete="new-password" placeholder="Confirmer le mot de passe">
+              <button class="btn primary" id="savePasswordBtn" type="button">Enregistrer</button>
+              <div id="passwordMsg" class="password-msg"></div>
+            </div>
+            <div id="avatarMsg" class="avatar-status"></div>
           </div>
         </div>
 
@@ -180,7 +202,7 @@ async function init(){
 function showLogin(){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden')}
 async function showApp(session){
   currentUser=session.user;
-  const {data:profile,error}=await db.from('profiles').select('role,rp_name,avatar_url').eq('id',currentUser.id).maybeSingle();
+  const {data:profile,error}=await db.from('profiles').select('role,rp_name,avatar_url,member_number,money').eq('id',currentUser.id).maybeSingle();
   if(error||!profile||!['admin','moderator'].includes(profile.role)){
     await db.auth.signOut();
     $('loginMsg').textContent='Ce compte n’a pas accès à la gestion.';
@@ -192,7 +214,10 @@ async function showApp(session){
   if($('currentRoleBadge'))$('currentRoleBadge').textContent=roleLabel;
   if($('profileRpName'))$('profileRpName').textContent=rpName;
   if($('profileRole'))$('profileRole').textContent=roleLabel;
-  renderAvatar(profile.avatar_url);
+  if($('profileNumber'))$('profileNumber').textContent=profile.member_number||'Non attribué';
+  if($('profileEmail'))$('profileEmail').textContent=currentUser.email||'—';
+  if($('profileMoney'))$('profileMoney').textContent=new Intl.NumberFormat('fr-FR').format(Number(profile.money||0))+' $';
+  renderAvatar(profile.avatar_url, true);
   if($('profileAgent'))$('profileAgent').textContent='Connecté';
   $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
   const admin=currentRole==='admin';
@@ -234,11 +259,13 @@ document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>openSection
 document.querySelectorAll('[data-open]').forEach(t=>t.onclick=()=>openSection(t.dataset.open));
 
 
-function renderAvatar(url){
+function renderAvatar(url, bustCache=false){
   const box=$('profileAvatar');
   if(!box)return;
   if(url){
-    box.innerHTML=`<img src="${esc(url)}" alt="Photo de profil">`;
+    const clean=String(url).split('?v=')[0];
+    const shown=bustCache?clean+(clean.includes('?')?'&':'?')+'v='+Date.now():clean;
+    box.innerHTML=`<img src="${esc(shown)}" alt="Photo de profil" referrerpolicy="no-referrer">`;
   }else{
     box.innerHTML='<svg class="avatar-default" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c.7-4.4 3.4-7 8-7s7.3 2.6 8 7" fill="currentColor"/></svg>';
   }
@@ -262,14 +289,33 @@ $('avatarInput').onchange=async e=>{
   const {error:uploadError}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
   if(uploadError){msg.textContent='Erreur lors de l’envoi : '+uploadError.message;e.target.value='';return}
   const {data:publicData}=db.storage.from('avatars').getPublicUrl(path);
-  const publicUrl=publicData?.publicUrl?`${publicData.publicUrl}?v=${Date.now()}`:null;
+  const publicUrl=publicData?.publicUrl||null;
   if(!publicUrl){msg.textContent='Impossible de récupérer l’URL de la photo.';e.target.value='';return}
   const {error:updateError}=await db.from('profiles').update({avatar_url:publicUrl}).eq('id',currentUser.id);
   if(updateError){msg.textContent='Photo envoyée, mais profil non mis à jour : '+updateError.message;e.target.value='';return}
-  renderAvatar(publicUrl);
+  renderAvatar(publicUrl, true);
   msg.textContent='Photo de profil mise à jour.';
   e.target.value='';
   setTimeout(()=>{if(msg.textContent==='Photo de profil mise à jour.')msg.textContent=''},2500);
+};
+
+
+$('togglePasswordBtn').onclick=()=>{
+  $('passwordBox').classList.toggle('open');
+  $('passwordMsg').textContent='';
+};
+$('savePasswordBtn').onclick=async()=>{
+  const p1=$('newPassword').value;
+  const p2=$('confirmPassword').value;
+  const msg=$('passwordMsg');
+  msg.textContent='';
+  if(p1.length<8){msg.textContent='Le mot de passe doit contenir au moins 8 caractères.';return}
+  if(p1!==p2){msg.textContent='Les deux mots de passe ne correspondent pas.';return}
+  const {error}=await db.auth.updateUser({password:p1});
+  if(error){msg.textContent='Impossible de modifier le mot de passe : '+error.message;return}
+  msg.textContent='Mot de passe modifié avec succès.';
+  $('newPassword').value='';$('confirmPassword').value='';
+  setTimeout(()=>{$('passwordBox').classList.remove('open');msg.textContent=''},1800);
 };
 
 $('refreshBtn').onclick=loadPoints;
