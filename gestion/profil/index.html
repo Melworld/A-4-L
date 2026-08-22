@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Vory V — Comptes & rôles</title><style>
+<title>Vory V — Mon profil</title><style>
 :root{
   --bg:#09090b;--panel:#111113;--panel2:#151518;--muted:#8b8b94;--line:#25252b;
   --accent:#f97316;--accent2:#fb923c;--danger:#7f1d1d;--ok:#166534;
@@ -51,7 +51,7 @@ a{color:inherit}
 }
 </style></head>
 <body><div class="page-shell">
-<div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Comptes & rôles</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
+<div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
 <div class="section-nav">
 <a href="../">Gestion</a>
 <a href="../points/" id="navPoints">Points de carte</a>
@@ -74,17 +74,32 @@ a{color:inherit}
 </div>
 
 
-<div class="card">
-  <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
-  <div class="grid">
-    <div class="row"><label>User UID</label><input id="accUid" placeholder="UUID Supabase"></div>
-    <div class="row"><label>Nom RP</label><input id="accRp" placeholder="Ex. Jean Pascal"></div>
-    <div class="row"><label>N°</label><input id="accNumber" placeholder="Ex. V-001"></div>
-    <div class="row"><label>Rôle</label><select id="accRole"><option value="member">Membre</option><option value="moderator">Modérateur</option><option value="admin">Administrateur</option></select></div>
+<div class="card" style="padding:24px">
+  <div class="member-panel" style="margin:0;border:0;padding:0;background:transparent">
+    <button class="member-avatar" id="profileAvatar" type="button" style="cursor:pointer;color:#fff">👤</button>
+    <div>
+      <div class="member-name" id="profileName">—</div>
+      <div class="member-role" id="profileRole">—</div>
+      <div class="muted" id="avatarMsg" style="margin-top:6px">Clique sur la photo pour la modifier.</div>
+    </div>
   </div>
-  <button class="btn primary" id="saveAccount">Enregistrer</button><div id="accountMsg" class="muted" style="margin-top:10px"></div>
+  <input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 </div>
-<div class="card"><h2 style="margin-top:0">Membres enregistrés</h2><div id="accountsList"></div></div>
+<div class="card">
+  <h2 style="margin-top:0">Mes informations</h2>
+  <div class="stat-grid">
+    <div class="stat"><span>Numéro</span><b id="profileNumber">—</b></div>
+    <div class="stat"><span>Email</span><b id="profileEmail">—</b></div>
+    <div class="stat"><span>Argent</span><b id="profileMoney">0 $</b></div>
+    <div class="stat"><span>Rang</span><b id="profileRank">—</b></div>
+  </div>
+</div>
+<div class="card">
+  <h2 style="margin-top:0">Modifier mon mot de passe</h2>
+  <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
+  <div class="row"><label>Confirmer le mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
+  <button class="btn primary" id="changePw">Enregistrer</button><div class="muted" id="pwMsg" style="margin-top:10px"></div>
+</div>
 
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -133,10 +148,23 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 }
 
 
-function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-async function loadAccounts(){const {data,error}=await db.from('profiles').select('*').order('rp_name');if(error){$('accountMsg').textContent=error.message;return}$('accountsList').innerHTML=(data||[]).map(p=>'<div class="card" style="margin:8px 0;padding:13px"><b>'+esc(p.rp_name||'Sans Nom RP')+'</b><div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div><small class="muted">'+esc(p.id)+'</small></div>').join('')}
-$('saveAccount').onclick=async()=>{const id=$('accUid').value.trim();if(!id)return;const payload={id,rp_name:$('accRp').value.trim()||null,member_number:$('accNumber').value.trim()||null,role:$('accRole').value};const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});$('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';if(!error)loadAccounts()}
-async function initPage(){await loadAccounts()}
+function setProfileAvatar(url){if(!url){$('profileAvatar').innerHTML='👤';return}const clean=String(url).split('?v=')[0];$('profileAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo">'}
+$('profileAvatar').onclick=()=>$('avatarInput').click();
+$('avatarInput').onchange=async e=>{
+  const file=e.target.files?.[0];e.target.value='';if(!file)return;
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){return $('avatarMsg').textContent='PNG, JPG ou WEBP uniquement.'}
+  if(file.size>5*1024*1024){return $('avatarMsg').textContent='5 Mo maximum.'}
+  $('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;
+  const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}
+  const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}
+  const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
+  currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
+}
+$('changePw').onclick=async()=>{const a=$('pw1').value,b=$('pw2').value;if(a.length<8){$('pwMsg').textContent='8 caractères minimum.';return}if(a!==b){$('pwMsg').textContent='Les mots de passe ne correspondent pas.';return}const {error}=await db.auth.updateUser({password:a});$('pwMsg').textContent=error?'Erreur : '+error.message:'Mot de passe modifié.';if(!error){$('pw1').value='';$('pw2').value=''}}
+async function initPage(){
+  $('profileName').textContent=currentProfile.rp_name||'Sans Nom RP';$('profileRole').textContent=roleLabel(currentProfile.role);
+  $('profileNumber').textContent=currentProfile.member_number||'Non attribué';$('profileEmail').textContent=currentUser.email||'—';$('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';$('profileRank').textContent=roleLabel(currentProfile.role);setProfileAvatar(currentProfile.avatar_url);
+}
 
-(async()=>{if(await loadIdentity(['admin'])){if(typeof initPage==='function')await initPage();}})();
+(async()=>{if(await loadIdentity(['member','moderator','admin'])){if(typeof initPage==='function')await initPage();}})();
 </script></body></html>
