@@ -206,12 +206,20 @@ async function initPage(){
   $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
   $('profileEmail').textContent=currentUser.email||'—';
-  $('profileCompany').textContent=currentProfile.company_rank==='employee'
-    ? 'Employé de Vory V Industry'
-    : 'Ne fait pas partie de l’entreprise';
-  $('profileGang').textContent=currentProfile.gang_rank==='gang_member'
-    ? 'Membre de la Vory V Zakone'
-    : 'Ne fait pas partie du Gang';
+  const companyLabels={
+    employee:'Employé de Vory V Industry',
+    associate:'Associé de Vory V Industry',
+    manager:'Gestionnaire de Vory V Industry'
+  };
+  $('profileCompany').textContent=companyLabels[currentProfile.company_rank]
+    || 'Ne fait pas partie de l’entreprise';
+  const gangLabels={
+    gang_member:'Membre de la Vory V Zakone',
+    right_hand:'Bras droit de la Vory V Zakone',
+    leader:'Leader de la Vory V Zakone'
+  };
+  $('profileGang').textContent=gangLabels[currentProfile.gang_rank]
+    || 'Ne fait pas partie du Gang';
   setProfileAvatar(currentProfile.avatar_url);
 }
 
