@@ -31,7 +31,7 @@
   <div class="row"><label>Nom</label><input id="nameInput" placeholder="Ex. Commissariat"></div>
   <div class="row"><label>Description</label><textarea id="descInput" placeholder="Description facultative"></textarea></div>
   <div class="row"><label>Catégorie</label><select id="catInput"></select></div>
-  <div class="row"><label>Logo / icône (URL publique)</label><input id="iconInput" placeholder="https://.../logo.png"><small style="color:#64748b">Colle ici l’URL publique du logo stocké dans Supabase Storage.</small></div>
+  <div class="row"><label>Icône</label><select id="iconInput"><option value="">Aucune icône</option></select></div>
   <div class="form-msg" id="formMsg"></div>
   <div class="actions"><button class="btn secondary" id="cancelAdd">Annuler</button><button class="btn primary" id="savePoint">Ajouter</button></div>
 </div></div>
@@ -40,14 +40,113 @@
 <script>
 const MAP_SIZE=7744;
 const TABLE='map_points';
-const colors={Lieu:'#3b82f6',Service:'#22c55e',Commerce:'#eab308',Zone:'#a855f7',Important:'#ef4444'};
+const fallbackColors={Lieu:'#3b82f6',Service:'#22c55e',Commerce:'#eab308',Zone:'#a855f7',Important:'#ef4444'};
+let colors={...fallbackColors};
+let categories=[];
 let points=[],selectedCategory=null,scale=.1,fitScale=.1,x=0,y=0,dragging=false,sx=0,sy=0,bx=0,by=0;
-let db=null,currentRole=null,addMode=false,pendingPoint=null;
+let db=null,currentRole=null,currentProfile=null,fullMapAccess=false,addMode=false,pendingPoint=null;
 const $=id=>document.getElementById(id),mapWrap=$('mapWrap'),stage=$('stage'),markersEl=$('markers');
 if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured()) db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
 function esc(s=''){return String(s).replace(/[&<>\'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-async function loadPoints(){if(!db)return;const {data,error}=await db.from(TABLE).select('*').order('name');if(error){console.error(error);return}points=(data||[]).map(p=>({id:p.id,name:p.name,desc:p.description||'',cat:p.category||'Lieu',x:Number(p.x),y:Number(p.y),icon:p.icon_url||''}));render()}
-async function loadRole(){const btn=$('addPointBtn');btn.disabled=true;btn.classList.remove('allowed');if(!db)return;const {data:{session}}=await db.auth.getSession();if(!session)return;const {data}=await db.from('profiles').select('role').eq('id',session.user.id).maybeSingle();if(data&&['admin','moderator'].includes(data.role)){currentRole=data.role;btn.disabled=false;btn.classList.add('allowed');const managementLink=$('managementLink');if(managementLink)managementLink.classList.add('visible')}}
+
+async function loadCategories(){
+  if(!db)return;
+  const {data,error}=await db.from('map_categories')
+    .select('*')
+    .eq('enabled',true)
+    .order('sort_order',{ascending:true})
+    .order('name',{ascending:true});
+
+  if(error){
+    console.warn('Catégories:',error.message);
+    categories=Object.keys(fallbackColors).map((name,i)=>({name,color:fallbackColors[name],sort_order:i}));
+    return;
+  }
+
+  categories=(data||[]).map(c=>({
+    name:c.name,
+    color:c.color||fallbackColors[c.name]||'#f97316',
+    sort_order:c.sort_order||0
+  }));
+
+  if(!categories.length){
+    categories=Object.keys(fallbackColors).map((name,i)=>({name,color:fallbackColors[name],sort_order:i}));
+  }
+
+  colors={...fallbackColors};
+  categories.forEach(c=>colors[c.name]=c.color||'#f97316');
+}
+
+
+async function loadIcons(){
+  if(!db)return;
+  const {data,error}=await db.from('map_icons')
+    .select('name,icon_url')
+    .eq('enabled',true)
+    .order('sort_order',{ascending:true})
+    .order('name',{ascending:true});
+
+  if(error){
+    console.warn('Icônes:',error.message);
+    return;
+  }
+
+  $('iconInput').innerHTML='<option value="">Aucune icône</option>'+
+    (data||[]).map(i=>`<option value="${esc(i.icon_url)}">${esc(i.name)}</option>`).join('');
+}
+
+function canSeeCategory(category){
+  return fullMapAccess || category==='Lieu';
+}
+
+async function loadPoints(){
+  if(!db)return;
+  const {data,error}=await db.from(TABLE).select('*').order('name');
+  if(error){console.error(error);return}
+  points=(data||[])
+    .map(p=>({id:p.id,name:p.name,desc:p.description||'',cat:p.category||'Lieu',x:Number(p.x),y:Number(p.y),icon:p.icon_url||''}))
+    .filter(p=>canSeeCategory(p.cat));
+  render();
+}
+async function loadRole(){
+  const btn=$('addPointBtn');
+  btn.disabled=true;
+  btn.classList.remove('allowed');
+  fullMapAccess=false;
+  currentRole=null;
+  currentProfile=null;
+
+  if(!db)return;
+
+  const {data:{session}}=await db.auth.getSession();
+
+  if(session){
+    const {data,error}=await db.from('profiles')
+      .select('role,company_rank,gang_rank')
+      .eq('id',session.user.id)
+      .maybeSingle();
+
+    if(!error&&data){
+      currentProfile=data;
+      currentRole=data.role||null;
+
+      const gangAccess=['gang_member','right_hand','leader'].includes(data.gang_rank);
+      const companyAccess=['manager','pdg'].includes(data.company_rank);
+      const staffAccess=['admin','moderator'].includes(data.role);
+
+      fullMapAccess=gangAccess||companyAccess||staffAccess;
+
+      if(staffAccess){
+        btn.disabled=false;
+        btn.classList.add('allowed');
+        const managementLink=$('managementLink');
+        if(managementLink)managementLink.classList.add('visible');
+      }
+    }
+  }
+
+  await loadPoints();
+}
 function fit(){const r=mapWrap.getBoundingClientRect();fitScale=Math.min(r.width/MAP_SIZE,r.height/MAP_SIZE)*.97;scale=fitScale;x=r.width/2-MAP_SIZE*scale/2;y=r.height/2-MAP_SIZE*scale/2;apply()}
 function apply(){stage.style.transform=`translate(${x}px,${y}px) scale(${scale})`;updateMarkerSizes()}
 function updateMarkerSizes(){const ratio=Math.max(.2,scale/fitScale);const screenSize=Math.max(12,Math.min(30,14*Math.pow(ratio,.38)));const comp=screenSize/(20*scale);document.documentElement.style.setProperty('--marker-comp',comp)}
@@ -60,7 +159,33 @@ mapWrap.addEventListener('mousemove',e=>{const p=screenToMap(e);$('coords').text
 mapWrap.addEventListener('click',e=>{if(!addMode||!currentRole)return;if(e.target.closest('.marker,.controls,.add-point,.mobile-menu,.popup'))return;const p=screenToMap(e);if(!p.inside)return;pendingPoint={x:p.x,y:p.y};$('coordNote').textContent=`Position : x ${Math.round(p.x)} · y ${Math.round(p.y)}`;$('pointModal').classList.add('open')});
 function screenToMap(e){const r=mapWrap.getBoundingClientRect(),mx=(e.clientX-r.left-x)/scale,my=(e.clientY-r.top-y)/scale;return{x:mx,y:my,inside:mx>=0&&my>=0&&mx<=MAP_SIZE&&my<=MAP_SIZE}}
 function render(){renderFilters();renderMarkers();renderList()}
-function renderFilters(){const cats=[...new Set([...Object.keys(colors),...points.map(p=>p.cat)])];$('filters').innerHTML=cats.map(c=>`<div class="filter ${selectedCategory===c?'active':''}" data-cat="${esc(c)}"><div class="filter-left"><span class="dot" style="background:${colors[c]||'#f97316'}"></span><span>${esc(c)}</span></div><span class="count">${points.filter(p=>p.cat===c).length}</span></div>`).join('');document.querySelectorAll('.filter').forEach(el=>el.onclick=()=>{selectedCategory=selectedCategory===el.dataset.cat?null:el.dataset.cat;render()});$('catInput').innerHTML=cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+function renderFilters(){
+  const sourceCats=categories.length
+    ? categories.map(c=>c.name)
+    : [...new Set([...Object.keys(colors),...points.map(p=>p.cat)])];
+
+  const cats=[...new Set([...sourceCats,...points.map(p=>p.cat)])].filter(canSeeCategory);
+
+  if(selectedCategory&&!cats.includes(selectedCategory))selectedCategory=null;
+
+  $('filters').innerHTML=cats.map(c=>`
+    <div class="filter ${selectedCategory===c?'active':''}" data-cat="${esc(c)}">
+      <div class="filter-left">
+        <span class="dot" style="background:${colors[c]||'#f97316'}"></span>
+        <span>${esc(c)}</span>
+      </div>
+      <span class="count">${points.filter(p=>p.cat===c).length}</span>
+    </div>`).join('');
+
+  document.querySelectorAll('.filter').forEach(el=>el.onclick=()=>{
+    selectedCategory=selectedCategory===el.dataset.cat?null:el.dataset.cat;
+    render();
+  });
+
+  // Only staff can add points, and they get the full category list.
+  const addCats=categories.length?categories.map(c=>c.name):Object.keys(colors);
+  $('catInput').innerHTML=addCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
 function renderMarkers(){
   markersEl.innerHTML='';
   const hover=$('hoverName');
@@ -90,6 +215,6 @@ $('zoomIn').onclick=()=>{const r=mapWrap.getBoundingClientRect();zoomAt(1.25,r.w
 $('addPointBtn').onclick=()=>{if(!currentRole)return;addMode=!addMode;$('addPointBtn').classList.toggle('active',addMode);$('addPointBtn').textContent=addMode?'Clique sur la carte…':'＋ Ajouter un point';mapWrap.classList.toggle('adding',addMode)};
 $('cancelAdd').onclick=closeAddModal;function closeAddModal(){$('pointModal').classList.remove('open');pendingPoint=null;$('formMsg').textContent=''}
 $('savePoint').onclick=async()=>{if(!db||!currentRole||!pendingPoint)return;const payload={name:$('nameInput').value.trim(),description:$('descInput').value.trim(),category:$('catInput').value,x:pendingPoint.x,y:pendingPoint.y,icon_url:$('iconInput').value.trim()||null};if(!payload.name){$('formMsg').textContent='Le nom est obligatoire.';return}const {error}=await db.from(TABLE).insert(payload);if(error){$('formMsg').textContent='Erreur : '+error.message;return}$('nameInput').value='';$('descInput').value='';$('iconInput').value='';closeAddModal();addMode=false;$('addPointBtn').classList.remove('active');$('addPointBtn').textContent='＋ Ajouter un point';mapWrap.classList.remove('adding');await loadPoints()};
-window.addEventListener('resize',fit);fit();loadPoints();loadRole();
+window.addEventListener('resize',fit);fit();(async()=>{await Promise.all([loadCategories(),loadIcons()]);await loadRole()})();
 </script>
 </body></html>
