@@ -61,6 +61,24 @@ a{color:inherit}
 .point-record-name{font-weight:900;overflow-wrap:anywhere}
 @media(max-width:650px){.map-access-card,.point-record{align-items:stretch;flex-direction:column}}
 
+
+.direct-map-access{
+  display:flex;align-items:center;gap:16px;text-decoration:none;color:#fff;
+  transition:.18s ease;border-color:#34343b;
+}
+.direct-map-access:hover{
+  transform:translateY(-2px);border-color:var(--accent);
+  box-shadow:0 12px 30px rgba(249,115,22,.09);
+}
+.direct-map-icon{
+  width:54px;height:54px;display:grid;place-items:center;flex:none;
+  border-radius:14px;background:rgba(249,115,22,.10);
+  border:1px solid rgba(249,115,22,.25);font-size:25px;
+}
+.direct-map-text{flex:1;min-width:0}
+.direct-map-text h2{margin:0 0 5px;font-size:19px}
+.direct-map-arrow{font-size:25px;font-weight:900;color:var(--accent)}
+
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Points de carte</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
@@ -77,6 +95,16 @@ a{color:inherit}
   </div>
 </div>
 
+
+
+<a class="card direct-map-access" href="../../carte.html">
+  <div class="direct-map-icon">🗺️</div>
+  <div class="direct-map-text">
+    <h2>Accéder à la carte</h2>
+    <div class="muted">Ouvrir directement la carte Vory V.</div>
+  </div>
+  <div class="direct-map-arrow">→</div>
+</a>
 
 <div class="card">
   <div class="top">
