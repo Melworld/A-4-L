@@ -80,6 +80,8 @@ a{color:inherit}
     <div class="stat"><span>Argent</span><b id="profileMoney">0 $</b></div>
     <div class="stat"><span>Numéro</span><b id="profileNumber">—</b></div>
     <div class="stat email-stat"><span>Email</span><b id="profileEmail">—</b></div>
+    <div class="stat"><span>Entreprise</span><b id="profileCompany">—</b></div>
+    <div class="stat"><span>Gang</span><b id="profileGang">—</b></div>
   </div>
 </div>
 <div class="card">
@@ -204,6 +206,12 @@ async function initPage(){
   $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
   $('profileEmail').textContent=currentUser.email||'—';
+  $('profileCompany').textContent=currentProfile.company_rank==='employee'
+    ? 'Employé de Vory V Industry'
+    : 'Ne fait pas partie de l’entreprise';
+  $('profileGang').textContent=currentProfile.gang_rank==='gang_member'
+    ? 'Membre de la Vory V Zakone'
+    : 'Ne fait pas partie du Gang';
   setProfileAvatar(currentProfile.avatar_url);
 }
 
