@@ -49,17 +49,21 @@ a{color:inherit}
   .page-shell{padding:24px 14px 60px}.page-top{margin-bottom:36px}.grid,.stat-grid{grid-template-columns:1fr}
   .member-panel{align-items:flex-start}.member-details{display:grid;gap:5px}.page-top h1{font-size:28px}
 }
+
+.map-access-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px}
+.add-centered{justify-content:center;margin-top:18px}
+.icon-preview{display:flex;align-items:center;gap:10px;margin-top:8px;min-height:34px}
+.icon-preview img{width:32px;height:32px;object-fit:contain;border-radius:6px;background:#0b0b0d;border:1px solid var(--line);padding:3px}
+.point-record{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:10px 0;padding:14px;background:#0d0d10;border:1px solid var(--line);border-radius:12px}
+.point-record-main{display:flex;align-items:center;gap:12px;min-width:0}
+.point-record-icon{width:38px;height:38px;display:grid;place-items:center;flex:none;background:#17171b;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.point-record-icon img{width:100%;height:100%;object-fit:contain;padding:4px}
+.point-record-name{font-weight:900;overflow-wrap:anywhere}
+@media(max-width:650px){.map-access-card,.point-record{align-items:stretch;flex-direction:column}}
+
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Points de carte</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
-<div class="section-nav">
-<a href="../">Gestion</a>
-<a href="../points/" id="navPoints">Points de carte</a>
-<a href="../profil/">Mon profil</a>
-<a href="../site/" id="navSite">Gestion du site</a>
-<a href="../comptes/" id="navAccounts">Comptes & rôles</a>
-</div>
-
 <div class="member-panel">
   <div class="member-avatar" id="memberAvatar">👤</div>
   <div>
@@ -76,19 +80,25 @@ a{color:inherit}
 
 <div class="card">
   <div class="top">
-    <div><h2>Ajouter un point</h2><div class="muted">Tu peux l'ajouter ici avec ses coordonnées ou le poser directement depuis la carte.</div></div>
-    <a class="btn primary" href="../../carte.html">🗺️ Poser sur la carte</a>
+    <div><h2>Ajouter un point</h2><div class="muted">Ajoute ici un point à partir de ses coordonnées.</div></div>
   </div>
   <div class="grid">
     <div class="row"><label>Nom</label><input id="newName" placeholder="Ex. Commissariat"></div>
-    <div class="row"><label>Catégorie</label><input id="newCategory" placeholder="Ex. Service"></div>
-    <div class="row"><label>X</label><input id="newX" type="number" step="any" placeholder="Coordonnée X"></div>
-    <div class="row"><label>Y</label><input id="newY" type="number" step="any" placeholder="Coordonnée Y"></div>
+    <div class="row">
+      <label>Catégorie</label>
+      <select id="newCategory"><option value="">Chargement...</option></select>
+    </div>
+    <div class="row"><label>X</label><input id="newX" type="number" step="any" min="0" max="7744" placeholder="Coordonnée X"></div>
+    <div class="row"><label>Y</label><input id="newY" type="number" step="any" min="0" max="7744" placeholder="Coordonnée Y"></div>
   </div>
   <div class="row"><label>Description</label><textarea id="newDescription" placeholder="Description facultative"></textarea></div>
-  <div class="row"><label>Logo / icône</label><input id="newIcon" placeholder="URL publique Supabase Storage"></div>
-  <div class="actions"><button class="btn primary" id="addPointBtn">Ajouter le point</button><a class="btn secondary" href="../../carte.html">Accéder à la carte</a></div>
-  <div class="muted" id="addMsg" style="margin-top:10px"></div>
+  <div class="row">
+    <label>Icône</label>
+    <select id="newIcon"><option value="">Aucune icône</option></select>
+    <div id="iconPreview" class="icon-preview muted">Aucune icône sélectionnée.</div>
+  </div>
+  <div class="actions add-centered"><button class="btn primary" id="addPointBtn">Ajouter le point</button></div>
+  <div class="muted" id="addMsg" style="margin-top:10px;text-align:center"></div>
 </div>
 <div class="card">
   <div class="top"><div><h2>Points enregistrés</h2><div class="muted">Affiche et gère les points selon leur catégorie.</div></div><button class="btn secondary" id="refreshBtn">Actualiser</button></div>
@@ -143,29 +153,231 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 }
 
 
-const TABLE='map_points';let points=[];
-function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function categories(){return [...new Set(points.map(p=>String(p.category||'Sans catégorie')))].sort((a,b)=>a.localeCompare(b,'fr'))}
+const TABLE='map_points';
+const CATEGORY_TABLE='map_categories';
+const ICON_TABLE='map_icons';
+
+let points=[];
+let dbCategories=[];
+let dbIcons=[];
+
+function esc(s=''){
+  return String(s).replace(/[&<>'"]/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
+
+function fallbackCategories(){
+  return ['Lieu','Service','Commerce','Zone','Important'];
+}
+
+async function loadCategories(){
+  const {data,error}=await db.from(CATEGORY_TABLE).select('*').order('sort_order',{ascending:true}).order('name',{ascending:true});
+  if(error){
+    console.warn('map_categories:',error.message);
+    dbCategories=fallbackCategories().map((name,i)=>({name,sort_order:i}));
+  }else{
+    dbCategories=(data||[]).length ? data : fallbackCategories().map((name,i)=>({name,sort_order:i}));
+  }
+
+  const select=$('newCategory');
+  select.innerHTML='<option value="">Choisir une catégorie</option>'+
+    dbCategories.map(c=>'<option value="'+esc(c.name)+'">'+esc(c.name)+'</option>').join('');
+}
+
+async function loadIcons(){
+  const {data,error}=await db.from(ICON_TABLE).select('*').eq('enabled',true).order('sort_order',{ascending:true}).order('name',{ascending:true});
+  if(error){
+    console.warn('map_icons:',error.message);
+    dbIcons=[];
+  }else{
+    dbIcons=data||[];
+  }
+
+  const select=$('newIcon');
+  select.innerHTML='<option value="">Aucune icône</option>'+
+    dbIcons.map(i=>'<option value="'+esc(i.icon_url)+'">'+esc(i.name)+'</option>').join('');
+  renderIconPreview();
+}
+
+function renderIconPreview(){
+  const url=$('newIcon').value;
+  const icon=dbIcons.find(i=>i.icon_url===url);
+  $('iconPreview').innerHTML=url
+    ? '<img src="'+esc(url)+'" alt=""><span>'+esc(icon?.name||'Icône sélectionnée')+'</span>'
+    : 'Aucune icône sélectionnée.';
+}
+
+function pointCategories(){
+  return [...new Set(points.map(p=>String(p.category||'Sans catégorie')))].sort((a,b)=>a.localeCompare(b,'fr'));
+}
+
 function renderPoints(){
-  const previous=$('pointsCategoryFilter').value;
-  $('pointsCategoryFilter').innerHTML='<option value="__all__">Toutes les catégories</option>'+categories().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
-  if([...$('pointsCategoryFilter').options].some(o=>o.value===previous))$('pointsCategoryFilter').value=previous;
-  const filter=$('pointsCategoryFilter').value;
-  const shown=filter==='__all__'?points:points.filter(p=>String(p.category||'Sans catégorie')===filter);
-  $('pointsList').innerHTML=shown.length?shown.map(p=>'<div class="card" style="margin:10px 0;padding:14px"><b>'+esc(p.name)+'</b><div class="muted">'+esc(p.category||'Sans catégorie')+' • x '+(p.x??'—')+' / y '+(p.y??'—')+'</div><div class="actions" style="margin-top:10px"><button class="btn secondary" onclick="editPoint(\\''+p.id+'\\')">Modifier</button><button class="btn danger" onclick="deletePoint(\\''+p.id+'\\')">Supprimer</button></div></div>').join(''):'<div class="muted">Aucun point dans cette catégorie.</div>';
+  const filterSelect=$('pointsCategoryFilter');
+  const previous=filterSelect.value;
+
+  filterSelect.innerHTML='<option value="__all__">Toutes les catégories</option>'+
+    pointCategories().map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+
+  if([...filterSelect.options].some(o=>o.value===previous))filterSelect.value=previous;
+
+  const filter=filterSelect.value;
+  const shown=filter==='__all__'
+    ? points
+    : points.filter(p=>String(p.category||'Sans catégorie')===filter);
+
+  const list=$('pointsList');
+  list.innerHTML='';
+
+  if(!shown.length){
+    list.innerHTML='<div class="muted">Aucun point dans cette catégorie.</div>';
+    return;
+  }
+
+  shown.forEach(p=>{
+    const row=document.createElement('div');
+    row.className='point-record';
+
+    const main=document.createElement('div');
+    main.className='point-record-main';
+
+    const icon=document.createElement('div');
+    icon.className='point-record-icon';
+    if(p.icon_url){
+      const img=document.createElement('img');
+      img.src=p.icon_url;
+      img.alt='';
+      icon.appendChild(img);
+    }else{
+      icon.textContent='📍';
+    }
+
+    const txt=document.createElement('div');
+    txt.innerHTML='<div class="point-record-name">'+esc(p.name)+'</div>'+
+      '<div class="muted">'+esc(p.category||'Sans catégorie')+
+      ' • x '+esc(p.x??'—')+' / y '+esc(p.y??'—')+'</div>';
+
+    main.append(icon,txt);
+
+    const actions=document.createElement('div');
+    actions.className='actions';
+
+    const edit=document.createElement('button');
+    edit.className='btn secondary';
+    edit.textContent='Modifier';
+    edit.onclick=()=>editPoint(p.id);
+
+    const del=document.createElement('button');
+    del.className='btn danger';
+    del.textContent='Supprimer';
+    del.onclick=()=>deletePoint(p.id);
+
+    actions.append(edit,del);
+    row.append(main,actions);
+    list.appendChild(row);
+  });
 }
-async function loadPoints(){const {data,error}=await db.from(TABLE).select('*').order('created_at',{ascending:false});if(error){$('pointsMsg').textContent=error.message;return}points=data||[];renderPoints()}
+
+async function loadPoints(){
+  $('pointsMsg').textContent='Chargement des points...';
+
+  // No ordering dependency: this works even if an older version of the table
+  // does not have created_at.
+  const {data,error}=await db.from(TABLE).select('*');
+
+  if(error){
+    console.error('Chargement map_points:',error);
+    $('pointsMsg').textContent='Erreur lors du chargement : '+error.message;
+    return;
+  }
+
+  points=(data||[]).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'fr'));
+  $('pointsMsg').textContent=points.length+' point'+(points.length>1?'s':'')+' enregistré'+(points.length>1?'s':'')+'.';
+  renderPoints();
+}
+
 $('addPointBtn').onclick=async()=>{
-  const name=$('newName').value.trim(),category=$('newCategory').value.trim(),x=Number($('newX').value),y=Number($('newY').value);
-  if(!name||!category||!Number.isFinite(x)||!Number.isFinite(y)){ $('addMsg').textContent='Nom, catégorie, X et Y sont obligatoires.'; return; }
-  const payload={name,category,x,y,description:$('newDescription').value.trim(),icon_url:$('newIcon').value.trim()||null};
-  const {error}=await db.from(TABLE).insert(payload);$('addMsg').textContent=error?'Erreur : '+error.message:'Point ajouté.';
-  if(!error){['newName','newCategory','newX','newY','newDescription','newIcon'].forEach(id=>$(id).value='');await loadPoints()}
+  const name=$('newName').value.trim();
+  const category=$('newCategory').value;
+  const x=Number($('newX').value);
+  const y=Number($('newY').value);
+
+  if(!name||!category||!Number.isFinite(x)||!Number.isFinite(y)){
+    $('addMsg').textContent='Nom, catégorie, X et Y sont obligatoires.';
+    return;
+  }
+  if(x<0||x>7744||y<0||y>7744){
+    $('addMsg').textContent='Les coordonnées doivent être comprises entre 0 et 7744.';
+    return;
+  }
+
+  const payload={
+    name,
+    category,
+    x,
+    y,
+    description:$('newDescription').value.trim(),
+    icon_url:$('newIcon').value||null
+  };
+
+  $('addMsg').textContent='Ajout du point...';
+  const {error}=await db.from(TABLE).insert(payload);
+
+  if(error){
+    $('addMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  $('addMsg').textContent='Point ajouté.';
+  ['newName','newX','newY','newDescription'].forEach(id=>$(id).value='');
+  $('newCategory').value='';
+  $('newIcon').value='';
+  renderIconPreview();
+  await loadPoints();
+};
+
+async function deletePoint(id){
+  if(!confirm('Supprimer ce point ?'))return;
+  const {error}=await db.from(TABLE).delete().eq('id',id);
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+  await loadPoints();
 }
-window.deletePoint=async id=>{if(!confirm('Supprimer ce point ?'))return;const {error}=await db.from(TABLE).delete().eq('id',id);if(error)return alert(error.message);loadPoints()}
-window.editPoint=async id=>{const p=points.find(v=>String(v.id)===String(id));if(!p)return;const name=prompt('Nom',p.name||'');if(name===null)return;const description=prompt('Description',p.description||'');if(description===null)return;const category=prompt('Catégorie',p.category||'');if(category===null)return;const {error}=await db.from(TABLE).update({name,description,category}).eq('id',id);if(error)return alert(error.message);loadPoints()}
-$('pointsCategoryFilter').onchange=renderPoints;$('refreshBtn').onclick=loadPoints;
-async function initPage(){await loadPoints()}
+
+async function editPoint(id){
+  const p=points.find(v=>String(v.id)===String(id));
+  if(!p)return;
+
+  const name=prompt('Nom',p.name||'');
+  if(name===null)return;
+  const description=prompt('Description',p.description||'');
+  if(description===null)return;
+  const category=prompt('Catégorie',p.category||'');
+  if(category===null)return;
+
+  const {error}=await db.from(TABLE).update({
+    name:name.trim()||p.name,
+    description,
+    category:category.trim()||p.category
+  }).eq('id',id);
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+  await loadPoints();
+}
+
+$('pointsCategoryFilter').onchange=renderPoints;
+$('refreshBtn').onclick=loadPoints;
+$('newIcon').onchange=renderIconPreview;
+
+async function initPage(){
+  await Promise.all([loadCategories(),loadIcons()]);
+  await loadPoints();
+}
 
 (async()=>{if(await loadIdentity(['moderator','admin'])){if(typeof initPage==='function')await initPage();}})();
 </script></body></html>
