@@ -346,7 +346,7 @@ async function detectRole(){
     document.body.classList.add('is-admin');
     document.querySelectorAll('.admin-only').forEach(el=>el.style.setProperty('display','inline-flex','important'));
   }
-  if(currentRole==='admin'||currentRole==='moderator'){
+  if(['admin','moderator','member'].includes(currentRole)){
     $('accountBtn').textContent=data?.rp_name ? data.rp_name : 'Mon compte';
   }
 }
