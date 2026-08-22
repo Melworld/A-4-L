@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vory V</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,.07), transparent 0 32%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.025), transparent 0 55%);
+      pointer-events: none;
+    }
+
+    .home {
+      position: relative;
+      z-index: 1;
+      width: min(900px, calc(100% - 40px));
+      text-align: center;
+      animation: appear .7s ease both;
+    }
+
+    .title {
+      margin: 0 0 46px;
+      font-size: clamp(72px, 12vw, 160px);
+      line-height: .9;
+      font-weight: 900;
+      letter-spacing: -.065em;
+      text-transform: uppercase;
+      text-shadow: 0 0 36px rgba(255,255,255,.08);
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-width: 210px;
+      padding: 16px 30px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 12px;
+      background: #fff;
+      color: #050505;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255,255,255,.7);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: #fff;
+    }
+
+    .btn.secondary:hover {
+      background: #fff;
+      color: #050505;
+    }
+
+    .sub {
+      margin-top: 24px;
+      color: rgba(255,255,255,.38);
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+    }
+
+    @keyframes appear {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 560px) {
+      .title { margin-bottom: 34px; }
+      .buttons { flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="home">
+    <h1 class="title">Vory V</h1>
+    <div class="buttons">
+      <a class="btn" href="carte.html">Carte interactive</a>
+      <a class="btn secondary" href="#" onclick="event.preventDefault()">Deuxième section</a>
+    </div>
+    <div class="sub">Vory V</div>
+  </main>
+</body>
+</html>
