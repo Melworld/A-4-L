@@ -68,44 +68,63 @@ a{color:inherit}
 
 <div class="card">
   <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
-  <div class="grid">
-    <div class="row"><label>User UID</label><input id="accUid" placeholder="UUID Supabase"></div>
-    <div class="row">
-      <label>Nom RP</label>
-      <input id="accRp" list="rpNamesList" autocomplete="off" placeholder="Ex. Jean Pascal">
-      <datalist id="rpNamesList"></datalist>
-      <div class="muted" id="rpLookupMsg" style="margin-top:6px">Choisis ou écris un Nom RP existant.</div>
-    </div>
-    <div class="row"><label>N°</label><input id="accNumber" placeholder="Ex. V-001"></div>
-    <div class="row">
-  <label>Rôle site</label>
-  <select id="accRole">
-    <option value="member">Membre</option>
-    <option value="moderator">Modérateur</option>
-    <option value="admin">Administrateur</option>
-  </select>
-</div>
-<div class="row">
-  <label>Entreprise</label>
-  <select id="accCompanyRank">
-    <option value="">Aucun</option>
-    <option value="employee">Employé</option>
-    <option value="associate">Associé</option>
-    <option value="manager">Gestionnaire</option>
-    <option value="pdg">Patron</option>
-  </select>
-</div>
-<div class="row">
-  <label>Gang</label>
-  <select id="accGangRank">
-    <option value="">Aucun</option>
-    <option value="gang_member">Membre</option>
-    <option value="right_hand">Bras droit</option>
-    <option value="leader">Leader</option>
-  </select>
-</div>
+  <div class="muted" style="margin:-4px 0 18px">
+    Il suffit de mettre le nom rp de la personne et de faire Entrée afin de remplir toute ses informations rapidement
   </div>
-  <button class="btn primary" id="saveAccount">Enregistrer</button><div id="accountMsg" class="muted" style="margin-top:10px"></div>
+
+  <div class="row">
+    <label>Nom RP</label>
+    <input id="accRp" list="rpNamesList" autocomplete="off" placeholder="Ex. Jean Pascal">
+    <datalist id="rpNamesList"></datalist>
+    <div class="muted" id="rpLookupMsg" style="margin-top:6px">Choisis ou écris un Nom RP existant.</div>
+  </div>
+
+  <div class="grid">
+    <div class="row">
+      <label>User ID</label>
+      <input id="accUid" placeholder="UUID Supabase">
+    </div>
+    <div class="row">
+      <label>Rôle site</label>
+      <select id="accRole">
+        <option value="member">Membre</option>
+        <option value="moderator">Modérateur</option>
+        <option value="admin">Administrateur</option>
+      </select>
+    </div>
+
+    <div class="row">
+      <label>Numéro RP</label>
+      <input id="accNumber" placeholder="00-00-00-00-00">
+    </div>
+    <div class="row">
+      <label>Email</label>
+      <input id="accEmail" type="email" readonly placeholder="Email du compte">
+    </div>
+
+    <div class="row">
+      <label>Entreprise</label>
+      <select id="accCompanyRank">
+        <option value="">Aucun</option>
+        <option value="employee">Employé</option>
+        <option value="associate">Associé</option>
+        <option value="manager">Gestionnaire</option>
+        <option value="pdg">Patron</option>
+      </select>
+    </div>
+    <div class="row">
+      <label>Gang</label>
+      <select id="accGangRank">
+        <option value="">Aucun</option>
+        <option value="gang_member">Membre</option>
+        <option value="right_hand">Bras droit</option>
+        <option value="leader">Leader</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn primary" id="saveAccount">Enregistrer</button>
+  <div id="accountMsg" class="muted" style="margin-top:10px"></div>
 </div>
 <div class="card"><h2 style="margin-top:0">Membres enregistrés</h2><div id="accountsList"></div></div>
 
@@ -196,7 +215,7 @@ async function loadAccounts(){
   }).join('');
 }
 
-function fillAccountFromRp(){
+async function fillAccountFromRp(){
   const name=$('accRp').value.trim().toLowerCase();
   const msg=$('rpLookupMsg');
   if(!name){
@@ -223,11 +242,23 @@ function fillAccountFromRp(){
   if($('accGangRank'))
     $('accGangRank').value=profile.gang_rank||'';
 
-  if(msg)msg.textContent='Compte trouvé : User ID et numéro remplis automatiquement.';
+  if($('accEmail')){
+    $('accEmail').value='Chargement...';
+    const {data:emailData,error:emailError}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:profile.rp_name});
+    $('accEmail').value=emailError?'':(emailData||'');
+  }
+
+  if(msg)msg.textContent='Compte trouvé : informations remplies automatiquement.';
 }
 
 $('accRp').addEventListener('change',fillAccountFromRp);
 $('accRp').addEventListener('blur',fillAccountFromRp);
+$('accRp').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    fillAccountFromRp();
+  }
+});
 
 $('saveAccount').onclick=async()=>{
   const id=$('accUid').value.trim();
