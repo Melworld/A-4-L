@@ -5,104 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vory V</title>
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: #000;
-      color: #fff;
-      font-family: Inter, Arial, Helvetica, sans-serif;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 42%, rgba(255,255,255,.07), transparent 0 32%),
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,.025), transparent 0 55%);
-      pointer-events: none;
-    }
-
-    .home {
-      position: relative;
-      z-index: 1;
-      width: min(900px, calc(100% - 40px));
-      text-align: center;
-      animation: appear .7s ease both;
-    }
-
-    .title {
-      margin: 0 0 46px;
-      font-size: clamp(72px, 12vw, 160px);
-      line-height: .9;
-      font-weight: 900;
-      letter-spacing: -.065em;
-      text-transform: uppercase;
-      text-shadow: 0 0 36px rgba(255,255,255,.08);
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      min-width: 210px;
-      padding: 16px 30px;
-      border: 1px solid rgba(255,255,255,.22);
-      border-radius: 12px;
-      background: #fff;
-      color: #050505;
-      text-decoration: none;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-3px);
-      background: transparent;
-      color: #fff;
-      border-color: rgba(255,255,255,.7);
-    }
-
-    .btn.secondary {
-      background: transparent;
-      color: #fff;
-    }
-
-    .btn.secondary:hover {
-      background: #fff;
-      color: #050505;
-    }
-
-    .sub {
-      margin-top: 24px;
-      color: rgba(255,255,255,.38);
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-    }
-
-    @keyframes appear {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 560px) {
-      .title { margin-bottom: 34px; }
-      .buttons { flex-direction: column; }
-      .btn { width: 100%; }
-    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:#000;color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+    body{min-height:100vh;display:grid;place-items:center;overflow:hidden}
+    body::before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.075),transparent 0 30%),radial-gradient(circle at 50% 50%,rgba(255,255,255,.025),transparent 0 58%);pointer-events:none}
+    .home{position:relative;z-index:1;width:min(900px,calc(100% - 36px));text-align:center;animation:appear .6s ease both}
+    .title{margin:0 0 46px;font-size:clamp(72px,12vw,160px);line-height:.88;font-weight:950;letter-spacing:-.07em;text-transform:uppercase;text-shadow:0 0 38px rgba(255,255,255,.08)}
+    .buttons{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+    .btn{min-width:220px;padding:16px 28px;border:1px solid rgba(255,255,255,.24);border-radius:12px;background:#fff;color:#050505;text-decoration:none;font-size:14px;font-weight:850;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:.18s ease}
+    .btn:hover{transform:translateY(-3px);background:transparent;color:#fff;border-color:rgba(255,255,255,.72)}
+    .btn.secondary{background:transparent;color:#fff}.btn.secondary:hover{background:#fff;color:#050505}
+    .status{margin-top:22px;color:rgba(255,255,255,.4);font-size:11px;letter-spacing:.15em;text-transform:uppercase}
+    .status.on{color:#86efac}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.76);display:none;align-items:center;justify-content:center;padding:18px;z-index:20;backdrop-filter:blur(6px)}
+    .card{width:min(430px,100%);background:#0b0b0b;border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:22px;text-align:left;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+    .card h2{margin:0 0 8px;font-size:20px}.card p{margin:0 0 16px;color:#8f8f8f;font-size:12px;line-height:1.55}
+    .row{display:grid;gap:7px;margin-top:12px}.row label{font-size:11px;color:#aaa}.row input{width:100%;padding:12px;background:#111;color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:10px;outline:none}.row input:focus{border-color:rgba(255,255,255,.45)}
+    .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.actions button{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.cancel{background:#222;color:#fff}.primary{background:#fff;color:#000}
+    @keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    @media(max-width:560px){.title{margin-bottom:34px}.buttons{flex-direction:column}.btn{width:100%}}
   </style>
 </head>
 <body>
@@ -110,9 +31,69 @@
     <h1 class="title">Vory V</h1>
     <div class="buttons">
       <a class="btn" href="carte.html">Carte interactive</a>
-      <a class="btn secondary" href="#" onclick="event.preventDefault()">Deuxième section</a>
+      <button class="btn secondary" id="adminHomeBtn">Espace admin</button>
     </div>
-    <div class="sub">Vory V</div>
+    <div class="status" id="adminHomeStatus">Mode visiteur</div>
   </main>
+
+  <div class="modal" id="loginModal">
+    <div class="card">
+      <h2 id="loginTitle">Connexion administrateur</h2>
+      <p id="loginNote"></p>
+      <div class="row"><label id="passwordLabel">Mot de passe</label><input id="passwordInput" type="password" autocomplete="current-password"></div>
+      <div class="row" id="confirmRow"><label>Confirmer le mot de passe</label><input id="passwordConfirm" type="password" autocomplete="new-password"></div>
+      <div class="actions"><button class="cancel" id="cancelLogin">Annuler</button><button class="primary" id="confirmLogin">Continuer</button></div>
+    </div>
+  </div>
+
+<script>
+const ADMIN_HASH_KEY='voryAdminPasswordHash';
+const SESSION_KEY='voryAdminSession';
+const adminBtn=document.getElementById('adminHomeBtn');
+const statusEl=document.getElementById('adminHomeStatus');
+function isAdmin(){return sessionStorage.getItem(SESSION_KEY)==='1'}
+function updateStatus(){
+  const on=isAdmin();
+  statusEl.textContent=on?'Administrateur connecté':'Mode visiteur';
+  statusEl.classList.toggle('on',on);
+  adminBtn.textContent=on?'Ouvrir l’administration':'Espace admin';
+}
+async function sha256(text){
+  const data=new TextEncoder().encode(text);
+  const hash=await crypto.subtle.digest('SHA-256',data);
+  return [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function openLogin(){
+  if(isAdmin()){location.href='carte.html?admin=1';return;}
+  const creating=!localStorage.getItem(ADMIN_HASH_KEY);
+  document.getElementById('loginTitle').textContent=creating?'Créer le compte administrateur':'Connexion administrateur';
+  document.getElementById('loginNote').textContent=creating?'Crée le mot de passe qui sera aussi reconnu sur la page de la carte.':'Connecte-toi pour accéder directement aux outils de gestion de la carte.';
+  document.getElementById('passwordLabel').textContent=creating?'Nouveau mot de passe':'Mot de passe';
+  document.getElementById('confirmRow').style.display=creating?'grid':'none';
+  document.getElementById('passwordInput').value='';
+  document.getElementById('passwordConfirm').value='';
+  document.getElementById('loginModal').dataset.mode=creating?'setup':'login';
+  document.getElementById('loginModal').style.display='flex';
+  setTimeout(()=>document.getElementById('passwordInput').focus(),60);
+}
+adminBtn.onclick=openLogin;
+document.getElementById('cancelLogin').onclick=()=>document.getElementById('loginModal').style.display='none';
+document.getElementById('confirmLogin').onclick=async()=>{
+  const modal=document.getElementById('loginModal');
+  const mode=modal.dataset.mode;
+  const pass=document.getElementById('passwordInput').value;
+  if(pass.length<4){alert('Choisis un mot de passe d’au moins 4 caractères.');return;}
+  if(mode==='setup'){
+    if(pass!==document.getElementById('passwordConfirm').value){alert('Les mots de passe ne correspondent pas.');return;}
+    localStorage.setItem(ADMIN_HASH_KEY,await sha256(pass));
+  }else if(await sha256(pass)!==localStorage.getItem(ADMIN_HASH_KEY)){
+    alert('Mot de passe incorrect.');return;
+  }
+  sessionStorage.setItem(SESSION_KEY,'1');
+  location.href='carte.html?admin=1';
+};
+document.getElementById('passwordInput').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('confirmLogin').click()});
+updateStatus();
+</script>
 </body>
 </html>
