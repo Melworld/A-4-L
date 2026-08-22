@@ -7,7 +7,29 @@
 <style>
 :root{--bg:#09090b;--panel:#111113;--muted:#8b8b94;--line:#25252b;--accent:#f97316;--danger:#7f1d1d;--ok:#166534}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}.hidden{display:none!important}
-.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:white}.secondary{background:#222228;color:#fff}.danger{background:var(--danger);color:#fff}.success{background:var(--ok);color:#fff}.table{display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px;background:#0d0d0f}.item small{color:var(--muted)}.login{min-height:100vh;display:grid;place-items:center;padding:18px}.login .card{width:min(420px,100%)}.notice{padding:11px;border-radius:10px;background:#18181b;color:#c5c5cb;font-size:12px;line-height:1.5;margin-bottom:14px}.error{color:#fca5a5}.ok{color:#86efac}.section{display:none}.section.active{display:block}.section-title{margin:0 0 5px}.toolbar{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}.toolbar .row{margin:0;min-width:230px}.role-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:#27272a;color:#ddd;font-size:12px}.admin-only-note{border-left:3px solid var(--accent)}
+.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:white}.secondary{background:#222228;color:#fff}.danger{background:var(--danger);color:#fff}.success{background:var(--ok);color:#fff}.table{display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px;background:#0d0d0f}.item small{color:var(--muted)}.login{min-height:100vh;display:grid;place-items:center;padding:18px}.login .card{width:min(420px,100%)}.login .brand{text-align:center;font-size:30px;margin-bottom:22px}.notice{padding:11px;border-radius:10px;background:#18181b;color:#c5c5cb;font-size:12px;line-height:1.5;margin-bottom:14px}.error{color:#fca5a5}.ok{color:#86efac}.section{display:none}.section.active{display:block}.section-title{margin:0 0 5px}.toolbar{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}.toolbar .row{margin:0;min-width:230px}.role-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:#27272a;color:#ddd;font-size:12px}.admin-only-note{border-left:3px solid var(--accent)}
+
+.login{position:relative;overflow:hidden;background:
+  radial-gradient(circle at 20% 15%,rgba(249,115,22,.14),transparent 28%),
+  radial-gradient(circle at 85% 80%,rgba(249,115,22,.08),transparent 32%),
+  #070708;
+}
+.login::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent)}
+.login .card{position:relative;z-index:1;width:min(460px,100%);padding:34px 32px 30px;border-radius:22px;background:rgba(17,17,19,.93);border:1px solid #303038;box-shadow:0 26px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.015) inset;backdrop-filter:blur(12px)}
+.login .brand{font-size:38px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;background:linear-gradient(135deg,#fff 15%,#f97316 85%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(249,115,22,.10)}
+.login h2{text-align:center;margin:0 0 26px;font-size:20px;font-weight:750;color:#e8e8ec;letter-spacing:.01em}
+.login .row{gap:8px;margin-bottom:15px}
+.login .row label{font-size:12px;font-weight:700;color:#b7b7bf;letter-spacing:.02em}
+.login .row input{padding:13px 14px;border-radius:12px;background:#0a0a0c;border:1px solid #2d2d33;transition:border-color .16s,box-shadow .16s,background .16s}
+.login .row input::placeholder{color:#5f5f68}
+.login .row input:focus{border-color:rgba(249,115,22,.85);box-shadow:0 0 0 3px rgba(249,115,22,.12);background:#0d0d10}
+.login .actions{justify-content:center;gap:10px;margin-top:20px}
+.login .actions .btn{min-width:128px;padding:11px 18px;border-radius:11px;transition:transform .15s,filter .15s,border-color .15s}
+.login .actions .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.login .actions .primary{box-shadow:0 8px 26px rgba(249,115,22,.20)}
+.login .actions .secondary{border:1px solid #303038}
+.login-error{font-size:12.5px;margin-top:12px}
+
 @media(max-width:900px){.shell{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.grid,.dashboard-grid{grid-template-columns:1fr}.main{padding:18px}.item{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .row{width:100%}}
 </style>
 </head>
@@ -15,9 +37,9 @@
 <div id="loginView" class="login">
   <div class="card">
     <div class="brand">Vory V</div>
-    <h2>Connexion gestion</h2>
+    <h2>Connexion à son compte</h2>
     <div id="configWarn" class="notice hidden">Supabase n'est pas configuré. Vérifie <b>database.js</b>.</div>
-    <div class="row"><label>Email</label><input id="email" type="email" autocomplete="username"></div>
+    <div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" type="text" autocomplete="username" placeholder="email@exemple.fr ou Nom RP"></div>
     <div class="row"><label>Mot de passe</label><input id="password" type="password" autocomplete="current-password"></div>
     <div class="actions"><button class="btn primary" id="loginBtn">Se connecter</button><a class="btn secondary" href="../index.html" style="text-decoration:none">Annuler</a></div>
     <p id="loginMsg" class="login-error"></p>
@@ -41,9 +63,9 @@
       <div class="top"><div><h1>Gestion</h1><div class="muted">Choisis ce que tu veux administrer.</div></div><span id="currentRoleBadge" class="role-badge">—</span></div>
       <div class="dashboard-grid">
         <div class="tile" data-open="points"><div><div class="icon">📍</div><h3>Points de carte</h3><div class="muted">Ajouter, modifier, filtrer et supprimer les points.</div></div><b>Ouvrir →</b></div>
-        <div class="tile" id="accountsTile" data-open="accounts"><div><div class="icon">👥</div><h3>Comptes & rôles</h3><div class="muted">Gérer les administrateurs et modérateurs.</div></div><b>Ouvrir →</b></div>
         <div class="tile" onclick="location.href='../carte.html'"><div><div class="icon">🗺️</div><h3>Carte publique</h3><div class="muted">Voir le rendu public de la carte.</div></div><b>Ouvrir →</b></div>
         <div class="tile" onclick="location.href='../index.html'"><div><div class="icon">🏠</div><h3>Page principale</h3><div class="muted">Retourner à l'accueil Vory V.</div></div><b>Ouvrir →</b></div>
+        <div class="tile" id="accountsTile" data-open="accounts"><div><div class="icon">👥</div><h3>Comptes & rôles</h3><div class="muted">Gérer les administrateurs et modérateurs.</div></div><b>Ouvrir →</b></div>
         <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 1</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
         <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 2</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
         <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 3</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
@@ -139,9 +161,24 @@ async function showApp(session){
 
 $('loginBtn').onclick=async()=>{
   if(!configured){$('loginMsg').textContent='Configure d’abord database.js.';return}
-  const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-  $('loginMsg').textContent=error?'Mot de passe incorrect. Vérifiez votre mot de passe et réessayez.':'';
+  $('loginMsg').textContent='';
+  const identifier=$('loginIdentifier').value.trim();
+  const password=$('password').value;
+  if(!identifier||!password){$('loginMsg').textContent='Renseigne ton email ou ton nom RP ainsi que ton mot de passe.';return}
+
+  let email=identifier;
+  if(!identifier.includes('@')){
+    const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
+    if(error){$('loginMsg').textContent='Impossible de vérifier ce nom RP pour le moment.';return}
+    if(!data){$('loginMsg').textContent='Aucun compte trouvé avec ce nom RP.';return}
+    email=data;
+  }
+
+  const {error}=await db.auth.signInWithPassword({email,password});
+  $('loginMsg').textContent=error?'Identifiant ou mot de passe incorrect. Vérifie tes informations et réessaie.':'';
 };
+$('password').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
+$('loginIdentifier').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
 $('logoutBtn').onclick=()=>db.auth.signOut();
 
 function openSection(name){
