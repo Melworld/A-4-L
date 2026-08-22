@@ -30,6 +30,18 @@
 .login .actions .secondary{border:1px solid #303038}
 .login-error{font-size:12.5px;margin-top:12px}
 
+
+/* Dashboard — profil + grandes lignes */
+.dashboard-head{margin-bottom:22px}
+.dashboard-title{font-size:34px;font-weight:900;margin:0 0 14px}
+.dashboard-rule{height:2px;background:linear-gradient(90deg,var(--accent),#3f3f46 45%,transparent);border-radius:999px;margin:0 0 22px}
+.profile-strip{display:flex;align-items:center;gap:22px;padding:6px 4px 22px}
+.profile-avatar{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:#17171b;border:2px solid #3a3a42;box-shadow:0 0 0 6px rgba(249,115,22,.06);font-size:34px;font-weight:900;color:#f97316;flex:0 0 auto;overflow:hidden;cursor:pointer;position:relative;transition:.16s transform,.16s border-color}.profile-avatar:hover{transform:scale(1.025);border-color:var(--accent)}.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}.profile-avatar::after{content:'Modifier';position:absolute;inset:auto 0 0;background:rgba(0,0,0,.72);color:#fff;font-size:10px;font-weight:800;text-align:center;padding:5px 2px;opacity:0;transition:.15s opacity}.profile-avatar:hover::after{opacity:1}.avatar-default{width:46px;height:46px;opacity:.78}.avatar-status{font-size:11px;color:var(--muted);margin-top:2px}
+.profile-info{display:grid;gap:6px}.profile-name{font-size:26px;font-weight:900}.profile-meta{font-size:15px;color:#c8c8cf}.profile-meta b{color:#fff}
+.dashboard-list{display:grid;gap:12px;margin-top:18px}
+.dashboard-row{width:100%;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,#121216,#0f0f12);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:18px;color:#fff;text-align:left;cursor:pointer;transition:.16s transform,.16s border-color,.16s background}
+.dashboard-row:hover{transform:translateY(-1px);border-color:#4a4a53;background:#15151a}
+.dashboard-row-main{display:flex;align-items:center;gap:16px;min-width:0}.dashboard-row-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#1c1c21;border:1px solid #303038;font-size:22px;flex:0 0 auto}.dashboard-row-title{font-size:17px;font-weight:850}.dashboard-row-sub{margin-top:3px;font-size:12px;color:var(--muted)}.dashboard-row-arrow{font-size:24px;color:#6f6f78}.dashboard-row.disabled{opacity:.42;cursor:default}.dashboard-row.disabled:hover{transform:none;border-color:var(--line);background:linear-gradient(180deg,#121216,#0f0f12)}
 @media(max-width:900px){.shell{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.grid,.dashboard-grid{grid-template-columns:1fr}.main{padding:18px}.item{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .row{width:100%}}
 </style>
 </head>
@@ -60,17 +72,40 @@
 
   <main class="main">
     <section id="dashboardSection" class="section active">
-      <div class="top"><div><h1>Gestion</h1><div class="muted">Choisis ce que tu veux administrer.</div></div><span id="currentRoleBadge" class="role-badge">—</span></div>
-      <div class="dashboard-grid">
-        <div class="tile" data-open="points"><div><div class="icon">📍</div><h3>Points de carte</h3><div class="muted">Ajouter, modifier, filtrer et supprimer les points.</div></div><b>Ouvrir →</b></div>
-        <div class="tile" onclick="location.href='../carte.html'"><div><div class="icon">🗺️</div><h3>Carte publique</h3><div class="muted">Voir le rendu public de la carte.</div></div><b>Ouvrir →</b></div>
-        <div class="tile" onclick="location.href='../index.html'"><div><div class="icon">🏠</div><h3>Page principale</h3><div class="muted">Retourner à l'accueil Vory V.</div></div><b>Ouvrir →</b></div>
-        <div class="tile" id="accountsTile" data-open="accounts"><div><div class="icon">👥</div><h3>Comptes & rôles</h3><div class="muted">Gérer les administrateurs et modérateurs.</div></div><b>Ouvrir →</b></div>
-        <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 1</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
-        <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 2</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
-        <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 3</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
-        <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 4</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
-        <div class="tile disabled"><div><div class="icon">＋</div><h3>À configurer 5</h3><div class="muted">Emplacement réservé pour une future fonction.</div></div></div>
+      <div class="dashboard-head">
+        <h1 class="dashboard-title">Gestion</h1>
+        <div class="dashboard-rule"></div>
+
+        <div class="profile-strip">
+          <div id="profileAvatar" class="profile-avatar" title="Cliquer pour changer la photo de profil"><svg class="avatar-default" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c.7-4.4 3.4-7 8-7s7.3 2.6 8 7" fill="currentColor"/></svg></div><input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+          <div class="profile-info">
+            <div id="profileRpName" class="profile-name">Nom RP</div>
+            <div class="profile-meta">Rang : <b id="profileRole">—</b></div>
+            <div class="profile-meta">Agent : <b id="profileAgent">—</b></div><div id="avatarMsg" class="avatar-status"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-rule"></div>
+      </div>
+
+      <div class="dashboard-list">
+        <button class="dashboard-row" data-open="points">
+          <span class="dashboard-row-main"><span class="dashboard-row-icon">📍</span><span><span class="dashboard-row-title">Points de carte</span><span class="dashboard-row-sub">Ajouter, modifier, filtrer et supprimer les points enregistrés.</span></span></span><span class="dashboard-row-arrow">›</span>
+        </button>
+        <button class="dashboard-row" onclick="location.href='../carte.html'">
+          <span class="dashboard-row-main"><span class="dashboard-row-icon">🗺️</span><span><span class="dashboard-row-title">Carte publique</span><span class="dashboard-row-sub">Ouvrir la carte telle qu'elle est visible par les joueurs.</span></span></span><span class="dashboard-row-arrow">›</span>
+        </button>
+        <button class="dashboard-row" onclick="location.href='../index.html'">
+          <span class="dashboard-row-main"><span class="dashboard-row-icon">🏠</span><span><span class="dashboard-row-title">Page principale</span><span class="dashboard-row-sub">Retourner à l'accueil de Vory V.</span></span></span><span class="dashboard-row-arrow">›</span>
+        </button>
+        <button class="dashboard-row" id="accountsTile" data-open="accounts">
+          <span class="dashboard-row-main"><span class="dashboard-row-icon">👥</span><span><span class="dashboard-row-title">Comptes & rôles</span><span class="dashboard-row-sub">Gérer les administrateurs, modérateurs et leurs rôles.</span></span></span><span class="dashboard-row-arrow">›</span>
+        </button>
+        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 1</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
+        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 2</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
+        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 3</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
+        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 4</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
+        <button class="dashboard-row disabled" type="button"><span class="dashboard-row-main"><span class="dashboard-row-icon">＋</span><span><span class="dashboard-row-title">À configurer 5</span><span class="dashboard-row-sub">Emplacement réservé pour une future fonction.</span></span></span></button>
       </div>
     </section>
 
@@ -145,14 +180,20 @@ async function init(){
 function showLogin(){$('loginView').classList.remove('hidden');$('appView').classList.add('hidden')}
 async function showApp(session){
   currentUser=session.user;
-  const {data:profile,error}=await db.from('profiles').select('role').eq('id',currentUser.id).maybeSingle();
+  const {data:profile,error}=await db.from('profiles').select('role,rp_name,avatar_url').eq('id',currentUser.id).maybeSingle();
   if(error||!profile||!['admin','moderator'].includes(profile.role)){
     await db.auth.signOut();
     $('loginMsg').textContent='Ce compte n’a pas accès à la gestion.';
     return;
   }
   currentRole=profile.role;
-  $('currentRoleBadge').textContent=currentRole==='admin'?'Administrateur':'Modérateur';
+  const roleLabel=currentRole==='admin'?'Administrateur':'Modérateur';
+  const rpName=(profile.rp_name||currentUser.email||'Compte').trim();
+  if($('currentRoleBadge'))$('currentRoleBadge').textContent=roleLabel;
+  if($('profileRpName'))$('profileRpName').textContent=rpName;
+  if($('profileRole'))$('profileRole').textContent=roleLabel;
+  renderAvatar(profile.avatar_url);
+  if($('profileAgent'))$('profileAgent').textContent='Connecté';
   $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
   const admin=currentRole==='admin';
   $('accountsNav').classList.toggle('hidden',!admin);$('accountsTile').classList.toggle('hidden',!admin);
@@ -191,6 +232,45 @@ function openSection(name){
 }
 document.querySelectorAll('[data-section]').forEach(b=>b.onclick=()=>openSection(b.dataset.section));
 document.querySelectorAll('[data-open]').forEach(t=>t.onclick=()=>openSection(t.dataset.open));
+
+
+function renderAvatar(url){
+  const box=$('profileAvatar');
+  if(!box)return;
+  if(url){
+    box.innerHTML=`<img src="${esc(url)}" alt="Photo de profil">`;
+  }else{
+    box.innerHTML='<svg class="avatar-default" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4 21c.7-4.4 3.4-7 8-7s7.3 2.6 8 7" fill="currentColor"/></svg>';
+  }
+}
+
+$('profileAvatar').onclick=()=>{
+  if(!currentUser)return;
+  $('avatarInput').click();
+};
+
+$('avatarInput').onchange=async e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(!file||!currentUser)return;
+  const msg=$('avatarMsg');
+  const allowed=['image/png','image/jpeg','image/webp'];
+  if(!allowed.includes(file.type)){msg.textContent='Format accepté : PNG, JPG ou WEBP.';e.target.value='';return}
+  if(file.size>5*1024*1024){msg.textContent='Image trop lourde (5 Mo maximum).';e.target.value='';return}
+  msg.textContent='Envoi de la photo...';
+  const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');
+  const path=`${currentUser.id}/avatar.${ext}`;
+  const {error:uploadError}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});
+  if(uploadError){msg.textContent='Erreur lors de l’envoi : '+uploadError.message;e.target.value='';return}
+  const {data:publicData}=db.storage.from('avatars').getPublicUrl(path);
+  const publicUrl=publicData?.publicUrl?`${publicData.publicUrl}?v=${Date.now()}`:null;
+  if(!publicUrl){msg.textContent='Impossible de récupérer l’URL de la photo.';e.target.value='';return}
+  const {error:updateError}=await db.from('profiles').update({avatar_url:publicUrl}).eq('id',currentUser.id);
+  if(updateError){msg.textContent='Photo envoyée, mais profil non mis à jour : '+updateError.message;e.target.value='';return}
+  renderAvatar(publicUrl);
+  msg.textContent='Photo de profil mise à jour.';
+  e.target.value='';
+  setTimeout(()=>{if(msg.textContent==='Photo de profil mise à jour.')msg.textContent=''},2500);
+};
 
 $('refreshBtn').onclick=loadPoints;
 async function loadPoints(){
