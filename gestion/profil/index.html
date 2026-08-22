@@ -1,76 +1,92 @@
-<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Vory V — Mon profil</title><style>
-:root{--bg:#09090b;--panel:#111113;--muted:#8b8b94;--line:#25252b;--accent:#f97316;--danger:#7f1d1d;--ok:#166534}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}button,input,select,textarea{font:inherit}.hidden{display:none!important}
-.shell{min-height:100vh;display:grid;grid-template-columns:250px 1fr}.side{border-right:1px solid var(--line);padding:24px 18px;background:#0d0d0f;position:sticky;top:0;height:100vh}.brand{font-size:22px;font-weight:900;margin-bottom:28px}.nav{display:grid;gap:8px}.nav button{padding:11px 12px;text-align:left;border:0;border-radius:10px;background:transparent;color:#aaa;cursor:pointer}.nav button.active,.nav button:hover{background:#18181b;color:#fff}.nav .spacer{height:10px}.main{padding:28px;max-width:1250px;width:100%;margin:0 auto}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.top h1{margin:0;font-size:28px}.muted{color:var(--muted);font-size:13px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.tile{min-height:150px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.15s transform,.15s border-color}.tile:hover{transform:translateY(-2px);border-color:#3f3f46}.tile.disabled{cursor:default;opacity:.52}.tile.disabled:hover{transform:none;border-color:var(--line)}.tile h3{margin:0 0 8px}.tile .icon{font-size:26px}.stat b{display:block;font-size:28px}.row{display:grid;gap:7px;margin-bottom:12px}.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row textarea{min-height:80px;resize:vertical}.actions{display:flex;gap:8px;flex-wrap:wrap}.login .actions{justify-content:center}.login-error{color:#ef4444!important;font-size:12px;text-align:center;margin:8px 0 0;min-height:16px}
-.login-home-link{display:block;width:max-content;margin:16px auto 0;color:#8b8b94;font-size:13px;font-weight:700;text-decoration:none;transition:.15s color,.15s transform}
-.login-home-link:hover{color:#fff;transform:translateX(-2px)}.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:700}.primary{background:var(--accent);color:white}.secondary{background:#222228;color:#fff}.danger{background:var(--danger);color:#fff}.success{background:var(--ok);color:#fff}.table{display:grid;gap:8px}.item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:11px;background:#0d0d0f}.item small{color:var(--muted)}.login{min-height:100vh;display:grid;place-items:center;padding:18px}.login .card{width:min(420px,100%)}.login .brand{text-align:center;font-size:30px;margin-bottom:22px}.notice{padding:11px;border-radius:10px;background:#18181b;color:#c5c5cb;font-size:12px;line-height:1.5;margin-bottom:14px}.error{color:#fca5a5}.ok{color:#86efac}.section{display:none}.section.active{display:block}.section-title{margin:0 0 5px}.toolbar{display:flex;gap:10px;align-items:end;justify-content:space-between;flex-wrap:wrap}.toolbar .row{margin:0;min-width:230px}.role-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:#27272a;color:#ddd;font-size:12px}.admin-only-note{border-left:3px solid var(--accent)}
-
-.login{position:relative;overflow:hidden;background:
-  radial-gradient(circle at 20% 15%,rgba(249,115,22,.14),transparent 28%),
-  radial-gradient(circle at 85% 80%,rgba(249,115,22,.08),transparent 32%),
-  #070708;
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vory V — Comptes & rôles</title><style>
+:root{
+  --bg:#09090b;--panel:#111113;--panel2:#151518;--muted:#8b8b94;--line:#25252b;
+  --accent:#f97316;--accent2:#fb923c;--danger:#7f1d1d;--ok:#166534;
 }
-.login::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.7),transparent)}
-.login .card{position:relative;z-index:1;width:min(460px,100%);padding:34px 32px 30px;border-radius:22px;background:rgba(17,17,19,.93);border:1px solid #303038;box-shadow:0 26px 80px rgba(0,0,0,.48),0 0 0 1px rgba(255,255,255,.015) inset;backdrop-filter:blur(12px)}
-.login .brand{font-size:38px;letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;background:linear-gradient(135deg,#fff 15%,#f97316 85%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(249,115,22,.10)}
-.login h2{text-align:center;margin:0 0 26px;font-size:20px;font-weight:750;color:#e8e8ec;letter-spacing:.01em}
-.login .row{gap:8px;margin-bottom:15px}
-.login .row label{font-size:12px;font-weight:700;color:#b7b7bf;letter-spacing:.02em}
-.login .row input{padding:13px 14px;border-radius:12px;background:#0a0a0c;border:1px solid #2d2d33;transition:border-color .16s,box-shadow .16s,background .16s}
-.login .row input::placeholder{color:#5f5f68}
-.login .row input:focus{border-color:rgba(249,115,22,.85);box-shadow:0 0 0 3px rgba(249,115,22,.12);background:#0d0d10}
-.login .actions{justify-content:center;gap:10px;margin-top:20px}
-.login .actions .btn{min-width:128px;padding:11px 18px;border-radius:11px;transition:transform .15s,filter .15s,border-color .15s}
-.login .actions .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
-.login .actions .primary{box-shadow:0 8px 26px rgba(249,115,22,.20)}
-.login .actions .secondary{border:1px solid #303038}
-.login-error{font-size:12.5px;margin-top:12px}
-
-
-/* Dashboard — profil + grandes lignes */
-.dashboard-head{margin-bottom:22px}
-.dashboard-title{font-size:34px;font-weight:900;margin:0 0 14px}
-.dashboard-rule{height:2px;background:linear-gradient(90deg,var(--accent),#3f3f46 45%,transparent);border-radius:999px;margin:0 0 22px}
-.profile-strip{display:flex;align-items:center;gap:22px;padding:6px 4px 22px}
-.profile-avatar{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;background:#17171b;border:2px solid #3a3a42;box-shadow:0 0 0 6px rgba(249,115,22,.06);font-size:34px;font-weight:900;color:#f97316;flex:0 0 auto;overflow:hidden;cursor:pointer;position:relative;transition:.16s transform,.16s border-color}.profile-avatar:hover{transform:scale(1.025);border-color:var(--accent)}.profile-avatar img{width:100%;height:100%;object-fit:cover;display:block}.profile-avatar::after{content:'Modifier';position:absolute;inset:auto 0 0;background:rgba(0,0,0,.72);color:#fff;font-size:10px;font-weight:800;text-align:center;padding:5px 2px;opacity:0;transition:.15s opacity}.profile-avatar:hover::after{opacity:1}.avatar-default{width:46px;height:46px;opacity:.78}.avatar-status{font-size:11px;color:var(--muted);margin-top:2px}
-.profile-info{display:grid;gap:6px;min-width:0}.profile-name{font-size:26px;font-weight:900}.profile-meta{font-size:15px;color:#c8c8cf}.profile-meta b{color:#fff}
-.profile-details{display:grid;grid-template-columns:repeat(2,minmax(190px,auto));gap:5px 24px;margin-top:2px}
-.profile-password-btn{margin-top:7px;width:max-content;border:1px solid #34343b;background:#18181d;color:#fff;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:800;cursor:pointer}
-.profile-password-btn:hover{border-color:var(--accent)}
-.password-box{display:none;margin-top:9px;padding:12px;border:1px solid #2e2e35;background:#0d0d10;border-radius:12px;max-width:430px}
-.password-box.open{display:block}.password-box input{width:100%;background:#09090b;color:#fff;border:1px solid #303038;border-radius:9px;padding:9px 10px;margin-bottom:8px;outline:none}.password-box input:focus{border-color:var(--accent)}
-.password-msg{font-size:11px;color:var(--muted);min-height:15px;margin-top:4px}
-@media(max-width:650px){.profile-details{grid-template-columns:1fr}}
-.dashboard-list{display:grid;gap:12px;margin-top:18px}
-.dashboard-row{width:100%;min-height:78px;border:1px solid var(--line);background:linear-gradient(180deg,#121216,#0f0f12);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:18px;color:#fff;text-align:left;cursor:pointer;transition:.16s transform,.16s border-color,.16s background}
-.dashboard-row:hover{transform:translateY(-1px);border-color:#4a4a53;background:#15151a}
-.dashboard-row-main{display:flex;align-items:center;gap:16px;min-width:0}.dashboard-row-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#1c1c21;border:1px solid #303038;font-size:22px;flex:0 0 auto}.dashboard-row-title{font-size:17px;font-weight:850}.dashboard-row-sub{margin-top:3px;font-size:12px;color:var(--muted)}.dashboard-row-arrow{font-size:24px;color:#6f6f78}.dashboard-row.disabled{opacity:.42;cursor:default}.dashboard-row.disabled:hover{transform:none;border-color:var(--line);background:linear-gradient(180deg,#121216,#0f0f12)}
-@media(max-width:900px){.shell{grid-template-columns:1fr}.side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}.grid,.dashboard-grid{grid-template-columns:1fr}.main{padding:18px}.item{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar .row{width:100%}}
-
-
-.page-shell{max-width:1180px;margin:0 auto;padding:28px 22px 70px}
-.page-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
-.page-top h1{margin:0;font-size:30px}.page-kicker{color:var(--muted);font-size:12px;font-weight:800;letter-spacing:.12em}
-.back-link{color:#aaa;text-decoration:none;font-weight:800}.back-link:hover{color:#fff}
-.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.section-nav a{padding:9px 12px;border:1px solid var(--line);border-radius:9px;color:#aaa;text-decoration:none;font-size:13px;font-weight:700}
-.section-nav a:hover,.section-nav a.active{background:#18181b;color:#fff}
-.profile-strip{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
-.profile-strip-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;background:#18181b;display:grid;place-items:center;font-size:24px;border:1px solid var(--line)}
-.profile-strip-avatar img{width:100%;height:100%;object-fit:cover}
-.profile-strip-name{font-size:20px;font-weight:900}.info-line{color:var(--muted);font-size:13px;margin-top:3px}
-</style></head><body><div class="page-shell"><div class="page-top"><div><div class="page-kicker">VORY V — GESTION</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour</a></div>
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+a{color:inherit}
+.hidden{display:none!important}
+.page-shell{max-width:1180px;margin:0 auto;padding:34px 24px 80px}
+.page-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:52px}
+.page-kicker{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+.page-top h1{margin:0;font-size:34px;letter-spacing:-.02em}
+.back-link{color:#aaa;text-decoration:none;font-weight:800;margin-top:8px}.back-link:hover{color:#fff}
+.muted{color:var(--muted);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}
+.btn{border:0;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:800;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn.primary{background:var(--accent);color:#111}.btn.primary:hover{background:var(--accent2)}
+.btn.secondary{background:#1b1b1f;color:#fff;border:1px solid #303036}
+.btn.danger{background:#3a1518;color:#fecaca;border:1px solid #5f2227}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.row{display:grid;gap:7px;margin-bottom:12px}
+.row label{font-size:13px;font-weight:800;color:#d4d4d8}
+.row input,.row select,.row textarea{width:100%;background:#0c0c0e;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}
+.row textarea{min-height:85px;resize:vertical}
+.row input:focus,.row select:focus,.row textarea:focus{border-color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.section-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.section-nav a{padding:9px 12px;border:1px solid var(--line);border-radius:9px;color:#aaa;text-decoration:none;font-size:13px;font-weight:800}
+.section-nav a:hover{background:#18181b;color:#fff}
+.member-panel{display:flex;align-items:center;gap:18px;padding:20px 22px;background:linear-gradient(180deg,#131316,#0f0f12);border:1px solid var(--line);border-radius:18px;margin-bottom:26px}
+.member-avatar{width:82px;height:82px;border-radius:50%;overflow:hidden;background:#1b1b20;border:1px solid #33333a;display:grid;place-items:center;font-size:30px;flex:none}
+.member-avatar img{width:100%;height:100%;object-fit:cover}
+.member-name{font-size:25px;font-weight:950;letter-spacing:-.02em}
+.member-role{color:#c7c7ce;font-size:14px;font-weight:800;margin-top:2px}
+.member-details{display:flex;gap:10px 20px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:13px}
+.member-details b{color:#fff}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:15px}
+.top h2{margin:0}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.stat{background:#0d0d10;border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat span{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}
+.stat b{font-size:18px}
+@media(max-width:760px){
+  .page-shell{padding:24px 14px 60px}.page-top{margin-bottom:36px}.grid,.stat-grid{grid-template-columns:1fr}
+  .member-panel{align-items:flex-start}.member-details{display:grid;gap:5px}.page-top h1{font-size:28px}
+}
+</style></head>
+<body><div class="page-shell">
+<div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Comptes & rôles</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
 <div class="section-nav">
-  <a href="../">Gestion</a>
-  <a href="../points/">Points de carte</a>
-  <a href="../profil/">Mon profil</a>
-  <a href="../site/">Gestion du site</a>
-  <a id="navAccounts" href="../comptes/">Comptes & rôles</a>
+<a href="../">Gestion</a>
+<a href="../points/" id="navPoints">Points de carte</a>
+<a href="../profil/">Mon profil</a>
+<a href="../site/" id="navSite">Gestion du site</a>
+<a href="../comptes/" id="navAccounts">Comptes & rôles</a>
 </div>
 
-<div class="card"><div class="profile-strip"><button id="profileAvatar" type="button" class="profile-strip-avatar" style="cursor:pointer;color:#fff">👤</button><div><div class="profile-strip-name" id="profileRp">—</div><div class="info-line" id="profileInfo">—</div><div class="muted" id="avatarMsg" style="font-size:11px;margin-top:5px">Clique sur la photo pour la modifier.</div></div></div><input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></div>
-<div class="card"><h2 style="margin-top:0">Informations</h2><div class="grid"><div><div class="muted">Rang</div><b id="infoRole">—</b></div><div><div class="muted">N°</div><b id="infoNumber">—</b></div><div><div class="muted">Email</div><b id="infoEmail">—</b></div><div><div class="muted">Argent</div><b id="infoMoney">0 $</b></div></div></div>
-<div class="card"><h2 style="margin-top:0">Modifier mon mot de passe</h2><div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password"></div><div class="row"><label>Confirmer</label><input id="pw2" type="password"></div><button class="btn primary" id="changePw">Enregistrer</button><div id="pwMsg" class="muted" style="margin-top:10px"></div></div></div>
+<div class="member-panel">
+  <div class="member-avatar" id="memberAvatar">👤</div>
+  <div>
+    <div class="member-name" id="memberName">—</div>
+    <div class="member-role" id="memberRole">—</div>
+    <div class="member-details">
+      <span>N° : <b id="memberNumber">—</b></span>
+      <span>Email : <b id="memberEmail">—</b></span>
+      <span>Argent : <b id="memberMoney">0 $</b></span>
+    </div>
+  </div>
+</div>
+
+
+<div class="card">
+  <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
+  <div class="grid">
+    <div class="row"><label>User UID</label><input id="accUid" placeholder="UUID Supabase"></div>
+    <div class="row"><label>Nom RP</label><input id="accRp" placeholder="Ex. Jean Pascal"></div>
+    <div class="row"><label>N°</label><input id="accNumber" placeholder="Ex. V-001"></div>
+    <div class="row"><label>Rôle</label><select id="accRole"><option value="member">Membre</option><option value="moderator">Modérateur</option><option value="admin">Administrateur</option></select></div>
+  </div>
+  <button class="btn primary" id="saveAccount">Enregistrer</button><div id="accountMsg" class="muted" style="margin-top:10px"></div>
+</div>
+<div class="card"><h2 style="margin-top:0">Membres enregistrés</h2><div id="accountsList"></div></div>
+
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../../database.js"></script>
 <script>
@@ -79,27 +95,48 @@ let db=null,currentUser=null,currentProfile=null;
 if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured()){
   db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
 }
-async function requireStaff(){
+function roleLabel(role){
+  if(role==='admin') return 'Administrateur';
+  if(role==='moderator') return 'Modérateur';
+  return 'Membre';
+}
+function renderMemberPanel(){
+  if($('memberName')) $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
+  if($('memberRole')) $('memberRole').textContent=roleLabel(currentProfile.role);
+  if($('memberNumber')) $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
+  if($('memberEmail')) $('memberEmail').textContent=currentUser.email||'—';
+  if($('memberMoney')) $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
+  if($('memberAvatar')&&currentProfile.avatar_url){
+    const clean=String(currentProfile.avatar_url).split('?v=')[0];
+    $('memberAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo de profil">';
+  }
+  if(currentProfile.role==='member'){
+    if($('navPoints')) $('navPoints').style.display='none';
+    if($('navSite')) $('navSite').style.display='none';
+    if($('navAccounts')) $('navAccounts').style.display='none';
+  } else if(currentProfile.role==='moderator'){
+    if($('navSite')) $('navSite').style.display='none';
+    if($('navAccounts')) $('navAccounts').style.display='none';
+  }
+}
+async function loadIdentity(allowedRoles=['member','moderator','admin']){
   if(!db){ location.href='../'; return false; }
   const {data:{session}}=await db.auth.getSession();
   currentUser=session?.user||null;
   if(!currentUser){ location.href='../'; return false; }
   const {data,error}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
-  if(error||!data||!['admin','moderator'].includes(data.role)){ location.href='../'; return false; }
+  if(error||!data){ location.href='../'; return false; }
   currentProfile=data;
-  if($('navAccounts')&&currentProfile.role!=='admin') $('navAccounts').style.display='none';
-  if($('miniAvatar')&&currentProfile.avatar_url){
-    const clean=String(currentProfile.avatar_url).split('?v=')[0];
-    $('miniAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo">';
-  }
-  if($('miniName')) $('miniName').textContent=currentProfile.rp_name||'Sans Nom RP';
-  if($('miniInfo')) $('miniInfo').textContent=(currentProfile.role==='admin'?'Administrateur':'Modérateur')+' • '+(currentProfile.member_number||'Sans numéro')+' • '+(currentUser.email||'—');
+  if(!allowedRoles.includes(currentProfile.role)){ location.href='../'; return false; }
+  renderMemberPanel();
   return true;
 }
 
-<script>
-function setAvatar(url){if(!url){$('profileAvatar').innerHTML='👤';return}const clean=String(url).split('?v=')[0];$('profileAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo" style="width:100%;height:100%;object-fit:cover">'}
-$('profileAvatar').onclick=()=>$('avatarInput').click();$('avatarInput').onchange=async e=>{const file=e.target.files?.[0];e.target.value='';if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)){return $('avatarMsg').textContent='PNG, JPG ou WEBP uniquement.'}if(file.size>5*1024*1024){return $('avatarMsg').textContent='5 Mo maximum.'}$('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}currentProfile.avatar_url=url;setAvatar(url);$('avatarMsg').textContent='Photo mise à jour.'}
-$('changePw').onclick=async()=>{const a=$('pw1').value,b=$('pw2').value;if(a.length<8){$('pwMsg').textContent='8 caractères minimum.';return}if(a!==b){$('pwMsg').textContent='Les mots de passe ne correspondent pas.';return}const {error}=await db.auth.updateUser({password:a});$('pwMsg').textContent=error?'Erreur : '+error.message:'Mot de passe modifié.';if(!error){$('pw1').value='';$('pw2').value=''}}
-(async()=>{if(!(await requireStaff()))return;$('profileRp').textContent=currentProfile.rp_name||'Sans Nom RP';$('profileInfo').textContent=(currentProfile.role==='admin'?'Administrateur':'Modérateur')+' • '+(currentProfile.member_number||'Sans numéro');$('infoRole').textContent=currentProfile.role==='admin'?'Administrateur':'Modérateur';$('infoNumber').textContent=currentProfile.member_number||'Non attribué';$('infoEmail').textContent=currentUser.email||'—';$('infoMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';setAvatar(currentProfile.avatar_url)})();
+
+function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+async function loadAccounts(){const {data,error}=await db.from('profiles').select('*').order('rp_name');if(error){$('accountMsg').textContent=error.message;return}$('accountsList').innerHTML=(data||[]).map(p=>'<div class="card" style="margin:8px 0;padding:13px"><b>'+esc(p.rp_name||'Sans Nom RP')+'</b><div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div><small class="muted">'+esc(p.id)+'</small></div>').join('')}
+$('saveAccount').onclick=async()=>{const id=$('accUid').value.trim();if(!id)return;const payload={id,rp_name:$('accRp').value.trim()||null,member_number:$('accNumber').value.trim()||null,role:$('accRole').value};const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});$('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';if(!error)loadAccounts()}
+async function initPage(){await loadAccounts()}
+
+(async()=>{if(await loadIdentity(['admin'])){if(typeof initPage==='function')await initPage();}})();
 </script></body></html>
