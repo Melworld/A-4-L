@@ -273,9 +273,33 @@ $('saveAccount').onclick=async()=>{
     gang_rank:$('accGangRank').value||null
   };
 
-  const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});
-  $('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';
-  if(!error)loadAccounts();
+  // Le profil existe déjà grâce à Supabase Auth + au trigger d'inscription.
+  // On le MODIFIE seulement : un upsert tente aussi un INSERT et se fait bloquer par la RLS.
+  const {data:updated,error}=await db
+    .from('profiles')
+    .update({
+      rp_name:payload.rp_name,
+      member_number:payload.member_number,
+      role:payload.role,
+      company_rank:payload.company_rank,
+      gang_rank:payload.gang_rank
+    })
+    .eq('id',id)
+    .select('id')
+    .maybeSingle();
+
+  if(error){
+    $('accountMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  if(!updated){
+    $('accountMsg').textContent='Aucun profil modifié. Vérifie les permissions administrateur Supabase.';
+    return;
+  }
+
+  $('accountMsg').textContent='Compte modifié avec succès.';
+  loadAccounts();
 }
 async function initPage(){await loadAccounts()}
 
