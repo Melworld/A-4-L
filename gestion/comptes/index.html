@@ -70,7 +70,12 @@ a{color:inherit}
   <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
   <div class="grid">
     <div class="row"><label>User UID</label><input id="accUid" placeholder="UUID Supabase"></div>
-    <div class="row"><label>Nom RP</label><input id="accRp" placeholder="Ex. Jean Pascal"></div>
+    <div class="row">
+      <label>Nom RP</label>
+      <input id="accRp" list="rpNamesList" autocomplete="off" placeholder="Ex. Jean Pascal">
+      <datalist id="rpNamesList"></datalist>
+      <div class="muted" id="rpLookupMsg" style="margin-top:6px">Choisis ou écris un Nom RP existant.</div>
+    </div>
     <div class="row"><label>N°</label><input id="accNumber" placeholder="Ex. V-001"></div>
     <div class="row">
   <label>Rôle site</label>
@@ -96,7 +101,7 @@ a{color:inherit}
     <option value="">Aucun</option>
     <option value="gang_member">Membre</option>
     <option value="right_hand">Bras droit</option>
-    <option value="leader">Chef</option>
+    <option value="leader">Leader</option>
   </select>
 </div>
   </div>
@@ -171,7 +176,7 @@ async function loadAccounts(){
     const companyLabels={
       employee:'Employé',
       associate:'Associé',
-      manager:'Gestionnaire'
+      manager:'Gestionnaire',
       pdg:'Patron'
     };
     const gangLabels={
