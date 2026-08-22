@@ -59,18 +59,29 @@ async function loadCategories(){
 
   if(error){
     console.warn('Catégories:',error.message);
-    categories=Object.keys(fallbackColors).map((name,i)=>({name,color:fallbackColors[name],sort_order:i}));
+    categories=Object.keys(fallbackColors).map((name,i)=>({
+      name,
+      color:fallbackColors[name],
+      sort_order:i,
+      is_public:name==='Entreprise'
+    }));
     return;
   }
 
   categories=(data||[]).map(c=>({
     name:c.name,
     color:c.color||fallbackColors[c.name]||'#f97316',
-    sort_order:c.sort_order||0
+    sort_order:c.sort_order||0,
+    is_public:!!c.is_public
   }));
 
   if(!categories.length){
-    categories=Object.keys(fallbackColors).map((name,i)=>({name,color:fallbackColors[name],sort_order:i}));
+    categories=Object.keys(fallbackColors).map((name,i)=>({
+      name,
+      color:fallbackColors[name],
+      sort_order:i,
+      is_public:name==='Entreprise'
+    }));
   }
 
   colors={...fallbackColors};
@@ -96,7 +107,9 @@ async function loadIcons(){
 }
 
 function canSeeCategory(category){
-  return fullMapAccess || category==='Lieu';
+  if(fullMapAccess)return true;
+  const cat=categories.find(c=>c.name===category);
+  return !!cat?.is_public;
 }
 
 async function loadPoints(){
@@ -104,7 +117,7 @@ async function loadPoints(){
   const {data,error}=await db.from(TABLE).select('*').order('name');
   if(error){console.error(error);return}
   points=(data||[])
-    .map(p=>({id:p.id,name:p.name,desc:p.description||'',cat:p.category||'Lieu',x:Number(p.x),y:Number(p.y),icon:p.icon_url||''}))
+    .map(p=>({id:p.id,name:p.name,desc:p.description||'',cat:p.category||'',x:Number(p.x),y:Number(p.y),icon:p.icon_url||''}))
     .filter(p=>canSeeCategory(p.cat));
   render();
 }
