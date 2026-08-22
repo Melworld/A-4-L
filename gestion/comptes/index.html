@@ -72,7 +72,28 @@ a{color:inherit}
     <div class="row"><label>User UID</label><input id="accUid" placeholder="UUID Supabase"></div>
     <div class="row"><label>Nom RP</label><input id="accRp" placeholder="Ex. Jean Pascal"></div>
     <div class="row"><label>N°</label><input id="accNumber" placeholder="Ex. V-001"></div>
-    <div class="row"><label>Rôle</label><select id="accRole"><option value="member">Membre</option><option value="moderator">Modérateur</option><option value="admin">Administrateur</option></select></div>
+    <div class="row">
+  <label>Rôle site</label>
+  <select id="accRole">
+    <option value="member">Membre</option>
+    <option value="moderator">Modérateur</option>
+    <option value="admin">Administrateur</option>
+  </select>
+</div>
+<div class="row">
+  <label>Entreprise</label>
+  <select id="accCompanyRank">
+    <option value="">Aucun</option>
+    <option value="employee">Employé</option>
+  </select>
+</div>
+<div class="row">
+  <label>Gang</label>
+  <select id="accGangRank">
+    <option value="">Aucun</option>
+    <option value="gang_member">Membre du gang</option>
+  </select>
+</div>
   </div>
   <button class="btn primary" id="saveAccount">Enregistrer</button><div id="accountMsg" class="muted" style="margin-top:10px"></div>
 </div>
@@ -126,15 +147,39 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 
 
 function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-async function loadAccounts(){const {data,error}=await db.from('profiles').select('*').order('rp_name');if(error){$('accountMsg').textContent=error.message;return}$('accountsList').innerHTML=(data||[]).map(p=>'<div class="card" style="margin:8px 0;padding:13px"><b>'+esc(p.rp_name||'Sans Nom RP')+'</b><div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div><small class="muted">'+esc(p.id)+'</small></div>').join('')}
-$('saveAccount').onclick=async()=>{const id=$('accUid').value.trim();if(!id)return;const payload={
-  id,
-  rp_name:$('accRp').value.trim()||null,
-  member_number:$('accNumber').value.trim()||null,
-  role:$('accRole').value,
-  company_rank:$('accCompanyRank').value||null,
-  gang_rank:$('accGangRank').value||null
-};const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});$('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';if(!error)loadAccounts()}
+async function loadAccounts(){
+  const {data,error}=await db.from('profiles').select('*').order('rp_name');
+  if(error){$('accountMsg').textContent=error.message;return}
+
+  $('accountsList').innerHTML=(data||[]).map(p=>{
+    const company=p.company_rank==='employee'?'Employé':'Aucun';
+    const gang=p.gang_rank==='gang_member'?'Membre du gang':'Aucun';
+
+    return '<div class="card" style="margin:8px 0;padding:13px">'+
+      '<b>'+esc(p.rp_name||'Sans Nom RP')+'</b>'+
+      '<div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div>'+
+      '<div class="muted" style="margin-top:6px">Entreprise : <b style="color:#fff">'+esc(company)+'</b> • Gang : <b style="color:#fff">'+esc(gang)+'</b></div>'+
+      '<small class="muted">'+esc(p.id)+'</small>'+
+    '</div>';
+  }).join('');
+}
+$('saveAccount').onclick=async()=>{
+  const id=$('accUid').value.trim();
+  if(!id)return;
+
+  const payload={
+    id,
+    rp_name:$('accRp').value.trim()||null,
+    member_number:$('accNumber').value.trim()||null,
+    role:$('accRole').value,
+    company_rank:$('accCompanyRank').value||null,
+    gang_rank:$('accGangRank').value||null
+  };
+
+  const {error}=await db.from('profiles').upsert(payload,{onConflict:'id'});
+  $('accountMsg').textContent=error?'Erreur : '+error.message:'Compte enregistré.';
+  if(!error)loadAccounts();
+}
 async function initPage(){await loadAccounts()}
 
 (async()=>{if(await loadIdentity(['admin'])){if(typeof initPage==='function')await initPage();}})();
