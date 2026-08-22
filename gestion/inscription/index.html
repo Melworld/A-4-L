@@ -117,7 +117,7 @@ a{color:inherit}
 
     <div class="row">
       <label>Numéro RP</label>
-      <input id="rpPhone" inputmode="numeric" maxlength="14" placeholder="00-00-00-00-00">
+      <input id="memberNumber" inputmode="numeric" maxlength="14" placeholder="00-00-00-00-00">
     </div>
 
     <div class="row">
@@ -173,23 +173,23 @@ function showMsg(text,type='error'){
 }
 
 
-$('rpPhone').addEventListener('input',()=>{
-  const digits=$('rpPhone').value.replace(/\D/g,'').slice(0,10);
-  $('rpPhone').value=digits.match(/.{1,2}/g)?.join('-')||'';
+$('memberNumber').addEventListener('input',()=>{
+  const digits=$('memberNumber').value.replace(/\D/g,'').slice(0,10);
+  $('memberNumber').value=digits.match(/.{1,2}/g)?.join('-')||'';
 });
 
 async function signup(){
   if(!db){showMsg('La base de données n’est pas configurée.');return;}
 
   const rpName=$('rpName').value.trim();
-  const rpPhone=$('rpPhone').value.trim();
+  const memberNumber=$('memberNumber').value.trim();
   const joinRequest=$('joinRequest').value;
   const email=$('email').value.trim().toLowerCase();
   const password=$('password').value;
   const password2=$('password2').value;
 
   if(rpName.length<3){showMsg('Entre un Nom RP valide.');return;}
-  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(rpPhone)){showMsg('Le numéro RP doit être au format 00-00-00-00-00.');return;}
+  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(memberNumber)){showMsg('Le numéro RP doit être au format 00-00-00-00-00.');return;}
   if(!['entreprise','gang'].includes(joinRequest)){showMsg('Choisis si tu souhaites rejoindre l’entreprise ou le gang.');return;}
   if(!email.includes('@')){showMsg('Entre une adresse email valide.');return;}
   if(password.length<8){showMsg('Le mot de passe doit contenir au moins 8 caractères.');return;}
@@ -204,7 +204,7 @@ async function signup(){
     options:{
       data:{
         rp_name:rpName,
-        rp_phone:rpPhone,
+        member_number:memberNumber,
         join_request:joinRequest
       }
     }
