@@ -84,6 +84,11 @@ a{color:inherit}
 .dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
 .dashboard-tile{min-height:170px;background:linear-gradient(180deg,#141416,#101012);border:1px solid #29292f;border-radius:16px;padding:19px;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;transition:.15s transform,.15s border-color}
 .dashboard-tile:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 10px 28px rgba(249,115,22,.08)}
+.dashboard-tile.profile-wide{grid-column:1/-1;min-height:145px}
+.dashboard-tile.locked{opacity:.48;cursor:not-allowed;filter:grayscale(.35)}
+.dashboard-tile.locked:hover{transform:none;border-color:#29292f;box-shadow:none}
+.dashboard-tile.locked .dashboard-arrow{color:#777}
+.lock-note{margin-top:10px;color:#a3a3aa;font-size:12px;font-weight:800}
 .dashboard-icon{font-size:28px}.dashboard-tile h3{margin:12px 0 7px;font-size:18px}.dashboard-tile p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}.dashboard-arrow{color:var(--accent);font-size:20px;font-weight:900;align-self:flex-end}
 .dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
 @media(max-width:850px){.dashboard-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.dashboard-grid{grid-template-columns:1fr}}
@@ -123,13 +128,13 @@ a{color:inherit}
 </div>
 
   <div class="dashboard-grid">
-    <a class="dashboard-tile" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulter tes informations, ta photo de profil et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile profile-wide" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulter tes informations, ta photo de profil et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder aux informations et à la gestion de ton entreprise.</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder aux informations et à la gestion de ton entreprise.</p><div class="lock-note" id="lockEntreprise"></div></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise.</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise.</p><div class="lock-note" id="lockVehicule"></div></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang.</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang.</p><div class="lock-note" id="lockGang"></div></div><div class="dashboard-arrow">→</div></a>
 
     <a class="dashboard-tile" id="tilePoints" href="points/"><div><div class="dashboard-icon">📍</div><h3>Points de carte</h3><p>Ajouter, modifier et organiser les points visibles sur la carte.</p></div><div class="dashboard-arrow">→</div></a>
 
@@ -149,6 +154,19 @@ async function resolveEmail(identifier){
   const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
   return error?null:data;
 }
+function setTileLocked(tileId,noteId,locked,message){
+  const tile=$(tileId),note=$(noteId);
+  if(!tile)return;
+  tile.classList.toggle('locked',locked);
+  if(note)note.textContent=locked?'🔒 '+message:'';
+  if(locked){
+    tile.setAttribute('aria-disabled','true');
+    tile.onclick=e=>e.preventDefault();
+  }else{
+    tile.removeAttribute('aria-disabled');
+    tile.onclick=null;
+  }
+}
 function renderDashboard(){
   $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
   $('memberRole').textContent=roleLabel(currentProfile.role);
@@ -164,6 +182,14 @@ function renderDashboard(){
   }else{
     document.title='Vory V — Espace Membre';$('dashboardTitle').textContent='Vory V — Espace Membre';$('dashboardKicker').textContent=currentProfile.role==='moderator'?'Espace Modérateur':'Espace Membre';
   }
+  const staff=['admin','moderator'].includes(currentProfile.role);
+  const isEmployee=currentProfile.company_rank==='employee';
+  const isGangMember=currentProfile.gang_rank==='gang_member';
+
+  setTileLocked('tileEntreprise','lockEntreprise',!(staff||isEmployee),'Rang Employé requis');
+  setTileLocked('tileVehicule','lockVehicule',!(staff||isEmployee),'Rang Employé requis');
+  setTileLocked('tileGang','lockGang',!(staff||isGangMember),'Rang Membre du gang requis');
+
   if(currentProfile.role==='member'){
     $('tilePoints').style.display='none';$('tileAccounts').style.display='none';$('tileSite').style.display='none';
   }else if(currentProfile.role==='moderator'){
