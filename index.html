@@ -55,6 +55,13 @@ header{
 }
 .btn-dark{color:#fff;background:rgba(255,255,255,.07);border:1px solid var(--line)}
 .admin-only{display:none!important}
+.account-avatar{
+  width:25px;height:25px;border-radius:50%;object-fit:cover;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);
+  display:none;flex:none;
+}
+.account-avatar.show{display:block}
+
 
 .hero{
   min-height:600px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:70px;
@@ -171,7 +178,7 @@ body.is-admin .image-edit{display:block}
     </a>
     <div class="nav-actions">
       <a class="btn btn-dark admin-only" href="gestion/">Gestion</a>
-      <a class="btn btn-gradient" href="gestion/" id="accountBtn">Se connecter</a>
+      <a class="btn btn-gradient" href="gestion/" id="accountBtn"><img class="account-avatar" id="accountAvatar" alt=""><span id="accountName">Se connecter</span></a>
     </div>
   </div>
 </header>
@@ -340,14 +347,22 @@ async function detectRole(){
   const {data:{session}}=await db.auth.getSession();
   currentUser=session?.user||null;
   if(!currentUser)return;
-  const {data}=await db.from('profiles').select('role,rp_name').eq('id',currentUser.id).maybeSingle();
+  const {data}=await db.from('profiles').select('role,rp_name,avatar_url').eq('id',currentUser.id).maybeSingle();
   currentRole=data?.role||null;
   if(currentRole==='admin'){
     document.body.classList.add('is-admin');
     document.querySelectorAll('.admin-only').forEach(el=>el.style.setProperty('display','inline-flex','important'));
   }
   if(['admin','moderator','member'].includes(currentRole)){
-    $('accountBtn').textContent=data?.rp_name ? data.rp_name : 'Mon compte';
+    $('accountName').textContent=data?.rp_name ? data.rp_name : 'Mon compte';
+
+    if(data?.avatar_url){
+      $('accountAvatar').src=data.avatar_url;
+      $('accountAvatar').classList.add('show');
+    }else{
+      $('accountAvatar').removeAttribute('src');
+      $('accountAvatar').classList.remove('show');
+    }
   }
 }
 
