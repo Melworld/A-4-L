@@ -127,10 +127,7 @@ body.is-admin .image-edit{display:block}
 .quick-card .arrow{display:block;color:#a78bfa;margin-top:18px;font-weight:900}
 
 .contact{padding:75px 0 110px;position:relative;overflow:hidden}
-.contact:after{
-  content:"";position:absolute;right:-120px;bottom:-160px;width:500px;height:500px;border-radius:50%;
-  background:#263fea;filter:blur(110px);opacity:.55;pointer-events:none
-}
+.contact:after{display:none}
 .contact-card{
   position:relative;z-index:1;border-top:1px solid var(--line);padding-top:50px;
   display:grid;grid-template-columns:1.1fr .9fr;gap:70px
@@ -138,6 +135,20 @@ body.is-admin .image-edit{display:block}
 .contact p{color:var(--muted);line-height:1.7}
 .contact-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
 .footer-brand{margin-bottom:27px}
+
+
+.site-footer{
+  border-top:1px solid var(--line);
+  background:#0a1120;
+  padding:28px 0;
+}
+.footer-row{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;
+  color:#8f9ab0;font-size:13px;
+}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap}
+.footer-links a{color:#b6bfd2;transition:.2s color}
+.footer-links a:hover{color:#fff}
 
 @media(max-width:850px){
   .brand span{font-size:14px}.nav{height:72px}.nav .btn{padding:10px 14px;font-size:13px}
@@ -281,6 +292,18 @@ body.is-admin .image-edit{display:block}
     </div>
   </section>
 </main>
+
+<footer class="site-footer">
+  <div class="container footer-row">
+    <div>© 2026 Vory V Zakone | Vory V Industry — Tous droits réservés.</div>
+    <div class="footer-links">
+      <a href="carte.html">Carte</a>
+      <a href="#contact">Contact</a>
+      <a href="gestion/">Espace membre</a>
+      <a href="#" onclick="alert('Mentions légales à compléter.');return false;">Mentions légales</a>
+    </div>
+  </div>
+</footer>
 
 <input type="file" id="homeImageInput" accept="image/png,image/jpeg,image/webp" hidden>
 
