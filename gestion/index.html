@@ -138,7 +138,7 @@ a{color:inherit}
 
     <a class="dashboard-tile" id="tilePoints" href="points/"><div><div class="dashboard-icon">📍</div><h3>Points de carte</h3><p>Ajouter, modifier et organiser les points visibles sur la carte.</p></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileSite" href="site/"><div><div class="dashboard-icon">🌐</div><h3>Gestion du site</h3><p>nE PAS ACCEDER</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileShopOrders" href="boutique/"><div><div class="dashboard-icon">🛒</div><h3>Demandes boutique</h3><p>Consulter les commandes en attente, valider les achats et consulter l'historique.</p></div><div class="dashboard-arrow">→</div></a>
 
     <a class="dashboard-tile" id="tileAccounts" href="comptes/"><div><div class="dashboard-icon">👥</div><h3>Compte & Rôle</h3><p>Gérer les comptes, administrateurs, modérateurs et membres.</p></div><div class="dashboard-arrow">→</div></a>
   </div>
@@ -196,9 +196,9 @@ function renderDashboard(){
   setTileLocked('tileGang','lockGang',!(staff||isGangMember),'Accès réservé aux membres du gang');
 
   if(currentProfile.role==='member'){
-    $('tilePoints').style.display='none';$('tileAccounts').style.display='none';$('tileSite').style.display='none';
+    $('tilePoints').style.display='none';$('tileAccounts').style.display='none';$('tileShopOrders').style.display='none';
   }else if(currentProfile.role==='moderator'){
-    $('tileAccounts').style.display='none';$('tileSite').style.display='none';
+    $('tileAccounts').style.display='none';$('tileShopOrders').style.display='none';
   }
 }
 async function showApp(session){
