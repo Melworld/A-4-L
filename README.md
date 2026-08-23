@@ -1,10 +1,7 @@
-# 🟣 Vory V — Web Platform
+# 🟣 Vory V — Site Internet Role-Play
 
 Bienvenue sur le dépôt du site officiel de **Vory V Industry** & **Vory V Zakone**.
 Ce projet est une plateforme web créée pour accompagner notre aventure RolePlay sur le serveur **Arma For Life — Arma 3**.
-
-## 🌐 Le projet
-
 Le site permet de centraliser différents services et informations liés à Vory V :
 
 - 👤 Espace membre & profils RP
