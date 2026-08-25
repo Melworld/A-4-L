@@ -8,11 +8,7 @@ Le site permet de centraliser différents services et informations liés à Vory
 - 🏢 Gestion de Vory V Industry (Entreprise)
 - ♠️ Gestion de Vory V Zakone (Gang)
 - 🗺️ Carte interactive et points d'intérêt
-- 🚗 Véhicules d'entreprise
 - 🛍️ Boutique Vory V Industry
-- 📦 Catalogue, sélections & packs
-- 🔐 Gestion des rôles et permissions
-- ⚙️ Espace d'administration
 
 Certaines fonctionnalités sont accessibles publiquement tandis que d'autres dépendent du **rang RP** ou des **permissions du compte**.
 Le projet utilise principalement :
