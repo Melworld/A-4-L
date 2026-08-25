@@ -86,23 +86,18 @@ a{color:inherit}
 </div>
 <div class="grid" style="margin-bottom:16px">
   <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Modifier mon email</h2>
-    <div class="row">
-      <label>Nouvelle adresse email</label>
-      <input id="newEmail" type="email" autocomplete="email" placeholder="nouveau@email.fr">
-    </div>
-    <button class="btn primary" id="changeEmail">Modifier mon email</button>
-    <div class="muted" id="emailMsg" style="margin-top:10px"></div>
+    <h2 style="margin-top:0">Demander un changement d’email</h2>
+    <div class="muted" style="margin-bottom:12px">Votre adresse actuelle : <b id="currentRequestEmail">—</b></div>
+    <div class="row"><label>Nouvelle adresse email</label><input id="requestedEmail" type="email" placeholder="nouveau@email.fr"></div>
+    <button class="btn primary" id="requestEmailChange">Envoyer la demande</button>
+    <div class="muted" id="requestEmailMsg" style="margin-top:10px"></div>
   </div>
-
   <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Modifier mon numéro RP</h2>
-    <div class="row">
-      <label>Nouveau numéro RP</label>
-      <input id="newMemberNumber" type="text" placeholder="00-00-00-00-00" maxlength="14">
-    </div>
-    <button class="btn primary" id="changeMemberNumber">Modifier mon numéro</button>
-    <div class="muted" id="numberMsg" style="margin-top:10px"></div>
+    <h2 style="margin-top:0">Demander un changement de numéro RP</h2>
+    <div class="muted" style="margin-bottom:12px">Votre numéro actuel : <b id="currentRequestNumber">—</b></div>
+    <div class="row"><label>Nouveau numéro RP</label><input id="requestedNumber" placeholder="00-00-00-00-00" maxlength="14"></div>
+    <button class="btn primary" id="requestNumberChange">Envoyer la demande</button>
+    <div class="muted" id="requestNumberMsg" style="margin-top:10px"></div>
   </div>
 </div>
 
@@ -170,75 +165,33 @@ $('avatarInput').onchange=async e=>{
   $('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;
   const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}
   const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}
-  const {data:avatarSaved,error}=await db.rpc('update_my_avatar_url',{p_avatar_url:url});
-  if(error){
-    $('avatarMsg').textContent='Image envoyée, mais impossible d’enregistrer avatar_url : '+error.message;
-    return;
-  }
-  currentProfile.avatar_url=avatarSaved||url;
-  setProfileAvatar(currentProfile.avatar_url);
-  $('avatarMsg').textContent='Photo mise à jour et enregistrée dans avatar_url.';
+  const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
+  currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
 }
 
-$('changeEmail').onclick=async()=>{
-  const input=$('newEmail');
-  const msg=$('emailMsg');
-  const newEmail=input.value.trim().toLowerCase();
-  msg.textContent='';
-
-  if(!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){
-    msg.textContent='Entre une adresse email valide.';
-    return;
-  }
-  if(newEmail===(currentUser.email||'').toLowerCase()){
-    msg.textContent='Cette adresse email est déjà utilisée sur ton compte.';
-    return;
-  }
-
-  msg.textContent='Modification de l’email...';
-  const {data,error}=await db.auth.updateUser({email:newEmail});
-
-  if(error){
-    msg.textContent='Impossible de modifier l’email : '+error.message;
-    return;
-  }
-
-  // Selon les réglages Supabase Auth, une confirmation peut être demandée.
-  if(data?.user?.email===newEmail){
-    currentUser=data.user;
-    $('profileEmail').textContent=newEmail;
-    input.value='';
-    msg.textContent='Email modifié avec succès.';
-  }else{
-    msg.textContent='Modification demandée. Vérifie ton email si Supabase demande une confirmation.';
-  }
-};
-
-$('changeMemberNumber').onclick=async()=>{
-  const input=$('newMemberNumber');
-  const msg=$('numberMsg');
-  const memberNumber=input.value.trim();
-  msg.textContent='';
-
-  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(memberNumber)){
-    msg.textContent='Le numéro RP doit respecter le format 00-00-00-00-00.';
-    return;
-  }
-
-  msg.textContent='Modification du numéro RP...';
-  const {data,error}=await db.rpc('update_my_member_number',{
-    p_member_number:memberNumber
+async function createProfileChangeRequest(type,newValue,msgId){
+  const msg=$(msgId); msg.textContent='';
+  const {error}=await db.from('profile_change_requests').insert({
+    user_id:currentUser.id,
+    request_type:type,
+    old_value:type==='email'?(currentUser.email||''):(currentProfile.member_number||''),
+    new_value:newValue,
+    status:'pending'
   });
+  if(error){msg.textContent='Erreur : '+error.message;return false}
+  msg.textContent='Demande envoyée ✓ Un administrateur pourra la valider.';
+  return true;
+}
 
-  if(error){
-    msg.textContent='Impossible de modifier le numéro RP : '+error.message;
-    return;
-  }
-
-  currentProfile.member_number=data||memberNumber;
-  $('profileNumber').textContent=currentProfile.member_number;
-  input.value='';
-  msg.textContent='Numéro RP modifié avec succès.';
+$('requestEmailChange').onclick=async()=>{
+  const value=$('requestedEmail').value.trim().toLowerCase();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){ $('requestEmailMsg').textContent='Entre une adresse email valide.';return }
+  if(await createProfileChangeRequest('email',value,'requestEmailMsg')) $('requestedEmail').value='';
+};
+$('requestNumberChange').onclick=async()=>{
+  const value=$('requestedNumber').value.trim();
+  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(value)){ $('requestNumberMsg').textContent='Format attendu : 00-00-00-00-00.';return }
+  if(await createProfileChangeRequest('member_number',value,'requestNumberMsg')) $('requestedNumber').value='';
 };
 
 $('changePw').onclick=async()=>{
@@ -295,7 +248,7 @@ async function initPage(){
   $('profileRank').textContent=roleLabel(currentProfile.role);
   $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
-  $('profileEmail').textContent=currentUser.email||'—';
+  $('profileEmail').textContent=currentUser.email||'—';$('currentRequestEmail').textContent=currentUser.email||'—';
   const companyLabels={
     employee:'Employé de Vory V Industry',
     associate:'Associé de Vory V Industry',
