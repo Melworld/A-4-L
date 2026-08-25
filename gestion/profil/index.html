@@ -60,6 +60,19 @@ a{color:inherit}
   .profile-info-grid .empty-stat{display:none}
 }
 
+
+.profile-actions{display:grid;gap:10px;margin-bottom:16px}
+.profile-action{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.profile-action summary{list-style:none;cursor:pointer;padding:17px 18px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:16px;user-select:none}
+.profile-action summary::-webkit-details-marker{display:none}
+.profile-action summary::after{content:"›";font-size:25px;color:var(--accent);transition:transform .18s ease}
+.profile-action[open] summary::after{transform:rotate(90deg)}
+.profile-action[open] summary{border-bottom:1px solid var(--line);background:#141417}
+.profile-action-body{padding:18px}
+.profile-action-body .row:last-of-type{margin-bottom:14px}
+.profile-action-link{background:var(--panel);border:1px solid var(--line);border-radius:14px;text-decoration:none;padding:17px 18px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.profile-action-link::after{content:"›";font-size:25px;color:var(--accent)}
+.profile-action-link:hover,.profile-action summary:hover{background:#151518}
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Membre</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à mon Espace Membre</a></div>
@@ -84,27 +97,51 @@ a{color:inherit}
     <div class="stat"><span>Gang</span><b id="profileGang">—</b></div>
   </div>
 </div>
-<div class="grid" style="margin-bottom:16px">
-  <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Modifier mon email RP</h2>
-    <div class="row"><label>Nouvel email RP</label><input id="newEmailRp" type="email" placeholder="email@a4l.fr"></div>
-    <button class="btn primary" id="changeEmailRp">Enregistrer</button>
-    <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
-  </div>
-  <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Modifier mon numéro RP</h2>
-    <div class="row"><label>Nouveau numéro RP</label><input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14"></div>
-    <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
-    <div class="muted" id="numberMsg" style="margin-top:10px"></div>
-  </div>
-</div>
+<div class="profile-actions">
 
-<div class="card">
-  <h2 style="margin-top:0">Modifier mon mot de passe</h2>
-  <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
-  <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
-  <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
-  <button class="btn primary" id="changePw">Enregistrer</button><div class="muted" id="pwMsg" style="margin-top:10px"></div>
+  <details class="profile-action">
+    <summary>Modifier mon adresse mail RP</summary>
+    <div class="profile-action-body">
+      <div class="muted" style="margin-bottom:12px">Adresse actuelle : <b id="currentEmailRp">—</b></div>
+      <div class="row">
+        <label>Nouvelle adresse mail RP</label>
+        <input id="newEmailRp" type="email" placeholder="email@a4l.fr">
+      </div>
+      <button class="btn primary" id="changeEmailRp">Enregistrer</button>
+      <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
+    </div>
+  </details>
+
+  <details class="profile-action">
+    <summary>Modifier mon numéro RP</summary>
+    <div class="profile-action-body">
+      <div class="muted" style="margin-bottom:12px">Numéro actuel : <b id="currentMemberNumber">—</b></div>
+      <div class="row">
+        <label>Nouveau numéro RP</label>
+        <input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14">
+      </div>
+      <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
+      <div class="muted" id="numberMsg" style="margin-top:10px"></div>
+    </div>
+  </details>
+
+  <details class="profile-action">
+    <summary>Modifier le mot de passe de mon compte (Site Vory V)</summary>
+    <div class="profile-action-body">
+      <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
+      <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
+      <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
+      <button class="btn primary" id="changePw">Enregistrer</button>
+      <div class="muted" id="pwMsg" style="margin-top:10px"></div>
+    </div>
+  </details>
+
+  <div style="height:10px"></div>
+
+  <a class="profile-action-link" href="../../boutique/index.html">
+    <span>Accéder à mes achats sur la Boutique</span>
+  </a>
+
 </div>
 
 </div>
@@ -180,6 +217,7 @@ $('changeEmailRp').onclick=async()=>{
   if(error){msg.textContent='Erreur : '+error.message;return}
   currentProfile.membre_email_rp=value;
   $('profileEmail').textContent=value;
+  $('currentEmailRp').textContent=value;
   $('newEmailRp').value=value;
   msg.textContent='Email RP modifié avec succès.';
 };
@@ -192,6 +230,7 @@ $('changeMemberNumber').onclick=async()=>{
   if(error){msg.textContent='Erreur : '+error.message;return}
   currentProfile.member_number=value;
   $('profileNumber').textContent=value;
+  $('currentMemberNumber').textContent=value;
   $('newMemberNumber').value=value;
   msg.textContent='Numéro RP modifié avec succès.';
 };
@@ -253,6 +292,8 @@ async function initPage(){
   $('profileEmail').textContent=currentProfile.membre_email_rp||'—';
   $('newEmailRp').value=currentProfile.membre_email_rp||'';
   $('newMemberNumber').value=currentProfile.member_number||'';
+  $('currentEmailRp').textContent=currentProfile.membre_email_rp||'Non renseignée';
+  $('currentMemberNumber').textContent=currentProfile.member_number||'Non attribué';
   const companyLabels={
     employee:'Employé de Vory V Industry',
     associate:'Associé de Vory V Industry',
