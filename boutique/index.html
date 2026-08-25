@@ -23,7 +23,11 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 <div class="panel" id="selection"><div class="products" id="selectionProducts"></div></div>
 <div class="panel" id="packs"><div class="products" id="packProducts"></div></div></section>
 <aside class="cart"><div class="carthead"><h2>Mes achats</h2><span class="count" id="count">0</span></div><div class="items" id="cart"></div><div class="total"><span>Total</span><span id="total">0 $</span></div><div class="actions"><button class="secondary" id="list">Liste de nos achats</button><button class="primary" id="order" disabled>Passer commande</button></div></aside></div></main>
-<div class="modal" id="orderModal"><div class="box"><div class="boxtop"><h2>Passer commande</h2><button class="close" data-close="orderModal">×</button></div><div class="field"><label>Nom RP</label><input id="rpName" placeholder="Michel Skow"></div><div class="field"><label>Numéro RP</label><input id="rpNumber" placeholder="00-00-00-00-00"></div><div class="field"><label>Mail RP</label><input id="rpEmail" type="email" placeholder="exemple@a4l.fr"></div><div class="field"><label>Prix de la commande</label><input id="orderPrice" readonly></div><div class="preview" id="preview"></div><div class="msg" id="msg"></div><button class="primary" style="width:100%" id="send">Envoyer la demande</button></div></div>
+<div class="modal" id="orderModal"><div class="box"><div class="boxtop"><h2>Passer commande</h2><button class="close" data-close="orderModal">×</button></div><div class="field"><label>Nom RP</label><input id="rpName" placeholder="Michel Skow" autocomplete="off">
+<div style="color:#7f8ba3;font-size:10px;line-height:1.45;margin-top:2px">
+  Si vous possédez un compte chez nous, il suffit d’entrer votre nom RP puis d’appuyer sur Entrée pour remplir automatiquement vos informations.
+</div>
+<div class="msg" id="profileLookup"></div></div><div class="field"><label>Numéro RP</label><input id="rpNumber" placeholder="00-00-00-00-00"></div><div class="field"><label>Mail RP</label><input id="rpEmail" type="email" placeholder="exemple@a4l.fr"></div><div class="field"><label>Prix de la commande</label><input id="orderPrice" readonly></div><div class="preview" id="preview"></div><div class="msg" id="msg"></div><button class="primary" style="width:100%" id="send">Envoyer la demande</button></div></div>
 <div class="modal" id="listModal"><div class="box"><div class="boxtop"><h2>Liste de nos achats</h2><button class="close" data-close="listModal">×</button></div><div class="items" id="listItems"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script>
 <script>
@@ -39,6 +43,62 @@ $('search').oninput=e=>document.querySelectorAll('.panel.active .card').forEach(
 function show(id){$(id).classList.add('show')}function hide(id){$(id).classList.remove('show')}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>hide(b.dataset.close));
 $('list').onclick=()=>{let b=$('listItems');b.innerHTML=cart.length?'':'<div class="empty">Aucun achat.</div>';cart.forEach(i=>b.insertAdjacentHTML('beforeend',`<div class="item"><div class="itemtop"><span>${i.quantity}× ${i.name}</span><span>${money(i.price*i.quantity)}</span></div></div>`));show('listModal')};
 $('order').onclick=()=>{$('orderPrice').value=money(sum());$('preview').innerHTML=cart.map(i=>`${i.quantity}× ${i.name} — ${money(i.price*i.quantity)}`).join('<br>');$('msg').textContent='';show('orderModal')};
+
+let profileLookupTimer=null;
+
+async function lookupProfileByRpName(){
+  const name=$('rpName').value.trim();
+  const info=$('profileLookup');
+
+  if(!name){
+    info.textContent='';
+    return;
+  }
+  if(!db){
+    info.className='msg err';
+    info.textContent='Supabase non configuré.';
+    return;
+  }
+
+  info.className='msg';
+  info.textContent='Recherche du profil...';
+
+  // La table profiles utilise rp_name, member_number et email.
+  const {data,error}=await db
+    .from('profiles')
+    .select('rp_name,member_number,email')
+    .ilike('rp_name',name)
+    .limit(1)
+    .maybeSingle();
+
+  // Ignore simplement une recherche non autorisée / introuvable :
+  // l'acheteur peut toujours saisir ses informations à la main.
+  if(error || !data){
+    info.className='msg';
+    info.textContent='Profil non trouvé — remplis le numéro et le mail manuellement.';
+    return;
+  }
+
+  $('rpNumber').value=data.member_number||'';
+  $('rpEmail').value=data.email||'';
+
+  info.className='msg ok';
+  info.textContent='Profil trouvé ✓ Numéro et mail remplis automatiquement.';
+}
+
+$('rpName').addEventListener('input',()=>{
+  clearTimeout(profileLookupTimer);
+  profileLookupTimer=setTimeout(lookupProfileByRpName,450);
+});
+
+$('rpName').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    clearTimeout(profileLookupTimer);
+    lookupProfileByRpName();
+  }
+});
+
 $('send').onclick=async()=>{let name=$('rpName').value.trim(),num=$('rpNumber').value.trim(),email=$('rpEmail').value.trim();if(!name||!num||!email){$('msg').className='msg err';$('msg').textContent='Remplis toutes les informations RP.';return}if(!db){$('msg').className='msg err';$('msg').textContent='Supabase non configuré.';return}$('send').disabled=true;let {error}=await db.from('shop_orders').insert({buyer_name:name,buyer_number:num,buyer_email:email,items:cart,total:sum(),status:'pending'});$('send').disabled=false;if(error){$('msg').className='msg err';$('msg').textContent=error.message;return}$('msg').className='msg ok';$('msg').textContent='Commande envoyée ✓';cart=[];render();setTimeout(()=>hide('orderModal'),1000)};
 render();
 </script></body></html>
