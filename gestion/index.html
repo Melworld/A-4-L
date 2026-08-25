@@ -171,7 +171,7 @@ function renderDashboard(){
   $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
   $('memberRole').textContent=roleLabel(currentProfile.role);
   $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  $('memberEmail').textContent=currentUser.email||'—';
+  $('memberEmail').textContent=currentUser.member_email_rp||'—';
   $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   if(currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
