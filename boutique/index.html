@@ -13,8 +13,8 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:hidden}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
 .cart{position:sticky;top:94px;background:#0d1322;border:1px solid var(--line);border-radius:20px;padding:18px}.carthead{display:flex;justify-content:space-between;align-items:center}.carthead h2{margin:0}.count{background:var(--orange);color:#111;min-width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-weight:950}
 .items{display:grid;gap:8px;margin:15px 0;max-height:300px;overflow:auto}.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px}.item{background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:10px}.itemtop{display:flex;justify-content:space-between;font-size:13px;font-weight:850}.qty{display:flex;gap:7px;align-items:center;margin-top:8px}.qty button{width:27px;height:27px;background:#171f34;border:1px solid var(--line);color:#fff;border-radius:7px;cursor:pointer}.remove{margin-left:auto}.total{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:18px;font-weight:950}.actions{display:grid;gap:9px;margin-top:14px}.secondary{border:1px solid var(--line);border-radius:10px;padding:10px;background:#171f34;color:#fff;font-weight:900;cursor:pointer}.primary{padding:11px}.primary:disabled{opacity:.45}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{width:min(520px,100%);background:#111a2e;border:1px solid var(--line);border-radius:20px;padding:21px}.boxtop{display:flex;justify-content:space-between;align-items:center}.boxtop h2{margin:0}.close{border:0;background:none;color:#aaa;font-size:25px;cursor:pointer}.field{display:grid;gap:6px;margin-top:12px}.field label{font-size:12px;font-weight:850}.field input{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.preview{background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:11px;margin-top:13px;color:#cbd5e1;font-size:12px;line-height:1.6}.msg{font-size:12px;min-height:18px;margin-top:8px}.ok{color:#86efac}.err{color:#fca5a5}
-@media(max-width:1050px){.layout{grid-template-columns:1fr}.cart{position:static}.products{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.products{grid-template-columns:1fr}.nav,.toolbar{align-items:flex-start;flex-direction:column}.search{width:100%}}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{width:min(520px,100%);background:#111a2e;border:1px solid var(--line);border-radius:20px;padding:21px}.order-box{width:min(900px,100%)}.boxtop{display:flex;justify-content:space-between;align-items:center}.boxtop h2{margin:0}.close{border:0;background:none;color:#aaa;font-size:25px;cursor:pointer}.order-columns{display:grid;grid-template-columns:minmax(0,.9fr) 1px minmax(0,1.1fr);gap:24px;margin-top:18px;align-items:start}.order-separator{width:1px;background:var(--line);height:100%;min-height:330px}.order-list-title{margin:0 0 12px;font-size:16px}.order-list-panel{display:grid;gap:8px;max-height:330px;overflow:auto;padding-right:4px}.order-list-item{background:#0b1222;border:1px solid var(--line);border-radius:10px;padding:10px}.order-list-item-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:850}.order-list-item small{display:block;color:var(--muted);margin-top:5px}.field{display:grid;gap:6px;margin-top:12px}.field:first-child{margin-top:0}.field label{font-size:12px;font-weight:850}.field input{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.msg{font-size:12px;min-height:18px;margin-top:8px}.ok{color:#86efac}.err{color:#fca5a5}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.cart{position:static}.products{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.order-columns{grid-template-columns:1fr}.order-separator{display:none}}@media(max-width:650px){.products{grid-template-columns:1fr}.nav,.toolbar{align-items:flex-start;flex-direction:column}.search{width:100%}}
 </style></head><body>
 <header><div class="container nav"><a class="brand" href="/A-4-L/">Vory V Industry — Boutique</a><div class="tabs"><button class="tab active" data-tab="best">Meilleures ventes</button><button class="tab" data-tab="selection">Notre sélection</button><button class="tab" data-tab="packs">Les packs</button><a class="back" href="/A-4-L/">← Site principal</a></div></div></header>
 <main class="container"><section class="hero"><small>Vory V Industry</small><h1>La boutique.</h1><p>Choisis tes produits, règle les quantités puis envoie ta demande directement à l'équipe Vory V.</p></section>
@@ -23,11 +23,52 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 <div class="panel" id="selection"><div class="products" id="selectionProducts"></div></div>
 <div class="panel" id="packs"><div class="products" id="packProducts"></div></div></section>
 <aside class="cart"><div class="carthead"><h2>Mes achats</h2><span class="count" id="count">0</span></div><div class="items" id="cart"></div><div class="total"><span>Total</span><span id="total">0 $</span></div><div class="actions"><button class="secondary" id="list">Liste de nos achats</button><button class="primary" id="order" disabled>Passer commande</button></div></aside></div></main>
-<div class="modal" id="orderModal"><div class="box"><div class="boxtop"><h2>Passer commande</h2><button class="close" data-close="orderModal">×</button></div><div class="field"><label>Nom RP</label><input id="rpName" placeholder="Michel Skow" autocomplete="off">
-<div style="color:#7f8ba3;font-size:10px;line-height:1.45;margin-top:2px">
-  Si vous possédez un compte chez nous, il suffit d’entrer votre nom RP puis d’appuyer sur Entrée pour remplir automatiquement vos informations.
+<div class="modal" id="orderModal">
+  <div class="box order-box">
+    <div class="boxtop">
+      <h2>Passer commande</h2>
+      <button class="close" data-close="orderModal">×</button>
+    </div>
+
+    <div class="order-columns">
+      <div>
+        <h3 class="order-list-title">Votre liste d’achat</h3>
+        <div class="order-list-panel" id="orderPurchaseList"></div>
+      </div>
+
+      <div class="order-separator"></div>
+
+      <div>
+        <div class="field">
+          <label>Nom RP</label>
+          <input id="rpName" placeholder="Ex : Jean Pascal" autocomplete="off">
+          <div style="color:#7f8ba3;font-size:10px;line-height:1.45;margin-top:2px">
+            Si vous possédez un compte chez nous, saisissez votre nom RP puis appuyez sur Entrée pour remplir automatiquement vos informations.
+          </div>
+          <div class="msg" id="profileLookup"></div>
+        </div>
+
+        <div class="field">
+          <label>Numéro RP</label>
+          <input id="rpNumber" placeholder="00-00-00-00-00">
+        </div>
+
+        <div class="field">
+          <label>Mail RP</label>
+          <input id="rpEmail" type="email" placeholder="exemple@a4l.fr">
+        </div>
+
+        <div class="field">
+          <label>Prix de la commande</label>
+          <input id="orderPrice" readonly>
+        </div>
+
+        <div class="msg" id="msg"></div>
+        <button class="primary" style="width:100%;margin-top:4px" id="send">Envoyer la demande</button>
+      </div>
+    </div>
+  </div>
 </div>
-<div class="msg" id="profileLookup"></div></div><div class="field"><label>Numéro RP</label><input id="rpNumber" placeholder="00-00-00-00-00"></div><div class="field"><label>Mail RP</label><input id="rpEmail" type="email" placeholder="exemple@a4l.fr"></div><div class="field"><label>Prix de la commande</label><input id="orderPrice" readonly></div><div class="preview" id="preview"></div><div class="msg" id="msg"></div><button class="primary" style="width:100%" id="send">Envoyer la demande</button></div></div>
 <div class="modal" id="listModal"><div class="box"><div class="boxtop"><h2>Liste de nos achats</h2><button class="close" data-close="listModal">×</button></div><div class="items" id="listItems"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script>
 <script>
@@ -42,7 +83,24 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelect
 $('search').oninput=e=>document.querySelectorAll('.panel.active .card').forEach(c=>c.style.display=c.dataset.search.includes(e.target.value.toLowerCase())?'':'none');
 function show(id){$(id).classList.add('show')}function hide(id){$(id).classList.remove('show')}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>hide(b.dataset.close));
 $('list').onclick=()=>{let b=$('listItems');b.innerHTML=cart.length?'':'<div class="empty">Aucun achat.</div>';cart.forEach(i=>b.insertAdjacentHTML('beforeend',`<div class="item"><div class="itemtop"><span>${i.quantity}× ${i.name}</span><span>${money(i.price*i.quantity)}</span></div></div>`));show('listModal')};
-$('order').onclick=()=>{$('orderPrice').value=money(sum());$('preview').innerHTML=cart.map(i=>`${i.quantity}× ${i.name} — ${money(i.price*i.quantity)}`).join('<br>');$('msg').textContent='';show('orderModal')};
+$('order').onclick=()=>{
+  $('orderPrice').value=money(sum());
+  const list=$('orderPurchaseList');
+  list.innerHTML='';
+  cart.forEach(i=>{
+    list.insertAdjacentHTML('beforeend',
+      `<div class="order-list-item">
+        <div class="order-list-item-top">
+          <span>${i.quantity}× ${i.name}</span>
+          <span>${money(i.price*i.quantity)}</span>
+        </div>
+        <small>${money(i.price)} / unité</small>
+      </div>`
+    );
+  });
+  $('msg').textContent='';
+  show('orderModal');
+};
 
 let profileLookupTimer=null;
 
@@ -54,6 +112,7 @@ async function lookupProfileByRpName(){
     info.textContent='';
     return;
   }
+
   if(!db){
     info.className='msg err';
     info.textContent='Supabase non configuré.';
@@ -63,27 +122,30 @@ async function lookupProfileByRpName(){
   info.className='msg';
   info.textContent='Recherche du profil...';
 
-  // La table profiles utilise rp_name, member_number et email.
-  const {data,error}=await db
-    .from('profiles')
-    .select('rp_name,member_number,email')
-    .ilike('rp_name',name)
-    .limit(1)
-    .maybeSingle();
+  const {data,error}=await db.rpc('get_shop_profile_by_rp_name',{
+    p_rp_name:name
+  });
 
-  // Ignore simplement une recherche non autorisée / introuvable :
-  // l'acheteur peut toujours saisir ses informations à la main.
-  if(error || !data){
-    info.className='msg';
-    info.textContent='Profil non trouvé — remplis le numéro et le mail manuellement.';
+  const profile=Array.isArray(data)?data[0]:data;
+
+  if(error){
+    console.error('Recherche profil boutique :',error);
+    info.className='msg err';
+    info.textContent='Impossible de rechercher le compte pour le moment.';
     return;
   }
 
-  $('rpNumber').value=data.member_number||'';
-  $('rpEmail').value=data.email||'';
+  if(!profile){
+    info.className='msg';
+    info.textContent='Aucun compte trouvé — vous pouvez remplir les informations manuellement.';
+    return;
+  }
+
+  $('rpNumber').value=profile.member_number||'';
+  $('rpEmail').value=profile.email||'';
 
   info.className='msg ok';
-  info.textContent='Profil trouvé ✓ Numéro et mail remplis automatiquement.';
+  info.textContent='Compte trouvé ✓ Numéro et mail remplis automatiquement.';
 }
 
 $('rpName').addEventListener('input',()=>{
