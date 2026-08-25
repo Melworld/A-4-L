@@ -86,18 +86,16 @@ a{color:inherit}
 </div>
 <div class="grid" style="margin-bottom:16px">
   <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Demander un changement d’email</h2>
-    <div class="muted" style="margin-bottom:12px">Votre adresse actuelle : <b id="currentRequestEmail">—</b></div>
-    <div class="row"><label>Nouvelle adresse email</label><input id="requestedEmail" type="email" placeholder="nouveau@email.fr"></div>
-    <button class="btn primary" id="requestEmailChange">Envoyer la demande</button>
-    <div class="muted" id="requestEmailMsg" style="margin-top:10px"></div>
+    <h2 style="margin-top:0">Modifier mon email RP</h2>
+    <div class="row"><label>Nouvel email RP</label><input id="newEmailRp" type="email" placeholder="email@a4l.fr"></div>
+    <button class="btn primary" id="changeEmailRp">Enregistrer</button>
+    <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
   </div>
   <div class="card" style="margin-bottom:0">
-    <h2 style="margin-top:0">Demander un changement de numéro RP</h2>
-    <div class="muted" style="margin-bottom:12px">Votre numéro actuel : <b id="currentRequestNumber">—</b></div>
-    <div class="row"><label>Nouveau numéro RP</label><input id="requestedNumber" placeholder="00-00-00-00-00" maxlength="14"></div>
-    <button class="btn primary" id="requestNumberChange">Envoyer la demande</button>
-    <div class="muted" id="requestNumberMsg" style="margin-top:10px"></div>
+    <h2 style="margin-top:0">Modifier mon numéro RP</h2>
+    <div class="row"><label>Nouveau numéro RP</label><input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14"></div>
+    <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
+    <div class="muted" id="numberMsg" style="margin-top:10px"></div>
   </div>
 </div>
 
@@ -127,7 +125,7 @@ function renderMemberPanel(){
   if($('memberName')) $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
   if($('memberRole')) $('memberRole').textContent=roleLabel(currentProfile.role);
   if($('memberNumber')) $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  if($('memberEmail')) $('memberEmail').textContent=currentUser.email||'—';
+  if($('memberEmail')) $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
   if($('memberMoney')) $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   if($('memberAvatar')&&currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
@@ -169,29 +167,33 @@ $('avatarInput').onchange=async e=>{
   currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
 }
 
-async function createProfileChangeRequest(type,newValue,msgId){
-  const msg=$(msgId); msg.textContent='';
-  const {error}=await db.from('profile_change_requests').insert({
-    user_id:currentUser.id,
-    request_type:type,
-    old_value:type==='email'?(currentUser.email||''):(currentProfile.member_number||''),
-    new_value:newValue,
-    status:'pending'
-  });
-  if(error){msg.textContent='Erreur : '+error.message;return false}
-  msg.textContent='Demande envoyée ✓ Un administrateur pourra la valider.';
-  return true;
-}
+$('newMemberNumber').addEventListener('input',()=>{
+  const digits=$('newMemberNumber').value.replace(/\D/g,'').slice(0,10);
+  $('newMemberNumber').value=digits.match(/.{1,2}/g)?.join('-')||'';
+});
 
-$('requestEmailChange').onclick=async()=>{
-  const value=$('requestedEmail').value.trim().toLowerCase();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){ $('requestEmailMsg').textContent='Entre une adresse email valide.';return }
-  if(await createProfileChangeRequest('email',value,'requestEmailMsg')) $('requestedEmail').value='';
+$('changeEmailRp').onclick=async()=>{
+  const value=$('newEmailRp').value.trim().toLowerCase();
+  const msg=$('emailRpMsg'); msg.textContent='';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){msg.textContent='Entre une adresse email valide.';return}
+  const {error}=await db.from('profiles').update({membre_email_rp:value}).eq('id',currentUser.id);
+  if(error){msg.textContent='Erreur : '+error.message;return}
+  currentProfile.membre_email_rp=value;
+  $('profileEmail').textContent=value;
+  $('newEmailRp').value=value;
+  msg.textContent='Email RP modifié avec succès.';
 };
-$('requestNumberChange').onclick=async()=>{
-  const value=$('requestedNumber').value.trim();
-  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(value)){ $('requestNumberMsg').textContent='Format attendu : 00-00-00-00-00.';return }
-  if(await createProfileChangeRequest('member_number',value,'requestNumberMsg')) $('requestedNumber').value='';
+
+$('changeMemberNumber').onclick=async()=>{
+  const value=$('newMemberNumber').value.trim();
+  const msg=$('numberMsg'); msg.textContent='';
+  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(value)){msg.textContent='Format attendu : 00-00-00-00-00.';return}
+  const {error}=await db.from('profiles').update({member_number:value}).eq('id',currentUser.id);
+  if(error){msg.textContent='Erreur : '+error.message;return}
+  currentProfile.member_number=value;
+  $('profileNumber').textContent=value;
+  $('newMemberNumber').value=value;
+  msg.textContent='Numéro RP modifié avec succès.';
 };
 
 $('changePw').onclick=async()=>{
@@ -248,7 +250,9 @@ async function initPage(){
   $('profileRank').textContent=roleLabel(currentProfile.role);
   $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
-  $('profileEmail').textContent=currentUser.email||'—';$('currentRequestEmail').textContent=currentUser.email||'—';
+  $('profileEmail').textContent=currentProfile.membre_email_rp||'—';
+  $('newEmailRp').value=currentProfile.membre_email_rp||'';
+  $('newMemberNumber').value=currentProfile.member_number||'';
   const companyLabels={
     employee:'Employé de Vory V Industry',
     associate:'Associé de Vory V Industry',
