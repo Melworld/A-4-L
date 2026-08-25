@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Vory V — Mon profil</title><style>
+<title>Vory V — Espace Membre</title><style>
 :root{
   --bg:#09090b;--panel:#111113;--panel2:#151518;--muted:#8b8b94;--line:#25252b;
   --accent:#f97316;--accent2:#fb923c;--danger:#7f1d1d;--ok:#166534;
 }
 *{box-sizing:border-box}
 html{color-scheme:dark}
-body{margin:0;background:var(--bg);color:#fff;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+body{
+  margin:0;
+  color:#fff;
+  font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 18% 12%,rgba(249,115,22,.16),transparent 30%),
+    radial-gradient(circle at 82% 78%,rgba(249,115,22,.08),transparent 34%),
+    radial-gradient(circle at 55% 42%,rgba(255,255,255,.025),transparent 25%),
+    linear-gradient(135deg,#070708 0%,#0d0d10 48%,#080809 100%);
+  background-attachment:fixed;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.22;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.75),transparent 90%);
+}
 button,input,select,textarea{font:inherit}
 a{color:inherit}
 .hidden{display:none!important}
@@ -50,267 +74,152 @@ a{color:inherit}
   .member-panel{align-items:flex-start}.member-details{display:grid;gap:5px}.page-top h1{font-size:28px}
 }
 
-.profile-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.profile-info-grid .stat{min-width:0}
-.profile-info-grid .stat b{display:block;overflow-wrap:anywhere;word-break:break-word;white-space:normal;line-height:1.35}
-.profile-info-grid .email-stat b{font-size:15px}
-.profile-info-grid .empty-stat{visibility:hidden}
-@media(max-width:650px){
-  .profile-info-grid{grid-template-columns:1fr}
-  .profile-info-grid .empty-stat{display:none}
-}
-
-
-.profile-actions{display:grid;gap:10px;margin-bottom:16px}
-.profile-action{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.profile-action summary{list-style:none;cursor:pointer;padding:17px 18px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:16px;user-select:none}
-.profile-action summary::-webkit-details-marker{display:none}
-.profile-action summary::after{content:"›";font-size:25px;color:var(--accent);transition:transform .18s ease}
-.profile-action[open] summary::after{transform:rotate(90deg)}
-.profile-action[open] summary{border-bottom:1px solid var(--line);background:#141417}
-.profile-action-body{padding:18px}
-.profile-action-body .row:last-of-type{margin-bottom:14px}
-.profile-action-link{background:var(--panel);border:1px solid var(--line);border-radius:14px;text-decoration:none;padding:17px 18px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.profile-action-link::after{content:"›";font-size:25px;color:var(--accent)}
-.profile-action-link:hover,.profile-action summary:hover{background:#151518}
+.dashboard-shell{max-width:1120px;margin:0 auto;padding:34px 24px 80px}
+.login-wrap{min-height:calc(100vh - 68px);display:grid;place-items:center}
+.login{width:min(380px,100%);background:#111113;border:1px solid #2d2d33;border-radius:16px;padding:22px;box-shadow:0 18px 55px rgba(0,0,0,.32)}
+.login-title{text-align:center;margin-bottom:18px}.login-title .vory{font-size:30px;font-weight:950;color:var(--accent)}.login-title h2{font-size:16px;margin:7px 0 0;color:#d4d4d8}
+.login-error{color:#ef4444;font-size:12px;text-align:center;min-height:18px;margin:8px 0}
+.login-home-link{display:block;width:max-content;margin:16px auto 0;color:#8b8b94;text-decoration:none;font-size:13px;font-weight:800}
+.dashboard-title{margin-bottom:42px}.dashboard-title .kicker{color:var(--accent);font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.dashboard-title h1{margin:7px 0 0;font-size:36px}
+.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.dashboard-tile{min-height:170px;background:linear-gradient(180deg,#141416,#101012);border:1px solid #29292f;border-radius:16px;padding:19px;text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;transition:.15s transform,.15s border-color}
+.dashboard-tile:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 10px 28px rgba(249,115,22,.08)}
+.dashboard-tile.profile-wide{grid-column:1/-1;min-height:145px}
+.dashboard-tile.locked{opacity:.48;cursor:not-allowed;filter:grayscale(.35)}
+.dashboard-tile.locked:hover{transform:none;border-color:#29292f;box-shadow:none}
+.dashboard-tile.locked .dashboard-arrow{color:#777}
+.lock-note{margin-top:10px;color:#a3a3aa;font-size:12px;font-weight:800}
+.dashboard-icon{font-size:28px}.dashboard-tile h3{margin:12px 0 7px;font-size:18px}.dashboard-tile p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}.dashboard-arrow{color:var(--accent);font-size:20px;font-weight:900;align-self:flex-end}
+.dashboard-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+@media(max-width:850px){.dashboard-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.dashboard-grid{grid-template-columns:1fr}}
 </style></head>
-<body><div class="page-shell">
-<div class="page-top"><div><div class="page-kicker">Vory V — Espace Membre</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à mon Espace Membre</a></div>
-<div class="card" style="padding:24px">
-  <div class="member-panel" style="margin:0;border:0;padding:0;background:transparent">
-    <button class="member-avatar" id="profileAvatar" type="button" style="cursor:pointer;color:#fff">👤</button>
-    <div>
-      <div class="member-name" id="profileName">—</div>
-      <div class="muted" id="avatarMsg" style="margin-top:6px">Clique sur la photo pour la modifier.</div>
+<body><div class="dashboard-shell">
+<section id="loginView" class="login-wrap">
+  <div class="login">
+    <div class="login-title"><div class="vory">Vory V</div><h2>Connexion à son compte</h2></div>
+    <div class="row"><label>Email ou Nom RP</label><input id="loginIdentifier" placeholder="email@a4l.fr ou Nom RP (ex: Jean Pascal)"></div>
+    <div class="row"><label>Mot de passe</label><input id="loginPassword" type="password"></div>
+    <div class="login-error" id="loginMsg"></div>
+    <div class="actions" style="justify-content:center"><button class="btn primary" id="loginBtn">Se connecter</button></div>
+    <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:16px">
+  <a class="login-home-link" style="margin:0" href="inscription/">Créer un compte</a>
+  <a class="login-home-link" style="margin:0" href="../index.html">← Retour au site principal</a>
+</div>
+  </div>
+</section>
+
+<section id="appView" class="hidden">
+  <div class="dashboard-head">
+    <div class="dashboard-title"><div class="kicker" id="dashboardKicker">Vory V</div><h1 id="dashboardTitle">Espace Membre</h1></div>
+    <div class="actions"><a class="btn secondary" href="../index.html">Page principale</a><button class="btn secondary" id="logoutBtn">Déconnexion</button></div>
+  </div>
+  
+<div class="member-panel">
+  <div class="member-avatar" id="memberAvatar">👤</div>
+  <div>
+    <div class="member-name" id="memberName">—</div>
+    <div class="member-role" id="memberRole">—</div>
+    <div class="member-details">
+      <span>N° : <b id="memberNumber">—</b></span>
+      <span>Email : <b id="memberEmail">—</b></span>
+      <span>Argent : <b id="memberMoney">0 $</b></span>
     </div>
   </div>
-  <input id="avatarInput" type="file" accept="image/png,image/jpeg,image/webp" hidden>
 </div>
-<div class="card">
-  <h2 style="margin-top:0">Mes informations</h2>
-  <div class="profile-info-grid">
-    <div class="stat"><span>Rang</span><b id="profileRank">—</b></div>
-    <div class="stat"><span>Argent Généré</span><b id="profileMoney">0 $</b></div>
-    <div class="stat"><span>Numéro</span><b id="profileNumber">—</b></div>
-    <div class="stat email-stat"><span>Email</span><b id="profileEmail">—</b></div>
-    <div class="stat"><span>Entreprise</span><b id="profileCompany">—</b></div>
-    <div class="stat"><span>Gang</span><b id="profileGang">—</b></div>
+
+  <div class="dashboard-grid">
+    <a class="dashboard-tile profile-wide" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulter tes informations, ta photo de profil et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder aux informations et à la gestion de ton entreprise.  EN DEV</p><div class="lock-note" id="lockEntreprise"></div></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise.  EN DEV</p><div class="lock-note" id="lockVehicule"></div></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang.  EN DEV</p><div class="lock-note" id="lockGang"></div></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tilePoints" href="points/"><div><div class="dashboard-icon">📍</div><h3>Points de carte</h3><p>Ajouter, modifier et organiser les points visibles sur la carte.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileShopOrders" href="boutique/"><div><div class="dashboard-icon">🛒</div><h3>Demandes boutique</h3><p>Consulter les commandes en attente, valider les achats et consulter l'historique.</p></div><div class="dashboard-arrow">→</div></a>
+
+    <a class="dashboard-tile" id="tileAccounts" href="comptes/"><div><div class="dashboard-icon">👥</div><h3>Compte & Rôle</h3><p>Gérer les comptes, administrateurs, modérateurs et membres.</p></div><div class="dashboard-arrow">→</div></a>
   </div>
+</section>
 </div>
-<div class="profile-actions">
-
-  <details class="profile-action">
-    <summary>Modifier mon adresse mail RP</summary>
-    <div class="profile-action-body">
-      <div class="muted" style="margin-bottom:12px">Adresse actuelle : <b id="currentEmailRp">—</b></div>
-      <div class="row">
-        <label>Nouvelle adresse mail RP</label>
-        <input id="newEmailRp" type="email" placeholder="email@a4l.fr">
-      </div>
-      <button class="btn primary" id="changeEmailRp">Enregistrer</button>
-      <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
-    </div>
-  </details>
-
-  <details class="profile-action">
-    <summary>Modifier mon numéro RP</summary>
-    <div class="profile-action-body">
-      <div class="muted" style="margin-bottom:12px">Numéro actuel : <b id="currentMemberNumber">—</b></div>
-      <div class="row">
-        <label>Nouveau numéro RP</label>
-        <input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14">
-      </div>
-      <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
-      <div class="muted" id="numberMsg" style="margin-top:10px"></div>
-    </div>
-  </details>
-
-  <details class="profile-action">
-    <summary>Modifier le mot de passe de mon compte (Site Vory V)</summary>
-    <div class="profile-action-body">
-      <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
-      <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
-      <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
-      <button class="btn primary" id="changePw">Enregistrer</button>
-      <div class="muted" id="pwMsg" style="margin-top:10px"></div>
-    </div>
-  </details>
-
-  <div style="height:10px"></div>
-
-  <a class="profile-action-link" href="../../boutique/index.html">
-    <span>Accéder à mes achats sur la Boutique</span>
-  </a>
-
-</div>
-
-</div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../../database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-let db=null,currentUser=null,currentProfile=null;
-if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured()){
-  db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+const $=id=>document.getElementById(id);let db=null,currentUser=null,currentProfile=null;
+if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+function roleLabel(role){return role==='admin'?'Administrateur':role==='moderator'?'Modérateur':'Membre'}
+async function resolveEmail(identifier){
+  if(identifier.includes('@'))return identifier;
+  const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
+  return error?null:data;
 }
-function roleLabel(role){
-  if(role==='admin') return 'Administrateur';
-  if(role==='moderator') return 'Modérateur';
-  return 'Membre';
+function setTileLocked(tileId,noteId,locked,message){
+  const tile=$(tileId),note=$(noteId);
+  if(!tile)return;
+  tile.classList.toggle('locked',locked);
+  if(note)note.textContent=locked?'🔒 '+message:'';
+  if(locked){
+    tile.setAttribute('aria-disabled','true');
+    tile.onclick=e=>e.preventDefault();
+  }else{
+    tile.removeAttribute('aria-disabled');
+    tile.onclick=null;
+  }
 }
-function renderMemberPanel(){
-  if($('memberName')) $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
-  if($('memberRole')) $('memberRole').textContent=roleLabel(currentProfile.role);
-  if($('memberNumber')) $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  if($('memberEmail')) $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
-  if($('memberMoney')) $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
-  if($('memberAvatar')&&currentProfile.avatar_url){
+function renderDashboard(){
+  $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
+  $('memberRole').textContent=roleLabel(currentProfile.role);
+  $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
+  $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
+  $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
+  if(currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
-    $('memberAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo de profil">';
+    $('memberAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo">';
   }
+  if(currentProfile.role==='admin'){
+    document.title='Vory V — Administrateur';$('dashboardTitle').textContent='Vory V — Administrateur';$('dashboardKicker').textContent='Administration';
+  }else{
+    document.title='Vory V — Espace Membre';$('dashboardTitle').textContent='Vory V — Espace Membre';$('dashboardKicker').textContent=currentProfile.role==='moderator'?'Espace Modérateur':'Espace Membre';
+  }
+  const staff=['admin','moderator'].includes(currentProfile.role);
+  const companyRanks=['employee','associate','manager','pdg'];
+  const companyVehicleRanks=['manager','pdg'];
+  const gangRanks=['gang_member','right_hand','leader'];
+
+  const isEmployee=companyRanks.includes(currentProfile.company_rank);
+  const isStaff=companyVehicleRanks.includes(currentProfile.company_rank);
+  const isGangMember=gangRanks.includes(currentProfile.gang_rank);
+
+  setTileLocked('tileEntreprise','lockEntreprise',!(staff||isEmployee),'Accès réservé aux membres de l’entreprise');
+  setTileLocked('tileVehicule','lockVehicule',!(staff||isStaff),'Accès réservé aux gestionnaires de l’entreprise');
+  setTileLocked('tileGang','lockGang',!(staff||isGangMember),'Accès réservé aux membres du gang');
+
   if(currentProfile.role==='member'){
-    if($('navPoints')) $('navPoints').style.display='none';
-    if($('navSite')) $('navSite').style.display='none';
-    if($('navAccounts')) $('navAccounts').style.display='none';
-  } else if(currentProfile.role==='moderator'){
-    if($('navSite')) $('navSite').style.display='none';
-    if($('navAccounts')) $('navAccounts').style.display='none';
+    $('tilePoints').style.display='none';$('tileAccounts').style.display='none';$('tileShopOrders').style.display='none';
+  }else if(currentProfile.role==='moderator'){
+    $('tileAccounts').style.display='none';
   }
 }
-async function loadIdentity(allowedRoles=['member','moderator','admin']){
-  if(!db){ location.href='../'; return false; }
-  const {data:{session}}=await db.auth.getSession();
-  currentUser=session?.user||null;
-  if(!currentUser){ location.href='../'; return false; }
+async function showApp(session){
+  currentUser=session?.user||null;if(!currentUser)return;
   const {data,error}=await db.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
-  if(error||!data){ location.href='../'; return false; }
-  currentProfile=data;
-  if(!allowedRoles.includes(currentProfile.role)){ location.href='../'; return false; }
-  renderMemberPanel();
-  return true;
+  if(error||!data||!['member','moderator','admin'].includes(data.role)){$('loginMsg').textContent='Ce compte n’a pas accès à cet espace.';return}
+  currentProfile=data;$('loginView').classList.add('hidden');$('appView').classList.remove('hidden');renderDashboard();
 }
-
-
-function setProfileAvatar(url){if(!url){$('profileAvatar').innerHTML='👤';return}const clean=String(url).split('?v=')[0];$('profileAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo">'}
-$('profileAvatar').onclick=()=>$('avatarInput').click();
-$('avatarInput').onchange=async e=>{
-  const file=e.target.files?.[0];e.target.value='';if(!file)return;
-  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){return $('avatarMsg').textContent='PNG, JPG ou WEBP uniquement.'}
-  if(file.size>5*1024*1024){return $('avatarMsg').textContent='5 Mo maximum.'}
-  $('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;
-  const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}
-  const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}
-  const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
-  currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
-}
-
-$('newMemberNumber').addEventListener('input',()=>{
-  const digits=$('newMemberNumber').value.replace(/\D/g,'').slice(0,10);
-  $('newMemberNumber').value=digits.match(/.{1,2}/g)?.join('-')||'';
+$('loginPassword').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    e.preventDefault();
+    $('loginBtn').click();
+  }
 });
-
-$('changeEmailRp').onclick=async()=>{
-  const value=$('newEmailRp').value.trim().toLowerCase();
-  const msg=$('emailRpMsg'); msg.textContent='';
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)){msg.textContent='Entre une adresse email valide.';return}
-  const {error}=await db.from('profiles').update({membre_email_rp:value}).eq('id',currentUser.id);
-  if(error){msg.textContent='Erreur : '+error.message;return}
-  currentProfile.membre_email_rp=value;
-  $('profileEmail').textContent=value;
-  $('currentEmailRp').textContent=value;
-  $('newEmailRp').value=value;
-  msg.textContent='Email RP modifié avec succès.';
+$('loginBtn').onclick=async()=>{
+  $('loginMsg').textContent='';const identifier=$('loginIdentifier').value.trim(),password=$('loginPassword').value;if(!identifier||!password)return;
+  const email=await resolveEmail(identifier);if(!email){$('loginMsg').textContent='Identifiant ou mot de passe incorrect.';return}
+  const {data,error}=await db.auth.signInWithPassword({email,password});
+  if(error){$('loginMsg').textContent='Identifiant ou mot de passe incorrect.';return}
+  await showApp(data.session);
 };
-
-$('changeMemberNumber').onclick=async()=>{
-  const value=$('newMemberNumber').value.trim();
-  const msg=$('numberMsg'); msg.textContent='';
-  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(value)){msg.textContent='Format attendu : 00-00-00-00-00.';return}
-  const {error}=await db.from('profiles').update({member_number:value}).eq('id',currentUser.id);
-  if(error){msg.textContent='Erreur : '+error.message;return}
-  currentProfile.member_number=value;
-  $('profileNumber').textContent=value;
-  $('currentMemberNumber').textContent=value;
-  $('newMemberNumber').value=value;
-  msg.textContent='Numéro RP modifié avec succès.';
-};
-
-$('changePw').onclick=async()=>{
-  const oldPassword=$('oldPw').value;
-  const newPassword=$('pw1').value;
-  const confirmPassword=$('pw2').value;
-  const msg=$('pwMsg');
-
-  msg.textContent='';
-
-  if(!oldPassword){
-    msg.textContent='Entre ton ancien mot de passe.';
-    return;
-  }
-  if(newPassword.length<8){
-    msg.textContent='Le nouveau mot de passe doit contenir au moins 8 caractères.';
-    return;
-  }
-  if(newPassword!==confirmPassword){
-    msg.textContent='Les deux nouveaux mots de passe ne correspondent pas.';
-    return;
-  }
-  if(oldPassword===newPassword){
-    msg.textContent='Le nouveau mot de passe doit être différent de l’ancien.';
-    return;
-  }
-
-  msg.textContent='Vérification de l’ancien mot de passe...';
-
-  const {error:verifyError}=await db.auth.signInWithPassword({
-    email:currentUser.email,
-    password:oldPassword
-  });
-
-  if(verifyError){
-    msg.textContent='Ancien mot de passe incorrect.';
-    return;
-  }
-
-  const {error:updateError}=await db.auth.updateUser({password:newPassword});
-
-  if(updateError){
-    msg.textContent='Impossible de modifier le mot de passe : '+updateError.message;
-    return;
-  }
-
-  $('oldPw').value='';
-  $('pw1').value='';
-  $('pw2').value='';
-  msg.textContent='Mot de passe modifié avec succès.';
-}
-async function initPage(){
-  $('profileName').textContent=currentProfile.rp_name||'Sans Nom RP';
-  $('profileRank').textContent=roleLabel(currentProfile.role);
-  $('profileMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
-  $('profileNumber').textContent=currentProfile.member_number||'Non attribué';
-  $('profileEmail').textContent=currentProfile.membre_email_rp||'—';
-  $('newEmailRp').value=currentProfile.membre_email_rp||'';
-  $('newMemberNumber').value=currentProfile.member_number||'';
-  $('currentEmailRp').textContent=currentProfile.membre_email_rp||'Non renseignée';
-  $('currentMemberNumber').textContent=currentProfile.member_number||'Non attribué';
-  const companyLabels={
-    employee:'Employé de Vory V Industry',
-    associate:'Associé de Vory V Industry',
-    manager:'Gestionnaire de Vory V Industry',
-    pdg:'Patron de Vory V Industry'
-  };
-  $('profileCompany').textContent=companyLabels[currentProfile.company_rank]
-    || 'Ne fait pas partie de l’entreprise';
-  const gangLabels={
-    gang_member:'Membre de la Vory V Zakone',
-    right_hand:'Bras droit de la Vory V Zakone',
-    leader:'Leader de la Vory V Zakone'
-  };
-  $('profileGang').textContent=gangLabels[currentProfile.gang_rank]
-    || 'Ne fait pas partie du Gang';
-  setProfileAvatar(currentProfile.avatar_url);
-}
-
-(async()=>{if(await loadIdentity(['member','moderator','admin'])){if(typeof initPage==='function')await initPage();}})();
+$('logoutBtn').onclick=async()=>{await db.auth.signOut();window.location.href='../index.html'};
+(async()=>{if(!db)return;const {data:{session}}=await db.auth.getSession();if(session)await showApp(session)})();
 </script></body></html>
