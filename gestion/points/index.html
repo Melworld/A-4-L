@@ -152,7 +152,7 @@ function renderMemberPanel(){
   if($('memberName')) $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
   if($('memberRole')) $('memberRole').textContent=roleLabel(currentProfile.role);
   if($('memberNumber')) $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  if($('memberEmail')) $('memberEmail').textContent=currentUser.email||'—';
+  if($('memberEmail')) $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
   if($('memberMoney')) $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   if($('memberAvatar')&&currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
