@@ -197,11 +197,52 @@ $('avatarInput').onchange=async e=>{
   const file=e.target.files?.[0];e.target.value='';if(!file)return;
   if(!['image/png','image/jpeg','image/webp'].includes(file.type)){return $('avatarMsg').textContent='PNG, JPG ou WEBP uniquement.'}
   if(file.size>5*1024*1024){return $('avatarMsg').textContent='5 Mo maximum.'}
-  $('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;
-  const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}
-  const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}
-  const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
-  currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
+  $('avatarMsg').textContent='Envoi...';
+
+  // On stocke toujours l'avatar au même emplacement :
+  // avatars/UID/avatar.png
+  const path=currentUser.id+'/avatar.png';
+
+  const {error:upErr}=await db.storage
+    .from('avatars')
+    .upload(path,file,{
+      upsert:true,
+      contentType:file.type,
+      cacheControl:'3600'
+    });
+
+  if(upErr){
+    $('avatarMsg').textContent='Erreur upload : '+upErr.message;
+    return;
+  }
+
+  // URL exacte enregistrée dans profiles.avatar_url
+  const url=window.VORY_SUPABASE_URL
+    +'/storage/v1/object/public/avatars/'
+    +currentUser.id
+    +'/avatar.png';
+
+  const {data:updatedProfile,error:profileErr}=await db
+    .from('profiles')
+    .update({avatar_url:url})
+    .eq('id',currentUser.id)
+    .select('avatar_url')
+    .single();
+
+  if(profileErr){
+    console.error('Erreur profiles.avatar_url :',profileErr);
+    $('avatarMsg').textContent='Image envoyée, mais avatar_url n’a pas pu être enregistré : '+profileErr.message;
+    return;
+  }
+
+  if(!updatedProfile?.avatar_url){
+    $('avatarMsg').textContent='Image envoyée, mais avatar_url est toujours vide dans profiles.';
+    return;
+  }
+
+  currentProfile.avatar_url=updatedProfile.avatar_url;
+  setProfileAvatar(updatedProfile.avatar_url);
+  $('avatarMsg').textContent='Photo mise à jour et enregistrée dans le profil.';
 }
 
 $('newMemberNumber').addEventListener('input',()=>{
