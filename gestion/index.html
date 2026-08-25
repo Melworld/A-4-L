@@ -128,13 +128,13 @@ a{color:inherit}
 </div>
 
   <div class="dashboard-grid">
-    <a class="dashboard-tile profile-wide" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulter tes informations, ta photo de profil et modifier ton mot de passe.</p></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile profile-wide" href="profil/"><div><div class="dashboard-icon">👤</div><h3>Mon Profil</h3><p>Consulte / Modifie tes informations, ta photo de profil, ton mot de passe et tes achats sur la Boutique RP.</p></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder aux informations et à la gestion de ton entreprise.  EN DEV</p><div class="lock-note" id="lockEntreprise"></div></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileEntreprise" href="entreprise/"><div><div class="dashboard-icon">🏢</div><h3>Entreprise</h3><p>Accéder à l'entreprise. | <strong style="color:#ef4444;">🔴 En développement</strong></p><div class="lock-note" id="lockEntreprise"></div></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise.  EN DEV</p><div class="lock-note" id="lockVehicule"></div></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileVehicule" href="vehicules/"><div><div class="dashboard-icon">🚘</div><h3>Véhicule d'entreprise</h3><p>Consulter et gérer les véhicules liés à ton entreprise. | <strong style="color:#ef4444;">🔴 En développement</strong></p><div class="lock-note" id="lockVehicule"></div></div><div class="dashboard-arrow">→</div></a>
 
-    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang.  EN DEV</p><div class="lock-note" id="lockGang"></div></div><div class="dashboard-arrow">→</div></a>
+    <a class="dashboard-tile" id="tileGang" href="gang/"><div><div class="dashboard-icon">♠️</div><h3>Gang</h3><p>Accéder à l'espace et aux informations de ton gang. | <strong style="color:#ef4444;">🔴 En développement</strong></p><div class="lock-note" id="lockGang"></div></div><div class="dashboard-arrow">→</div></a>
 
     <a class="dashboard-tile" id="tilePoints" href="points/"><div><div class="dashboard-icon">📍</div><h3>Points de carte</h3><p>Ajouter, modifier et organiser les points visibles sur la carte.</p></div><div class="dashboard-arrow">→</div></a>
 
@@ -150,9 +150,16 @@ const $=id=>document.getElementById(id);let db=null,currentUser=null,currentProf
 if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
 function roleLabel(role){return role==='admin'?'Administrateur':role==='moderator'?'Modérateur':'Membre'}
 async function resolveEmail(identifier){
-  if(identifier.includes('@'))return identifier;
-  const {data,error}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:identifier});
-  return error?null:data;
+  const {data,error}=await db.rpc('resolve_login_identifier',{
+    p_identifier:identifier
+  });
+
+  if(error){
+    console.error('resolve_login_identifier:',error);
+    return null;
+  }
+
+  return data||null;
 }
 function setTileLocked(tileId,noteId,locked,message){
   const tile=$(tileId),note=$(noteId);
