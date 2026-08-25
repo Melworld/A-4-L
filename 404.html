@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>404 — Vory V Industry</title>
+<style>
+:root{
+  --bg:#07070a;
+  --panel:#101014;
+  --purple:#9333ea;
+  --purple2:#6d28d9;
+  --orange:#f97316;
+  --text:#f8fafc;
+  --muted:#9393a3;
+  --line:rgba(255,255,255,.09);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  overflow:hidden;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 20%,rgba(147,51,234,.16),transparent 30%),
+    radial-gradient(circle at 85% 75%,rgba(249,115,22,.07),transparent 27%),
+    linear-gradient(135deg,#050507,#0b0910 52%,#060608);
+}
+body:before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 75%,transparent);
+}
+.noise{
+  position:fixed;inset:0;pointer-events:none;opacity:.28;
+  background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(255,255,255,.012) 3px);
+}
+.glow{
+  position:absolute;width:520px;height:520px;border-radius:50%;
+  filter:blur(110px);opacity:.14;pointer-events:none;
+}
+.glow.one{background:var(--purple);left:-230px;top:-170px}
+.glow.two{background:var(--orange);right:-300px;bottom:-260px}
+
+.page{
+  min-height:100%;
+  width:min(1300px,calc(100% - 42px));
+  margin:auto;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  position:relative;
+  z-index:1;
+}
+header{
+  min-height:92px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+.brand{
+  display:flex;align-items:center;gap:13px;
+  font-weight:950;letter-spacing:.02em;
+}
+.logo{
+  width:39px;height:32px;position:relative;
+  filter:drop-shadow(0 0 18px rgba(147,51,234,.4));
+}
+.logo:before,.logo:after{
+  content:"";position:absolute;inset:0;margin:auto;
+  width:34px;height:17px;border-radius:3px;
+  transform:rotate(30deg) skewX(-18deg);
+}
+.logo:before{background:linear-gradient(90deg,var(--purple),#ec4899)}
+.logo:after{width:20px;height:9px;background:#2563eb;top:13px;left:8px}
+.brand small{
+  display:block;color:#71717f;font-size:9px;
+  letter-spacing:.22em;text-transform:uppercase;margin-top:3px;
+}
+.status{
+  display:flex;align-items:center;gap:8px;
+  color:#7d7d89;font-size:11px;font-weight:800;
+}
+.status:before{
+  content:"";width:7px;height:7px;border-radius:50%;
+  background:var(--orange);box-shadow:0 0 12px rgba(249,115,22,.7);
+}
+
+main{
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);
+  align-items:center;
+  gap:70px;
+  padding:25px 0 55px;
+}
+.code-wrap{position:relative}
+.code{
+  font-size:clamp(150px,22vw,310px);
+  line-height:.72;
+  font-weight:1000;
+  letter-spacing:-.09em;
+  color:transparent;
+  -webkit-text-stroke:2px rgba(255,255,255,.11);
+  position:relative;
+  user-select:none;
+}
+.code:after{
+  content:"404";position:absolute;inset:0;
+  color:rgba(147,51,234,.055);
+  -webkit-text-stroke:0;
+  transform:translate(8px,6px);
+  filter:blur(1px);
+}
+.tag{
+  display:inline-flex;align-items:center;gap:9px;
+  margin-top:28px;color:#c4b5fd;font-size:11px;
+  font-weight:950;letter-spacing:.16em;text-transform:uppercase;
+}
+.tag:before{content:"";width:38px;height:1px;background:var(--purple)}
+.content{
+  border-left:1px solid var(--line);
+  padding:20px 0 20px 52px;
+  position:relative;
+}
+.content:before{
+  content:"";position:absolute;left:-2px;top:58px;
+  width:3px;height:75px;border-radius:99px;
+  background:linear-gradient(var(--purple),var(--orange));
+  box-shadow:0 0 20px rgba(147,51,234,.45);
+}
+.eyebrow{
+  color:var(--orange);font-size:11px;font-weight:950;
+  letter-spacing:.17em;text-transform:uppercase;margin-bottom:14px;
+}
+h1{
+  margin:0 0 17px;
+  font-size:clamp(36px,5vw,62px);
+  line-height:.98;letter-spacing:-.045em;
+}
+h1 span{color:#a855f7}
+.description{
+  color:var(--muted);font-size:15px;line-height:1.75;
+  max-width:540px;margin:0 0 30px;
+}
+.quote{
+  padding:13px 15px;
+  border:1px solid rgba(147,51,234,.18);
+  border-left:3px solid var(--purple);
+  background:rgba(147,51,234,.045);
+  border-radius:0 10px 10px 0;
+  color:#c7c7d0;font-size:12px;line-height:1.6;
+  max-width:500px;margin-bottom:29px;
+}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:46px;padding:0 18px;border-radius:11px;
+  text-decoration:none;font-size:12px;font-weight:950;
+  transition:.18s transform,.18s background,.18s border-color;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{
+  color:#fff;border:1px solid transparent;
+  background:linear-gradient(100deg,var(--purple2),#a21caf);
+  box-shadow:0 10px 35px rgba(109,40,217,.18);
+}
+.btn.secondary{
+  color:#c7c7d0;border:1px solid var(--line);
+  background:rgba(255,255,255,.025);
+}
+.btn.secondary:hover{background:rgba(255,255,255,.06)}
+.visual-slot{
+  margin-top:32px;
+  max-width:500px;
+  min-height:74px;
+  display:flex;align-items:center;
+  gap:14px;padding:13px 15px;
+  border:1px dashed rgba(255,255,255,.09);
+  border-radius:12px;color:#5f5f6c;
+  font-size:10px;line-height:1.5;
+}
+.visual-slot .box{
+  width:44px;height:44px;flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;display:grid;place-items:center;font-size:18px;
+}
+footer{
+  min-height:62px;
+  border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  gap:20px;color:#565662;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+@media(max-width:850px){
+  body{overflow:auto}
+  .page{min-height:100vh}
+  main{grid-template-columns:1fr;gap:20px;padding-top:50px}
+  .code{font-size:clamp(130px,45vw,240px)}
+  .content{border-left:0;border-top:1px solid var(--line);padding:38px 0 30px}
+  .content:before{left:0;top:-2px;width:80px;height:3px}
+}
+@media(max-width:520px){
+  .page{width:min(100% - 28px,1300px)}
+  header{min-height:78px}.status{display:none}
+  .brand{font-size:13px}
+  .code{font-size:42vw}
+  .actions{display:grid}.btn{width:100%}
+  footer{align-items:flex-start;flex-direction:column;padding:18px 0}
+}
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<div class="page">
+  <header>
+    <div class="brand">
+      <span class="logo"></span>
+      <div>
+        Vory V Industry
+        <small>Accès restreint</small>
+      </div>
+    </div>
+    <div class="status">Zone introuvable</div>
+  </header>
+
+  <main>
+    <section class="code-wrap">
+      <div class="code">404</div>
+      <div class="tag">Mauvais territoire</div>
+    </section>
+
+    <section class="content">
+      <div class="eyebrow">Erreur 404</div>
+      <h1>Vous vous êtes<br><span>perdu en chemin.</span></h1>
+
+      <p class="description">
+        Cette page n’existe pas, a été déplacée ou vous n’êtes simplement
+        pas censé être ici. Le mieux serait probablement de rebrousser chemin.
+      </p>
+
+      <div class="quote">
+        « Certaines portes de la Vory V ne sont pas faites pour être ouvertes. »
+      </div>
+
+      <div class="actions">
+        <a class="btn primary" href="/A-4-L/">← Retour à l’accueil</a>
+        <a class="btn secondary" href="javascript:history.back()">Page précédente</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Vory V Zakone & Industry</span>
+    <span>A DEFINIR</span>
+  </footer>
+</div>
+</body>
+</html>
