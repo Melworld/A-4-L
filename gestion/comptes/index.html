@@ -69,14 +69,14 @@ a{color:inherit}
 <div class="card">
   <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
   <div class="muted" style="margin:-4px 0 18px">
-    Il suffit de mettre le nom rp de la personne et de faire Entrée afin de remplir toute ses informations rapidement
+    Il suffit de saisir le nom RP de la personne et d’appuyer sur Entrée afin de remplir rapidement toutes ses informations.
   </div>
 
   <div class="row">
     <label>Nom RP</label>
     <input id="accRp" list="rpNamesList" autocomplete="off" placeholder="Ex. Jean Pascal">
     <datalist id="rpNamesList"></datalist>
-    <div class="muted" id="rpLookupMsg" style="margin-top:6px">Choisis ou écris un Nom RP existant.</div>
+    <div class="muted" id="rpLookupMsg" style="margin-top:6px">Choisis ou saisis un nom RP existant.</div>
   </div>
 
   <div class="grid">
@@ -219,7 +219,7 @@ async function fillAccountFromRp(){
   const name=$('accRp').value.trim().toLowerCase();
   const msg=$('rpLookupMsg');
   if(!name){
-    if(msg)msg.textContent='Choisis ou écris un Nom RP existant.';
+    if(msg)msg.textContent='Choisis ou saisis un nom RP existant.';
     return;
   }
 
@@ -228,7 +228,7 @@ async function fillAccountFromRp(){
   );
 
   if(!profile){
-    if(msg)msg.textContent='Aucun compte trouvé avec ce Nom RP.';
+    if(msg)msg.textContent='Aucun compte trouvé avec ce nom RP.';
     return;
   }
 
@@ -248,7 +248,7 @@ async function fillAccountFromRp(){
     $('accEmail').value=emailError?'':(emailData||'');
   }
 
-  if(msg)msg.textContent='Compte trouvé : informations remplies automatiquement.';
+  if(msg)msg.textContent='Compte trouvé : les informations ont été remplies automatiquement.';
 }
 
 $('accRp').addEventListener('change',fillAccountFromRp);
@@ -273,8 +273,6 @@ $('saveAccount').onclick=async()=>{
     gang_rank:$('accGangRank').value||null
   };
 
-  // Le profil existe déjà grâce à Supabase Auth + au trigger d'inscription.
-  // On le MODIFIE seulement : un upsert tente aussi un INSERT et se fait bloquer par la RLS.
   const {data:updated,error}=await db
     .from('profiles')
     .update({
@@ -294,7 +292,7 @@ $('saveAccount').onclick=async()=>{
   }
 
   if(!updated){
-    $('accountMsg').textContent='Aucun profil modifié. Vérifie les permissions administrateur Supabase.';
+    $('accountMsg').textContent='Aucun profil modifié. Vérifie les permissions administrateur.';
     return;
   }
 
