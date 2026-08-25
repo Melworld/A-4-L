@@ -73,9 +73,25 @@ a{color:inherit}
 .profile-action-link{background:var(--panel);border:1px solid var(--line);border-radius:14px;text-decoration:none;padding:17px 18px;font-weight:900;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .profile-action-link::after{content:"›";font-size:25px;color:var(--accent)}
 .profile-action-link:hover,.profile-action summary:hover{background:#151518}
+
+.profile-layout{display:grid;grid-template-columns:285px minmax(0,1fr);gap:22px;align-items:start}
+.profile-sidebar{position:sticky;top:24px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:10px}
+.profile-nav-btn,.profile-nav-link{width:100%;border:0;background:transparent;color:#aaa;text-decoration:none;text-align:left;padding:13px 14px;border-radius:10px;cursor:pointer;font-weight:850;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.profile-nav-btn::after,.profile-nav-link::after{content:"›";font-size:20px;color:#666}
+.profile-nav-btn:hover,.profile-nav-link:hover{background:#18181b;color:#fff}
+.profile-nav-btn.active{background:#1b1b1f;color:#fff}.profile-nav-btn.active::after{color:var(--accent)}
+.profile-nav-separator{height:1px;background:var(--line);margin:10px 7px}
+.profile-content{min-width:0}
+.profile-view{display:none}.profile-view.active{display:block}
+.profile-view-title{margin:0 0 16px;font-size:24px}
+.profile-view .card{margin-bottom:0}
+@media(max-width:780px){
+  .profile-layout{grid-template-columns:1fr}
+  .profile-sidebar{position:static}
+}
 </style></head>
 <body><div class="page-shell">
-<div class="page-top"><div><div class="page-kicker">Vory V — Espace Membre</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à mon Espace Membre</a></div>
+<div class="page-top"><div><div class="page-kicker">Vory V — Espace Membre</div><h1>Mon profil</h1></div><a class="back-link" href="../index.html">← Retour à mon Espace Membre</a></div>
 <div class="card" style="padding:24px">
   <div class="member-panel" style="margin:0;border:0;padding:0;background:transparent">
     <button class="member-avatar" id="profileAvatar" type="button" style="cursor:pointer;color:#fff">👤</button>
@@ -97,63 +113,55 @@ a{color:inherit}
     <div class="stat"><span>Gang</span><b id="profileGang">—</b></div>
   </div>
 </div>
-<div class="profile-actions">
+<div class="profile-layout">
+  <aside class="profile-sidebar">
+    <button class="profile-nav-btn active" type="button" data-profile-view="email">Modifier mon adresse mail RP</button>
+    <button class="profile-nav-btn" type="button" data-profile-view="number">Modifier mon numéro RP</button>
+    <button class="profile-nav-btn" type="button" data-profile-view="password">Modifier mon mot de passe</button>
 
-  <details class="profile-action">
-    <summary>Modifier mon adresse mail RP</summary>
-    <div class="profile-action-body">
-      <div class="muted" style="margin-bottom:12px">Adresse actuelle : <b id="currentEmailRp">—</b></div>
-      <div class="row">
-        <label>Nouvelle adresse mail RP</label>
-        <input id="newEmailRp" type="email" placeholder="email@a4l.fr">
+    <div class="profile-nav-separator"></div>
+
+    <a class="profile-nav-link" href="../../boutique/index.html">Accéder à mes achats sur la Boutique</a>
+    <a class="profile-nav-link" href="entreprise.html">Faire une demande pour rejoindre l'Entreprise</a>
+    <a class="profile-nav-link" href="gang.html">Faire une demande pour rejoindre le Gang</a>
+
+    <div class="profile-nav-separator"></div>
+
+    <a class="profile-nav-link" href="suppression.html">Faire une demande pour supprimer mon compte</a>
+  </aside>
+
+  <section class="profile-content">
+    <div class="profile-view active" id="profileView-email">
+      <div class="card">
+        <h2 class="profile-view-title">Modifier mon adresse mail RP</h2>
+        <div class="muted" style="margin-bottom:12px">Adresse actuelle : <b id="currentEmailRp">—</b></div>
+        <div class="row"><label>Nouvelle adresse mail RP</label><input id="newEmailRp" type="email" placeholder="email@a4l.fr"></div>
+        <button class="btn primary" id="changeEmailRp">Enregistrer</button>
+        <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
       </div>
-      <button class="btn primary" id="changeEmailRp">Enregistrer</button>
-      <div class="muted" id="emailRpMsg" style="margin-top:10px"></div>
     </div>
-  </details>
 
-  <details class="profile-action">
-    <summary>Modifier mon numéro RP</summary>
-    <div class="profile-action-body">
-      <div class="muted" style="margin-bottom:12px">Numéro actuel : <b id="currentMemberNumber">—</b></div>
-      <div class="row">
-        <label>Nouveau numéro RP</label>
-        <input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14">
+    <div class="profile-view" id="profileView-number">
+      <div class="card">
+        <h2 class="profile-view-title">Modifier mon numéro RP</h2>
+        <div class="muted" style="margin-bottom:12px">Numéro actuel : <b id="currentMemberNumber">—</b></div>
+        <div class="row"><label>Nouveau numéro RP</label><input id="newMemberNumber" placeholder="00-00-00-00-00" maxlength="14"></div>
+        <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
+        <div class="muted" id="numberMsg" style="margin-top:10px"></div>
       </div>
-      <button class="btn primary" id="changeMemberNumber">Enregistrer</button>
-      <div class="muted" id="numberMsg" style="margin-top:10px"></div>
     </div>
-  </details>
 
-  <details class="profile-action">
-    <summary>Modifier le mot de passe de mon compte (Site Vory V)</summary>
-    <div class="profile-action-body">
-      <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
-      <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
-      <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
-      <button class="btn primary" id="changePw">Enregistrer</button>
-      <div class="muted" id="pwMsg" style="margin-top:10px"></div>
+    <div class="profile-view" id="profileView-password">
+      <div class="card">
+        <h2 class="profile-view-title">Modifier le mot de passe de mon compte</h2>
+        <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
+        <div class="row"><label>Nouveau mot de passe</label><input id="pw1" type="password" autocomplete="new-password"></div>
+        <div class="row"><label>Confirmer le nouveau mot de passe</label><input id="pw2" type="password" autocomplete="new-password"></div>
+        <button class="btn primary" id="changePw">Enregistrer</button>
+        <div class="muted" id="pwMsg" style="margin-top:10px"></div>
+      </div>
     </div>
-  </details>
-
-  <div style="height:10px"></div>
-
-  <a class="profile-action-link" href="../../boutique/index.html">
-    <span>Accéder à mes achats sur la Boutique</span>
-  </a>
-  <a class="profile-action-link" href="gang.html">
-    <span>Faire une demande pour Rejoindre l'Entreprise</span>
-  </a>
-  <a class="profile-action-link" href="gang.html">
-    <span>Faire une demande pour Rejoindre le Gang</span>
-  </a>
-
-  <div style="height:10px"></div>
-
-  <a class="profile-action-link" href="gang.html">
-    <span>Faire une demande pour supprimer son compte</span>
-  </a>
-
+  </section>
 </div>
 
 </div>
@@ -202,6 +210,14 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
   return true;
 }
 
+
+document.querySelectorAll('.profile-nav-btn[data-profile-view]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const target=btn.dataset.profileView;
+    document.querySelectorAll('.profile-nav-btn[data-profile-view]').forEach(x=>x.classList.toggle('active',x===btn));
+    document.querySelectorAll('.profile-view').forEach(view=>view.classList.toggle('active',view.id==='profileView-'+target));
+  });
+});
 
 function setProfileAvatar(url){if(!url){$('profileAvatar').innerHTML='👤';return}const clean=String(url).split('?v=')[0];$('profileAvatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Photo">'}
 $('profileAvatar').onclick=()=>$('avatarInput').click();
