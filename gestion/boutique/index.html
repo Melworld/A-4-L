@@ -1,5 +1,9 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vory V — Demandes boutique</title>
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vory V — Demandes boutique</title>
 <style>
 :root{
   --bg:#09090b;
@@ -9,95 +13,108 @@
   --line:#25252b;
   --accent:#f97316;
   --accent2:#fb923c;
+  --ok:#166534;
 }
 *{box-sizing:border-box}
 html{color-scheme:dark}
 body{
   margin:0;
   min-height:100vh;
-  background:
-    radial-gradient(circle at 15% 8%,rgba(249,115,22,.12),transparent 28%),
-    radial-gradient(circle at 90% 90%,rgba(147,51,234,.06),transparent 30%),
-    var(--bg);
   color:#fff;
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 18% 10%,rgba(249,115,22,.14),transparent 29%),
+    radial-gradient(circle at 84% 84%,rgba(147,51,234,.055),transparent 32%),
+    linear-gradient(135deg,#070708,#0c0c0f 52%,#080809);
 }
-.page{
+button{font:inherit}
+a{color:inherit}
+
+.page-shell{
   width:min(1220px,calc(100% - 48px));
   margin:0 auto;
-  padding:54px 0 100px;
+  padding:48px 0 100px;
 }
-.top{
+
+.page-top{
   display:flex;
-  justify-content:space-between;
   align-items:center;
-  gap:28px;
-  margin-bottom:42px;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:38px;
   padding-bottom:26px;
   border-bottom:1px solid var(--line);
 }
-.k{
+.kicker{
   color:var(--accent);
   font-size:12px;
   font-weight:900;
-  letter-spacing:.17em;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  margin-bottom:8px;
+  margin-bottom:7px;
 }
-h1{
+.page-top h1{
   margin:0;
-  font-size:clamp(32px,4vw,46px);
-  letter-spacing:-.035em;
+  font-size:clamp(32px,4vw,44px);
+  letter-spacing:-.03em;
 }
-.back{
-  color:#c4c4cc;
+.back-link{
   text-decoration:none;
+  color:#c7c7ce;
+  border:1px solid var(--line);
+  background:#151518;
+  padding:11px 15px;
+  border-radius:11px;
   font-size:13px;
   font-weight:850;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.025);
-  border-radius:11px;
-  padding:11px 15px;
   white-space:nowrap;
 }
-.back:hover{background:rgba(255,255,255,.06);color:#fff}
+.back-link:hover{background:#1b1b20;color:#fff}
 
-.stats{
+.summary-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
   gap:18px;
   margin-bottom:30px;
 }
-.stat{
+.summary-card{
   min-height:112px;
   display:flex;
   flex-direction:column;
   justify-content:center;
-  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+  padding:22px 24px;
   border:1px solid var(--line);
   border-radius:17px;
-  padding:22px 24px;
+  background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));
 }
-.stat span{
+.summary-card span{
+  display:block;
   color:var(--muted);
   font-size:12px;
   font-weight:750;
   margin-bottom:9px;
 }
-.stat b{
+.summary-card b{
   font-size:27px;
   line-height:1;
 }
 
-.card{
+.section-card{
   background:rgba(17,17,19,.94);
   border:1px solid var(--line);
   border-radius:18px;
   padding:26px;
-  margin-bottom:26px;
+  margin-bottom:28px;
 }
-.card h2{
-  margin:0 0 7px;
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:6px;
+}
+.section-head h2{
+  margin:0;
   font-size:23px;
   letter-spacing:-.02em;
 }
@@ -106,36 +123,48 @@ h1{
   font-size:13px;
   line-height:1.6;
 }
-.orders{
+.refresh{
+  border:1px solid #303036;
+  border-radius:10px;
+  padding:9px 12px;
+  background:#1b1b1f;
+  color:#fff;
+  font-weight:850;
+  cursor:pointer;
+}
+.refresh:hover{background:#222228}
+
+.order-list{
   display:grid;
-  gap:15px;
+  gap:16px;
   margin-top:24px;
 }
 .order{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 180px;
+  gap:32px;
+  align-items:center;
+  padding:21px 22px;
   background:var(--panel2);
   border:1px solid var(--line);
   border-radius:15px;
-  padding:20px 22px;
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 170px;
-  gap:30px;
-  align-items:center;
 }
-.name{
+.order-main{min-width:0}
+.order-name{
   font-size:18px;
   font-weight:950;
   margin-bottom:9px;
 }
-.meta{
+.order-meta{
   display:flex;
-  align-items:center;
-  gap:9px 18px;
   flex-wrap:wrap;
+  gap:9px 18px;
+  align-items:center;
   color:var(--muted);
   font-size:12px;
   line-height:1.5;
 }
-.items{
+.order-items{
   margin-top:14px;
   padding-top:13px;
   border-top:1px solid rgba(255,255,255,.06);
@@ -143,15 +172,32 @@ h1{
   font-size:13px;
   line-height:1.65;
 }
-.price{
+.order-side{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:center;
+}
+.order-price{
+  text-align:right;
   font-size:22px;
   font-weight:950;
-  text-align:right;
-  margin-bottom:10px;
+  margin-bottom:11px;
 }
-.btn{
-  display:block;
+.staff-select{
   width:100%;
+  margin-bottom:9px;
+  background:#151518;
+  color:#fff;
+  border:1px solid #303036;
+  border-radius:10px;
+  padding:10px 11px;
+  outline:none;
+  font-size:12px;
+  font-weight:800;
+}
+.staff-select:focus{border-color:var(--accent)}
+.validate-btn{
   border:0;
   border-radius:10px;
   padding:11px 14px;
@@ -160,7 +206,19 @@ h1{
   font-weight:950;
   cursor:pointer;
 }
-.btn:hover{background:var(--accent2)}
+.validate-btn:hover{background:var(--accent2)}
+.delete-btn{
+  border:1px solid #5f2227;
+  border-radius:10px;
+  padding:10px 13px;
+  background:#3a1518;
+  color:#fecaca;
+  font-weight:900;
+  cursor:pointer;
+  margin-top:9px;
+}
+.delete-btn:hover{background:#4a191d}
+
 .badge{
   display:inline-flex;
   align-items:center;
@@ -168,39 +226,373 @@ h1{
   border-radius:999px;
   font-size:10px;
   font-weight:900;
-  background:#422006;
-  color:#fdba74;
 }
-.done{background:#052e16;color:#86efac}
+.badge.pending{
+  color:#fdba74;
+  background:#422006;
+}
+.badge.validated{
+  color:#86efac;
+  background:#052e16;
+}
+
 .empty{
-  text-align:center;
-  color:var(--muted);
   padding:34px 20px;
+  text-align:center;
   border:1px dashed var(--line);
   border-radius:13px;
   background:rgba(255,255,255,.012);
+  color:var(--muted);
+  font-size:13px;
 }
+
+.history-order{
+  opacity:.9;
+}
+.history-order .order-price{
+  margin-bottom:0;
+}
+
 @media(max-width:760px){
-  .page{width:min(100% - 28px,1220px);padding-top:30px}
-  .top{align-items:flex-start;flex-direction:column;margin-bottom:28px}
-  .stats{grid-template-columns:1fr;gap:12px}
-  .stat{min-height:92px}
-  .card{padding:19px}
-  .order{grid-template-columns:1fr;gap:18px;padding:17px}
-  .price{text-align:left}
-  .btn{width:auto}
+  .page-shell{
+    width:min(100% - 28px,1220px);
+    padding-top:28px;
+  }
+  .page-top{
+    align-items:flex-start;
+    flex-direction:column;
+    margin-bottom:28px;
+  }
+  .summary-grid{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+  .summary-card{min-height:92px}
+  .section-card{padding:19px}
+  .section-head{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .order{
+    grid-template-columns:1fr;
+    gap:18px;
+    padding:17px;
+  }
+  .order-price{text-align:left}
+  .order-side{align-items:flex-start}
+  .validate-btn{width:100%}
 }
 </style>
 </head>
-<body><div class="page"><div class="top"><div><div class="k">Vory V — Gestion</div><h1>Demandes boutique</h1></div><a class="back" href="../">← Retour à la gestion</a></div>
-<div class="stats"><div class="stat"><span>En attente</span><b id="pc">0</b></div><div class="stat"><span>Validées</span><b id="vc">0</b></div><div class="stat"><span>Total validé</span><b id="vt">0 $</b></div></div>
-<div class="card"><h2>Commandes à traiter</h2><div class="muted">Admins et modérateurs peuvent valider.</div><div class="orders" id="pending"></div></div>
-<div class="card"><h2>Historique des achats boutique</h2><div class="muted">Le membre du staff ayant validé est conservé.</div><div class="orders" id="history"></div></div></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../../database.js"></script><script>
-const db=(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())?window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY):null,$=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('fr-FR')+' $';let user,profile;
-const date=v=>v?new Date(v).toLocaleString('fr-FR'):'—',items=v=>Array.isArray(v)?v.map(i=>(i.quantity||1)+'× '+i.name).join(' • '):'';
-function node(o,done){let d=document.createElement('div');d.className='order';d.innerHTML=`<div><div class="name">${o.buyer_name||'—'}</div><div class="meta"><span class="badge ${done?'done':''}">${done?'Validée':'En attente'}</span><span>N° RP : ${o.buyer_number||'—'}</span><span>Mail RP : ${o.buyer_email||'—'}</span><span>${date(o.created_at)}</span>${done?`<span>Validée par : ${o.validator_name||'Staff'}</span><span>${date(o.validated_at)}</span>`:''}</div><div class="items">${items(o.items)}</div></div><div><div class="price">${money(o.total)}</div>${done?'':`<button class="btn" data-id="${o.id}">✓ Valider</button>`}</div>`;if(!done)d.querySelector('.btn').onclick=()=>validate(o.id);return d}
-async function load(){let {data,error}=await db.from('shop_orders').select('*').order('created_at',{ascending:false});if(error){$('pending').innerHTML='<div class="empty">'+error.message+'</div>';return}let p=data.filter(x=>x.status==='pending'),h=data.filter(x=>x.status==='validated');$('pc').textContent=p.length;$('vc').textContent=h.length;$('vt').textContent=money(h.reduce((s,x)=>s+Number(x.total||0),0));$('pending').innerHTML='';$('history').innerHTML='';p.length?p.forEach(x=>$('pending').append(node(x,false))):$('pending').innerHTML='<div class="empty">Aucune commande en attente.</div>';h.length?h.forEach(x=>$('history').append(node(x,true))):$('history').innerHTML='<div class="empty">Aucun achat validé.</div>'}
-async function validate(id){if(!confirm('Valider cette commande ?'))return;let {error}=await db.from('shop_orders').update({status:'validated',validated_at:new Date().toISOString(),validated_by:user.id,validator_name:profile.rp_name||user.email}).eq('id',id);if(error)return alert(error.message);load()}
-(async()=>{if(!db)return location.href='../';let {data:{session}}=await db.auth.getSession();user=session?.user;if(!user)return location.href='../';let r=await db.from('profiles').select('*').eq('id',user.id).maybeSingle();profile=r.data;if(r.error||!profile||!['admin','moderator'].includes(profile.role))return location.href='../';load()})();
-</script></body></html>
+<body>
+
+<div class="page-shell">
+
+  <div class="page-top">
+    <div>
+      <div class="kicker">Vory V — Gestion</div>
+      <h1>Demandes boutique</h1>
+    </div>
+    <a class="back-link" href="../">← Retour à la gestion</a>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <span>Commandes en attente</span>
+      <b id="pendingCount">0</b>
+    </div>
+    <div class="summary-card">
+      <span>Commandes validées</span>
+      <b id="validatedCount">0</b>
+    </div>
+    <div class="summary-card">
+      <span>Total des achats validés</span>
+      <b id="validatedTotal">0 $</b>
+    </div>
+  </div>
+
+  <section class="section-card">
+    <div class="section-head">
+      <div>
+        <h2>Commandes à traiter</h2>
+        <div class="muted">
+          Les administrateurs et modérateurs peuvent consulter puis valider les demandes reçues depuis la boutique.
+        </div>
+      </div>
+      <button class="refresh" id="refreshBtn">Actualiser</button>
+    </div>
+
+    <div class="order-list" id="pendingOrders">
+      <div class="empty">Chargement des commandes...</div>
+    </div>
+  </section>
+
+  <section class="section-card">
+    <div class="section-head">
+      <div>
+        <h2>Historique des achats boutique</h2>
+        <div class="muted">
+          Une commande validée est automatiquement déplacée ici avec le nom du membre du staff qui l'a traitée.
+        </div>
+      </div>
+    </div>
+
+    <div class="order-list" id="orderHistory">
+      <div class="empty">Chargement de l'historique...</div>
+    </div>
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../database.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+
+let db=null;
+let currentUser=null;
+let currentProfile=null;
+let shopStaff=[];
+
+if(window.vorySupabaseConfigured&&window.vorySupabaseConfigured()){
+  db=window.supabase.createClient(
+    window.VORY_SUPABASE_URL,
+    window.VORY_SUPABASE_KEY
+  );
+}
+
+function money(value){
+  return Number(value||0).toLocaleString('fr-FR')+' $';
+}
+
+function formatDate(value){
+  if(!value)return '—';
+  return new Date(value).toLocaleString('fr-FR',{
+    day:'2-digit',
+    month:'2-digit',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+}
+
+function formatItems(items){
+  if(!Array.isArray(items))return '';
+  return items.map(item=>{
+    const quantity=Number(item.quantity||1);
+    const name=item.name||'Produit';
+    return quantity+'× '+name;
+  }).join(' • ');
+}
+
+function createOrderElement(order,isHistory=false){
+  const wrapper=document.createElement('div');
+  wrapper.className='order'+(isHistory?' history-order':'');
+
+  const main=document.createElement('div');
+  main.className='order-main';
+
+  const badge=isHistory
+    ? '<span class="badge validated">Validée</span>'
+    : '<span class="badge pending">En attente</span>';
+
+  const staffInfo=isHistory
+    ? '<span>Validée par : '+(order.validator_name||'Staff')+'</span>'+
+      '<span>'+formatDate(order.validated_at)+'</span>'
+    : '';
+
+  main.innerHTML=
+    '<div class="order-name">'+(order.buyer_name||'Client inconnu')+'</div>'+
+    '<div class="order-meta">'+
+      badge+
+      '<span>N° RP : '+(order.buyer_number||'—')+'</span>'+
+      '<span>Mail RP : '+(order.buyer_email||'—')+'</span>'+
+      '<span>Commande du '+formatDate(order.created_at)+'</span>'+
+      staffInfo+
+    '</div>'+
+    '<div class="order-items">'+(formatItems(order.items)||'Aucun détail produit')+'</div>';
+
+  const side=document.createElement('div');
+  side.className='order-side';
+
+  const price=document.createElement('div');
+  price.className='order-price';
+  price.textContent=money(order.total);
+
+  side.appendChild(price);
+
+  if(!isHistory){
+    const select=document.createElement('select');
+    select.className='staff-select';
+    select.innerHTML=
+      '<option value="">Choisir un admin / modo</option>'+
+      shopStaff.map(staff=>
+        '<option value="'+staff.id+'">'+
+        (staff.rp_name||staff.email||'Staff')+
+        ' — '+(staff.role==='admin'?'Administrateur':'Modérateur')+
+        '</option>'
+      ).join('');
+
+    const btn=document.createElement('button');
+    btn.className='validate-btn';
+    btn.textContent='✓ Valider la commande';
+    btn.onclick=()=>validateOrder(order.id,select.value);
+
+    side.append(select,btn);
+  }else{
+    const del=document.createElement('button');
+    del.className='delete-btn';
+    del.textContent='Supprimer de l’historique';
+    del.onclick=()=>deleteOrder(order.id);
+    side.appendChild(del);
+  }
+
+  wrapper.append(main,side);
+  return wrapper;
+}
+
+async function loadOrders(){
+  const {data,error}=await db
+    .from('shop_orders')
+    .select('*')
+    .order('created_at',{ascending:false});
+
+  if(error){
+    $('pendingOrders').innerHTML=
+      '<div class="empty">Erreur : '+error.message+'</div>';
+    $('orderHistory').innerHTML=
+      '<div class="empty">Impossible de charger l’historique.</div>';
+    return;
+  }
+
+  const all=data||[];
+  const pending=all.filter(order=>order.status==='pending');
+  const history=all.filter(order=>order.status==='validated');
+
+  $('pendingCount').textContent=pending.length;
+  $('validatedCount').textContent=history.length;
+  $('validatedTotal').textContent=money(
+    history.reduce((total,order)=>total+Number(order.total||0),0)
+  );
+
+  $('pendingOrders').innerHTML='';
+  if(!pending.length){
+    $('pendingOrders').innerHTML=
+      '<div class="empty">Aucune commande en attente.</div>';
+  }else{
+    pending.forEach(order=>{
+      $('pendingOrders').appendChild(createOrderElement(order,false));
+    });
+  }
+
+  $('orderHistory').innerHTML='';
+  if(!history.length){
+    $('orderHistory').innerHTML=
+      '<div class="empty">Aucun achat validé pour le moment.</div>';
+  }else{
+    history.forEach(order=>{
+      $('orderHistory').appendChild(createOrderElement(order,true));
+    });
+  }
+}
+
+async function validateOrder(orderId,staffId){
+  if(!staffId){
+    alert('Choisis d’abord un administrateur ou un modérateur.');
+    return;
+  }
+
+  const staff=shopStaff.find(s=>s.id===staffId);
+  if(!staff){
+    alert('Membre du staff introuvable.');
+    return;
+  }
+
+  if(!confirm('Valider cette commande au nom de '+(staff.rp_name||'ce membre du staff')+' ?')){
+    return;
+  }
+
+  const {error}=await db
+    .from('shop_orders')
+    .update({
+      status:'validated',
+      validated_at:new Date().toISOString(),
+      validated_by:staff.id,
+      validator_name:staff.rp_name||staff.email||'Staff'
+    })
+    .eq('id',orderId);
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await loadOrders();
+}
+
+async function deleteOrder(orderId){
+  if(!confirm('Supprimer définitivement cette commande de l’historique ?')){
+    return;
+  }
+
+  const {error}=await db
+    .from('shop_orders')
+    .delete()
+    .eq('id',orderId)
+    .eq('status','validated');
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await loadOrders();
+}
+
+$('refreshBtn').onclick=loadOrders;
+
+(async()=>{
+  if(!db){
+    location.href='../';
+    return;
+  }
+
+  const {data:{session}}=await db.auth.getSession();
+  currentUser=session?.user||null;
+
+  if(!currentUser){
+    location.href='../';
+    return;
+  }
+
+  const {data,error}=await db
+    .from('profiles')
+    .select('*')
+    .eq('id',currentUser.id)
+    .maybeSingle();
+
+  if(error||!data||!['admin','moderator'].includes(data.role)){
+    location.href='../';
+    return;
+  }
+
+  currentProfile=data;
+
+  const {data:staffData,error:staffError}=await db
+    .from('profiles')
+    .select('id,rp_name,role')
+    .in('role',['admin','moderator'])
+    .order('role')
+    .order('rp_name');
+
+  if(staffError){
+    alert('Impossible de charger la liste des administrateurs/modérateurs : '+staffError.message);
+    return;
+  }
+
+  shopStaff=staffData||[];
+  await loadOrders();
+})();
+</script>
+</body>
+</html>
