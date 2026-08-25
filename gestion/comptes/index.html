@@ -50,9 +50,6 @@ a{color:inherit}
   .member-panel{align-items:flex-start}.member-details{display:grid;gap:5px}.page-top h1{font-size:28px}
 }
 
-.request-item{background:#0d0d10;border:1px solid var(--line);border-radius:13px;padding:15px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
-.request-name{font-size:16px;font-weight:950}.request-meta{color:var(--muted);font-size:12px;margin-top:5px;line-height:1.6}.request-change{margin-top:8px;font-size:13px}.request-actions{display:flex;gap:7px}.btn.danger{background:#3a1518;color:#fecaca;border-color:#5f2227}
-@media(max-width:760px){.request-item{grid-template-columns:1fr}.request-actions{flex-wrap:wrap}}
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Comptes & rôles</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
@@ -69,11 +66,6 @@ a{color:inherit}
   </div>
 </div>
 
-
-<div class="card">
-  <div class="top"><div><h2>Demandes de modification</h2><div class="muted" style="margin-top:5px">Demandes d’email et de numéro RP envoyées par les membres.</div></div><button class="btn secondary" id="refreshRequests">Actualiser</button></div>
-  <div id="changeRequests" style="display:grid;gap:10px"></div>
-</div>
 
 <div class="card">
   <h2 style="margin-top:0">Ajouter / modifier un membre</h2>
@@ -108,7 +100,7 @@ a{color:inherit}
     </div>
     <div class="row">
       <label>Email</label>
-      <input id="accEmail" type="email" readonly placeholder="Email du compte">
+      <input id="accEmail" type="email" placeholder="Email RP du membre">
     </div>
 
     <div class="row">
@@ -155,7 +147,7 @@ function renderMemberPanel(){
   if($('memberName')) $('memberName').textContent=currentProfile.rp_name||'Sans Nom RP';
   if($('memberRole')) $('memberRole').textContent=roleLabel(currentProfile.role);
   if($('memberNumber')) $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  if($('memberEmail')) $('memberEmail').textContent=currentUser.email||'—';
+  if($('memberEmail')) $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
   if($('memberMoney')) $('memberMoney').textContent=Number(currentProfile.money||0).toLocaleString('fr-FR')+' $';
   if($('memberAvatar')&&currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
@@ -188,38 +180,6 @@ function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt
 let loadedProfiles=[];
 
 
-async function loadChangeRequests(){
-  const box=$('changeRequests');
-  box.innerHTML='<div class="muted">Chargement...</div>';
-  const {data,error}=await db.rpc('get_profile_change_requests');
-  if(error){box.innerHTML='<div class="muted">Erreur : '+esc(error.message)+'</div>';return}
-  if(!data?.length){box.innerHTML='<div class="muted">Aucune demande en attente.</div>';return}
-  box.innerHTML=data.map(r=>`<div class="request-item">
-    <div>
-      <div class="request-name">${esc(r.rp_name||'Compte')}</div>
-      <div class="request-meta">${r.request_type==='email'?'Changement d’email':'Changement de numéro RP'} • ${new Date(r.created_at).toLocaleString('fr-FR')}</div>
-      <div class="request-change"><b>${esc(r.old_value||'—')}</b> → <b>${esc(r.new_value||'—')}</b></div>
-    </div>
-    <div class="request-actions">
-      <button class="btn primary" onclick="approveChangeRequest('${r.id}')">Valider</button>
-      <button class="btn danger" onclick="rejectChangeRequest('${r.id}')">Refuser</button>
-    </div>
-  </div>`).join('');
-}
-async function approveChangeRequest(id){
-  if(!confirm('Valider cette demande ?'))return;
-  const {data,error}=await db.rpc('approve_profile_change_request',{p_request_id:id});
-  if(error){alert(error.message);return}
-  alert(data||'Demande validée.'); await loadChangeRequests(); await loadAccounts();
-}
-async function rejectChangeRequest(id){
-  if(!confirm('Refuser cette demande ?'))return;
-  const {error}=await db.rpc('reject_profile_change_request',{p_request_id:id});
-  if(error){alert(error.message);return}
-  await loadChangeRequests();
-}
-$('refreshRequests').onclick=loadChangeRequests;
-
 async function loadAccounts(){
   const {data,error}=await db.from('profiles').select('*').order('rp_name');
   if(error){$('accountMsg').textContent=error.message;return}
@@ -250,7 +210,7 @@ async function loadAccounts(){
 
     return '<div class="card" style="margin:8px 0;padding:13px">'+
       '<b>'+esc(p.rp_name||'Sans Nom RP')+'</b>'+
-      '<div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div>'+
+      '<div class="muted">'+esc(p.member_number||'Sans numéro')+' • '+esc(p.membre_email_rp||'Sans email RP')+' • '+esc(roleLabel(p.role))+' • '+Number(p.money||0).toLocaleString('fr-FR')+' $</div>'+
       '<div class="muted" style="margin-top:6px">Entreprise : <b style="color:#fff">'+esc(company)+'</b> • Gang : <b style="color:#fff">'+esc(gang)+'</b></div>'+
       '<small class="muted">'+esc(p.id)+'</small>'+
     '</div>';
@@ -284,11 +244,7 @@ async function fillAccountFromRp(){
   if($('accGangRank'))
     $('accGangRank').value=profile.gang_rank||'';
 
-  if($('accEmail')){
-    $('accEmail').value='Chargement...';
-    const {data:emailData,error:emailError}=await db.rpc('get_login_email_by_rp_name',{p_rp_name:profile.rp_name});
-    $('accEmail').value=emailError?'':(emailData||'');
-  }
+  if($('accEmail')) $('accEmail').value=profile.membre_email_rp||'';
 
   if(msg)msg.textContent='Compte trouvé : les informations ont été remplies automatiquement.';
 }
@@ -310,6 +266,7 @@ $('saveAccount').onclick=async()=>{
     id,
     rp_name:$('accRp').value.trim()||null,
     member_number:$('accNumber').value.trim()||null,
+    membre_email_rp:$('accEmail').value.trim().toLowerCase()||null,
     role:$('accRole').value,
     company_rank:$('accCompanyRank').value||null,
     gang_rank:$('accGangRank').value||null
@@ -320,6 +277,7 @@ $('saveAccount').onclick=async()=>{
     .update({
       rp_name:payload.rp_name,
       member_number:payload.member_number,
+      membre_email_rp:payload.membre_email_rp,
       role:payload.role,
       company_rank:payload.company_rank,
       gang_rank:payload.gang_rank
@@ -341,7 +299,7 @@ $('saveAccount').onclick=async()=>{
   $('accountMsg').textContent='Compte modifié avec succès.';
   loadAccounts();
 }
-async function initPage(){await Promise.all([loadChangeRequests(),loadAccounts()])}
+async function initPage(){await loadAccounts()}
 
 (async()=>{if(await loadIdentity(['admin'])){if(typeof initPage==='function')await initPage();}})();
 </script></body></html>
