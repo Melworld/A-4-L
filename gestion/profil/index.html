@@ -62,7 +62,7 @@ a{color:inherit}
 
 </style></head>
 <body><div class="page-shell">
-<div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
+<div class="page-top"><div><div class="page-kicker">Vory V — Espace Membre</div><h1>Mon profil</h1></div><a class="back-link" href="../">← Retour à mon Espace Membre</a></div>
 <div class="card" style="padding:24px">
   <div class="member-panel" style="margin:0;border:0;padding:0;background:transparent">
     <button class="member-avatar" id="profileAvatar" type="button" style="cursor:pointer;color:#fff">👤</button>
@@ -84,6 +84,28 @@ a{color:inherit}
     <div class="stat"><span>Gang</span><b id="profileGang">—</b></div>
   </div>
 </div>
+<div class="grid" style="margin-bottom:16px">
+  <div class="card" style="margin-bottom:0">
+    <h2 style="margin-top:0">Modifier mon email</h2>
+    <div class="row">
+      <label>Nouvelle adresse email</label>
+      <input id="newEmail" type="email" autocomplete="email" placeholder="nouveau@email.fr">
+    </div>
+    <button class="btn primary" id="changeEmail">Modifier mon email</button>
+    <div class="muted" id="emailMsg" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:0">
+    <h2 style="margin-top:0">Modifier mon numéro RP</h2>
+    <div class="row">
+      <label>Nouveau numéro RP</label>
+      <input id="newMemberNumber" type="text" placeholder="00-00-00-00-00" maxlength="14">
+    </div>
+    <button class="btn primary" id="changeMemberNumber">Modifier mon numéro</button>
+    <div class="muted" id="numberMsg" style="margin-top:10px"></div>
+  </div>
+</div>
+
 <div class="card">
   <h2 style="margin-top:0">Modifier mon mot de passe</h2>
   <div class="row"><label>Ancien mot de passe</label><input id="oldPw" type="password" autocomplete="current-password"></div>
@@ -148,9 +170,77 @@ $('avatarInput').onchange=async e=>{
   $('avatarMsg').textContent='Envoi...';const ext=(file.name.split('.').pop()||'webp').toLowerCase().replace(/[^a-z0-9]/g,'');const path=currentUser.id+'/avatar.'+ext;
   const {error:upErr}=await db.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type,cacheControl:'3600'});if(upErr){$('avatarMsg').textContent='Erreur : '+upErr.message;return}
   const {data:pub}=db.storage.from('avatars').getPublicUrl(path);const url=pub?.publicUrl;if(!url){$('avatarMsg').textContent='URL introuvable.';return}
-  const {error}=await db.from('profiles').update({avatar_url:url}).eq('id',currentUser.id);if(error){$('avatarMsg').textContent='Erreur profil : '+error.message;return}
-  currentProfile.avatar_url=url;setProfileAvatar(url);$('avatarMsg').textContent='Photo mise à jour.';
+  const {data:avatarSaved,error}=await db.rpc('update_my_avatar_url',{p_avatar_url:url});
+  if(error){
+    $('avatarMsg').textContent='Image envoyée, mais impossible d’enregistrer avatar_url : '+error.message;
+    return;
+  }
+  currentProfile.avatar_url=avatarSaved||url;
+  setProfileAvatar(currentProfile.avatar_url);
+  $('avatarMsg').textContent='Photo mise à jour et enregistrée dans avatar_url.';
 }
+
+$('changeEmail').onclick=async()=>{
+  const input=$('newEmail');
+  const msg=$('emailMsg');
+  const newEmail=input.value.trim().toLowerCase();
+  msg.textContent='';
+
+  if(!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)){
+    msg.textContent='Entre une adresse email valide.';
+    return;
+  }
+  if(newEmail===(currentUser.email||'').toLowerCase()){
+    msg.textContent='Cette adresse email est déjà utilisée sur ton compte.';
+    return;
+  }
+
+  msg.textContent='Modification de l’email...';
+  const {data,error}=await db.auth.updateUser({email:newEmail});
+
+  if(error){
+    msg.textContent='Impossible de modifier l’email : '+error.message;
+    return;
+  }
+
+  // Selon les réglages Supabase Auth, une confirmation peut être demandée.
+  if(data?.user?.email===newEmail){
+    currentUser=data.user;
+    $('profileEmail').textContent=newEmail;
+    input.value='';
+    msg.textContent='Email modifié avec succès.';
+  }else{
+    msg.textContent='Modification demandée. Vérifie ton email si Supabase demande une confirmation.';
+  }
+};
+
+$('changeMemberNumber').onclick=async()=>{
+  const input=$('newMemberNumber');
+  const msg=$('numberMsg');
+  const memberNumber=input.value.trim();
+  msg.textContent='';
+
+  if(!/^\d{2}-\d{2}-\d{2}-\d{2}-\d{2}$/.test(memberNumber)){
+    msg.textContent='Le numéro RP doit respecter le format 00-00-00-00-00.';
+    return;
+  }
+
+  msg.textContent='Modification du numéro RP...';
+  const {data,error}=await db.rpc('update_my_member_number',{
+    p_member_number:memberNumber
+  });
+
+  if(error){
+    msg.textContent='Impossible de modifier le numéro RP : '+error.message;
+    return;
+  }
+
+  currentProfile.member_number=data||memberNumber;
+  $('profileNumber').textContent=currentProfile.member_number;
+  input.value='';
+  msg.textContent='Numéro RP modifié avec succès.';
+};
+
 $('changePw').onclick=async()=>{
   const oldPassword=$('oldPw').value;
   const newPassword=$('pw1').value;
