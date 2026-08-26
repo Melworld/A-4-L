@@ -50,6 +50,12 @@ tr:last-child td{border-bottom:0}
 .edit-product{border:1px solid #34343b;border-radius:10px;padding:9px 11px;background:#202025;color:#fff;font-weight:850;cursor:pointer}
 .delete-product{border:1px solid #5f2227;border-radius:10px;padding:9px 11px;background:#3a1518;color:#fecaca;font-weight:850;cursor:pointer}
 
+.treated-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.treated-filter{
+  min-width:145px;min-height:43px;border:1px solid #34343b;border-radius:11px;
+  padding:10px 15px;background:#202025;color:#fff;font-weight:900;cursor:pointer
+}
+.treated-filter.active{border-color:var(--orange);background:#2a1a10}
 .treated-btn{
   min-width:88px;min-height:37px;border:1px solid #34343b;border-radius:10px;
   padding:8px 12px;background:#202025;color:#fff;font-weight:900;cursor:pointer
@@ -150,7 +156,11 @@ tr:last-child td{border-bottom:0}
       <div class="muted">Les produits sont affichés ici en priorité.</div>
     </div>
 
-
+    <div class="treated-controls">
+      <button class="treated-filter active" type="button" data-treated-filter="all">Tous les produits</button>
+      <button class="treated-filter" type="button" data-treated-filter="yes">Traités : Oui</button>
+      <button class="treated-filter" type="button" data-treated-filter="no">Traités : Non</button>
+    </div>
   </div>
 
   <div class="table-wrap">
@@ -161,8 +171,8 @@ tr:last-child td{border-bottom:0}
           <th>Quantité</th>
           <th>Prix unitaire</th>
           <th>Valeur</th>
-          <th>Traité</th>
           <th>État</th>
+          <th>Traité</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -182,6 +192,7 @@ tr:last-child td{border-bottom:0}
     <aside class="inventory-menu">
       <button class="active" type="button" data-panel="reference">Référencer un produit</button>
       <button type="button" data-panel="referenced">Produits référencés</button>
+      <button type="button" data-panel="treatment">Pourcentage vente traitée</button>
 
       <div class="menu-separator"></div>
 
@@ -236,6 +247,35 @@ tr:last-child td{border-bottom:0}
             Désactiver un produit le conserve dans la base de données mais permet de le masquer des listes de vente.
           </div>
           <div id="referencedProducts"></div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-treatment">
+        <div class="card">
+          <h2 style="margin-top:0">Pourcentage d'une vente traitée</h2>
+          <div class="muted" style="margin-bottom:16px">
+            Ce pourcentage est ajouté automatiquement au prix d'une vente lorsque le membre sélectionne « Traité : Oui ».
+          </div>
+
+          <div class="grid grid3">
+            <div class="stat">
+              <span>Pourcentage actuel</span>
+              <b id="currentTreatmentPercent">5 %</b>
+            </div>
+
+            <div class="row">
+              <label>Nouveau pourcentage</label>
+              <input id="treatmentPercent" type="number" min="0" max="100" step="0.1" value="5">
+            </div>
+
+            <div style="display:flex;align-items:end">
+              <button class="btn primary" id="saveTreatmentPercent" type="button" style="width:100%">
+                Enregistrer le pourcentage
+              </button>
+            </div>
+          </div>
+
+          <div class="muted" id="treatmentPercentMsg" style="margin-top:12px"></div>
         </div>
       </div>
 
@@ -334,6 +374,7 @@ let db=null;
 let user=null;
 let profile=null;
 let inventory=[];
+let treatedFilter='all';
 
 async function guard(){
   db=window.supabase.createClient(
@@ -384,10 +425,22 @@ document.querySelectorAll('.inventory-menu button[data-panel]').forEach(btn=>{
     document.querySelectorAll('.inventory-panel')
       .forEach(x=>x.classList.toggle('active',x.id==='panel-'+panel));
 
+    if(panel==='treatment')loadTreatmentPercent();
     if(panel==='movements')loadMovements();
     if(panel==='salesstats')loadSalesStats();
     if(panel==='clearhistory')loadClearHistory();
     if(panel==='clear')renderClearSummary();
+  });
+});
+
+document.querySelectorAll('[data-treated-filter]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    treatedFilter=btn.dataset.treatedFilter;
+
+    document.querySelectorAll('[data-treated-filter]')
+      .forEach(x=>x.classList.toggle('active',x===btn));
+
+    renderInventory();
   });
 });
 
@@ -601,8 +654,14 @@ async function toggleTreated(id,currentTreated){
 }
 
 function renderInventory(){
-  $('stock').innerHTML=inventory.length
-    ? inventory.map(x=>`
+  const shown=inventory.filter(x=>{
+    if(treatedFilter==='yes')return x.treated===true;
+    if(treatedFilter==='no')return x.treated!==true;
+    return true;
+  });
+
+  $('stock').innerHTML=shown.length
+    ? shown.map(x=>`
       <tr>
         <td>
           <b>${x.product_name}</b>
@@ -613,7 +672,11 @@ function renderInventory(){
         <td>${x.quantity}</td>
         <td>${money(x.unit_price)}</td>
         <td>${money(Number(x.quantity||0)*Number(x.unit_price||0))}</td>
-
+        <td>
+          <span class="badge ${x.enabled===false?'pending':'ok'}">
+            ${x.enabled===false?'Désactivé':'Actif'}
+          </span>
+        </td>
         <td>
           <button
             class="treated-btn ${x.treated===true?'yes':'no'}"
@@ -621,13 +684,6 @@ function renderInventory(){
             ${x.treated===true?'Oui':'Non'}
           </button>
         </td>
-
-        <td>
-          <span class="badge ${x.enabled===false?'pending':'ok'}">
-            ${x.enabled===false?'Désactivé':'Actif'}
-          </span>
-        </td>
-
         <td>
           <div class="inventory-actions">
             <button class="edit-product" onclick="editProduct('${x.id}')">Modifier</button>
@@ -636,7 +692,7 @@ function renderInventory(){
         </td>
       </tr>
     `).join('')
-    : '<tr><td colspan="7" class="muted">Inventaire vide.</td></tr>';
+    : '<tr><td colspan="7" class="muted">Aucun produit dans ce filtre.</td></tr>';
 }
 
 function renderReferenced(){
@@ -808,6 +864,58 @@ async function loadSalesStats(){
     `).join('')
     : '<div class="muted" style="padding:14px">Aucune vente validée.</div>';
 }
+
+
+async function loadTreatmentPercent(){
+  const {data,error}=await db
+    .from('company_settings')
+    .select('treatment_percentage')
+    .eq('id',1)
+    .maybeSingle();
+
+  if(error){
+    $('treatmentPercentMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  const percent=Number(data?.treatment_percentage ?? 5);
+
+  $('currentTreatmentPercent').textContent=
+    percent.toLocaleString('fr-FR',{maximumFractionDigits:2})+' %';
+
+  $('treatmentPercent').value=percent;
+}
+
+$('saveTreatmentPercent').onclick=async()=>{
+  const value=Number($('treatmentPercent').value);
+  const msg=$('treatmentPercentMsg');
+
+  if(!Number.isFinite(value)||value<0||value>100){
+    msg.textContent='Entre un pourcentage compris entre 0 et 100.';
+    return;
+  }
+
+  msg.textContent='Enregistrement...';
+
+  const {error}=await db
+    .from('company_settings')
+    .upsert({
+      id:1,
+      treatment_percentage:value,
+      updated_by:user.id,
+      updated_at:new Date().toISOString()
+    },{onConflict:'id'});
+
+  if(error){
+    msg.textContent='Erreur : '+error.message;
+    return;
+  }
+
+  $('currentTreatmentPercent').textContent=
+    value.toLocaleString('fr-FR',{maximumFractionDigits:2})+' %';
+
+  msg.textContent='Pourcentage mis à jour. Les prochaines ventes utiliseront '+value+' %.';
+};
 
 $('clearInventory').onclick=async()=>{
   const snap=inventorySnapshot();
