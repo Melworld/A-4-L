@@ -217,6 +217,181 @@ body.is-admin .image-edit{display:block}
 }
 .notification-badge.show{display:flex}
 
+
+.notification-overlay{
+  position:fixed;
+  inset:0;
+  z-index:199;
+  background:rgba(4,8,18,.58);
+  backdrop-filter:blur(2px);
+  opacity:0;
+  visibility:hidden;
+  transition:.22s opacity,.22s visibility;
+}
+.notification-overlay.open{
+  opacity:1;
+  visibility:visible;
+}
+
+.notification-drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  z-index:200;
+  width:min(390px,100vw);
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  background:#111827;
+  border-left:1px solid rgba(255,255,255,.10);
+  box-shadow:-24px 0 60px rgba(0,0,0,.32);
+  transform:translateX(100%);
+  transition:.26s transform ease;
+}
+.notification-drawer.open{transform:translateX(0)}
+
+.notification-drawer-head{
+  min-height:86px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:0 22px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.notification-drawer-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.notification-drawer-title b{
+  font-size:19px;
+}
+.notification-drawer-count{
+  min-width:24px;
+  height:24px;
+  padding:0 7px;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  border-radius:999px;
+  background:#ef4444;
+  color:#fff;
+  font-size:11px;
+  font-weight:950;
+}
+.notification-drawer-count.show{display:inline-flex}
+
+.notification-close{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  cursor:pointer;
+  font-size:22px;
+  line-height:1;
+}
+.notification-close:hover{background:rgba(255,255,255,.11)}
+
+.notification-drawer-body{
+  flex:1;
+  overflow:auto;
+  padding:14px;
+}
+
+.notification-drawer-empty{
+  color:#7f899c;
+  text-align:center;
+  padding:45px 18px;
+  font-size:13px;
+}
+
+.notification-preview{
+  display:grid;
+  grid-template-columns:38px minmax(0,1fr);
+  gap:11px;
+  padding:13px;
+  margin-bottom:9px;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:13px;
+  background:rgba(255,255,255,.035);
+  cursor:pointer;
+  transition:.15s background,.15s border-color,.15s transform;
+}
+.notification-preview:hover{
+  transform:translateY(-1px);
+  background:rgba(255,255,255,.06);
+  border-color:rgba(168,85,247,.36);
+}
+.notification-preview.unread{
+  background:linear-gradient(90deg,rgba(147,51,234,.12),rgba(255,255,255,.035) 45%);
+  border-color:rgba(168,85,247,.30);
+}
+.notification-preview-icon{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:rgba(255,255,255,.07);
+  font-size:17px;
+}
+.notification-preview-title{
+  font-size:13px;
+  font-weight:900;
+  line-height:1.35;
+  padding-right:8px;
+}
+.notification-preview-message{
+  margin-top:4px;
+  color:#aeb7c8;
+  font-size:12px;
+  line-height:1.45;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.notification-preview-meta{
+  margin-top:7px;
+  color:#778196;
+  font-size:10px;
+}
+
+.notification-drawer-footer{
+  padding:14px;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.notification-all-link{
+  width:100%;
+  min-height:46px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:12px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+  color:#fff;
+  font-weight:850;
+  font-size:13px;
+  transition:.15s background,.15s border-color;
+}
+.notification-all-link:hover{
+  background:rgba(255,255,255,.11);
+  border-color:rgba(168,85,247,.42);
+}
+
+body.notification-open{overflow:hidden}
+
+@media(max-width:520px){
+  .notification-drawer{width:100vw}
+  .notification-drawer-head{min-height:72px}
+}
+
 </style>
 </head>
 <body>
@@ -232,7 +407,7 @@ body.is-admin .image-edit{display:block}
       <a class="public-nav-link" href="boutique/">Boutique</a>
       <a class="btn btn-dark admin-only" href="gestion/">Gestion</a>
 
-      <a class="notification-link" href="gestion/notifications/" id="notificationBtn" title="Notifications" aria-label="Notifications">
+      <a class="notification-link" href="#" id="notificationBtn" title="Notifications" aria-label="Notifications" aria-expanded="false">
         <svg class="notification-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M10 21h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
@@ -243,7 +418,28 @@ body.is-admin .image-edit{display:block}
       <a class="btn btn-gradient" href="gestion/" id="accountBtn"><img class="account-avatar" id="accountAvatar" alt=""><span id="accountName">Se connecter</span></a>
     </div>
   </div>
+
 </header>
+
+<div class="notification-overlay" id="notificationOverlay"></div>
+
+<aside class="notification-drawer" id="notificationDrawer" aria-hidden="true">
+  <div class="notification-drawer-head">
+    <div class="notification-drawer-title">
+      <b>Notifications</b>
+      <span class="notification-drawer-count" id="notificationDrawerCount">0</span>
+    </div>
+    <button class="notification-close" id="notificationClose" type="button" aria-label="Fermer">×</button>
+  </div>
+
+  <div class="notification-drawer-body" id="notificationDrawerBody">
+    <div class="notification-drawer-empty">Chargement...</div>
+  </div>
+
+  <div class="notification-drawer-footer">
+    <a class="notification-all-link" href="gestion/notifications/">Voir toutes les notifications</a>
+  </div>
+</aside>
 
 <main>
   <section class="container hero">
@@ -389,6 +585,43 @@ if(window.vorySupabaseConfigured && window.vorySupabaseConfigured()){
 }
 
 
+const notificationTypeIcons={
+  info:'🔔',
+  success:'✅',
+  warning:'⚠️',
+  sale:'💳',
+  company:'🏢',
+  money:'💰',
+  rank:'⭐',
+  inventory:'📦'
+};
+
+function escapeNotifHtml(value){
+  return String(value??'')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+function updateNotificationBadges(unread){
+  const badge=$('notificationBadge');
+  const drawerCount=$('notificationDrawerCount');
+  const n=Number(unread||0);
+  const text=n>99?'99+':String(n);
+
+  if(badge){
+    badge.textContent=text;
+    badge.classList.toggle('show',n>0);
+  }
+
+  if(drawerCount){
+    drawerCount.textContent=text;
+    drawerCount.classList.toggle('show',n>0);
+  }
+}
+
 async function loadNotificationCount(){
   if(!db||!currentUser)return;
 
@@ -403,17 +636,111 @@ async function loadNotificationCount(){
     return;
   }
 
-  const badge=$('notificationBadge');
-  const unread=Number(count||0);
-
-  if(unread>0){
-    badge.textContent=unread>99?'99+':String(unread);
-    badge.classList.add('show');
-  }else{
-    badge.textContent='0';
-    badge.classList.remove('show');
-  }
+  updateNotificationBadges(Number(count||0));
 }
+
+async function loadNotificationDrawer(){
+  const body=$('notificationDrawerBody');
+  if(!body||!db||!currentUser)return;
+
+  body.innerHTML='<div class="notification-drawer-empty">Chargement...</div>';
+
+  const {data,error}=await db
+    .from('notifications')
+    .select('id,title,message,type,link,is_read,created_at')
+    .eq('user_id',currentUser.id)
+    .order('created_at',{ascending:false})
+    .limit(8);
+
+  if(error){
+    body.innerHTML='<div class="notification-drawer-empty">Impossible de charger les notifications.</div>';
+    console.warn('Notifications:',error.message);
+    return;
+  }
+
+  const rows=data||[];
+  const unread=rows.filter(n=>!n.is_read).length;
+
+  // Le badge global reste basé sur le vrai total non lu
+  await loadNotificationCount();
+
+  if(!rows.length){
+    body.innerHTML='<div class="notification-drawer-empty">Aucune nouvelle notification</div>';
+    return;
+  }
+
+  body.innerHTML=rows.map(n=>`
+    <div class="notification-preview ${n.is_read?'':'unread'}"
+         data-notification-id="${n.id}"
+         data-notification-link="${escapeNotifHtml(n.link||'')}">
+      <div class="notification-preview-icon">${notificationTypeIcons[n.type]||'🔔'}</div>
+      <div>
+        <div class="notification-preview-title">${escapeNotifHtml(n.title||'Notification')}</div>
+        <div class="notification-preview-message">${escapeNotifHtml(n.message||'')}</div>
+        <div class="notification-preview-meta">
+          ${new Date(n.created_at).toLocaleString('fr-FR')}
+          ${n.is_read?' • Lu':' • Non lu'}
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  body.querySelectorAll('.notification-preview').forEach(item=>{
+    item.addEventListener('click',async()=>{
+      const id=item.dataset.notificationId;
+      const link=item.dataset.notificationLink;
+
+      if(item.classList.contains('unread')){
+        const {error:updateError}=await db
+          .from('notifications')
+          .update({is_read:true})
+          .eq('id',id)
+          .eq('user_id',currentUser.id);
+
+        if(!updateError){
+          item.classList.remove('unread');
+          const meta=item.querySelector('.notification-preview-meta');
+          if(meta)meta.textContent=meta.textContent.replace('Non lu','Lu');
+          await loadNotificationCount();
+        }
+      }
+
+      if(link){
+        location.href=link;
+      }
+    });
+  });
+}
+
+function openNotificationDrawer(){
+  $('notificationDrawer')?.classList.add('open');
+  $('notificationOverlay')?.classList.add('open');
+  $('notificationDrawer')?.setAttribute('aria-hidden','false');
+  $('notificationBtn')?.setAttribute('aria-expanded','true');
+  document.body.classList.add('notification-open');
+  loadNotificationDrawer();
+}
+
+function closeNotificationDrawer(){
+  $('notificationDrawer')?.classList.remove('open');
+  $('notificationOverlay')?.classList.remove('open');
+  $('notificationDrawer')?.setAttribute('aria-hidden','true');
+  $('notificationBtn')?.setAttribute('aria-expanded','false');
+  document.body.classList.remove('notification-open');
+}
+
+$('notificationBtn')?.addEventListener('click',e=>{
+  e.preventDefault();
+  const isOpen=$('notificationDrawer')?.classList.contains('open');
+  isOpen ? closeNotificationDrawer() : openNotificationDrawer();
+});
+
+$('notificationClose')?.addEventListener('click',closeNotificationDrawer);
+$('notificationOverlay')?.addEventListener('click',closeNotificationDrawer);
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeNotificationDrawer();
+});
 
 function setSlotImage(slot,url){
   const img=$(slot+'_img'), empty=$(slot+'_empty');
