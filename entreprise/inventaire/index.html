@@ -181,7 +181,9 @@ tr:last-child td{border-bottom:0}
   <div class="inventory-management">
 
     <aside class="inventory-menu">
-      <button class="active" type="button" data-panel="reference">Référencer un produit</button>
+      <button class="active" type="button" data-panel="money">Ajouter de l'argent à l'entreprise</button>
+      <div class="menu-separator"></div>
+      <button type="button" data-panel="reference">Référencer un produit</button>
       <button type="button" data-panel="referenced">Produits référencés</button>
       <button type="button" data-panel="treatment">Pourcentage vente traitée</button>
 
@@ -199,7 +201,37 @@ tr:last-child td{border-bottom:0}
 
     <section>
 
-      <div class="inventory-panel active" id="panel-reference">
+      <div class="inventory-panel active" id="panel-money">
+        <div class="card">
+          <h2 style="margin-top:0">Ajouter de l'argent à l'entreprise</h2>
+          <div class="muted" style="margin-bottom:16px">
+            L'argent ajouté ici alimente directement la caisse de Vory V Industry.
+            Le montant est visible par tous les membres depuis le récap de l'entreprise.
+          </div>
+
+          <div class="grid grid3">
+            <div class="stat">
+              <span>Argent actuel de l'entreprise</span>
+              <b id="companyMoneyCurrent">0 €</b>
+            </div>
+
+            <div class="row">
+              <label>Montant à ajouter</label>
+              <input id="companyMoneyAdd" type="number" min="0.01" step="0.01" placeholder="Ex. 50000">
+            </div>
+
+            <div style="display:flex;align-items:end">
+              <button class="btn primary" id="addCompanyMoney" type="button" style="width:100%">
+                Ajouter à la caisse
+              </button>
+            </div>
+          </div>
+
+          <div class="muted" id="companyMoneyMsg" style="margin-top:12px"></div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-reference">
         <div class="card">
           <h2 style="margin-top:0">Référencer / modifier un produit</h2>
           <div class="muted" style="margin-bottom:16px">
@@ -211,7 +243,7 @@ tr:last-child td{border-bottom:0}
           <div class="grid grid3">
             <div class="row" style="grid-column:span 2">
               <label>Produit</label>
-              <input id="name" placeholder="Ex. Diamant">
+              <input id="name" placeholder="Ex. SPAR-16">
             </div>
             <div class="row">
               <label>Prix unitaire</label>
@@ -456,6 +488,7 @@ document.querySelectorAll('.inventory-menu button[data-panel]').forEach(btn=>{
     document.querySelectorAll('.inventory-panel')
       .forEach(x=>x.classList.toggle('active',x.id==='panel-'+panel));
 
+    if(panel==='money')loadCompanyMoney();
     if(panel==='treatment')loadTreatmentPercent();
     if(panel==='movements')loadMovements();
     if(panel==='private')renderPrivateStock();
@@ -621,34 +654,6 @@ function editReferencedProduct(id){
   document.querySelector('.inventory-management').scrollIntoView({behavior:'smooth'});
 }
 
-async function deleteReferencedProduct(id,name){
-  if(!confirm(
-    'Supprimer définitivement la référence "'+name+'" ?\n\n'
-    +'Cette action supprimera le produit de company_inventory.'
-  )){
-    return;
-  }
-
-  const {error}=await db
-    .from('company_inventory')
-    .delete()
-    .eq('id',id);
-
-  if(error){
-    alert('Erreur suppression : '+error.message);
-    return;
-  }
-
-  await logMovement(
-    'delete',
-    name,
-    null,
-    null,
-    'Produit supprimé des références'
-  );
-
-  await loadInventory();
-}
 async function toggleProduct(id,currentEnabled){
   const p=inventory.find(x=>String(x.id)===String(id));
   const next=!currentEnabled;
@@ -811,22 +816,16 @@ function renderReferenced(){
         <div class="ref-actions">
           <button
             class="switch-btn ${p.enabled===false?'off':''}"
+            type="button"
             onclick="toggleProduct('${p.id}',${p.enabled!==false})">
-            ${p.enabled===false?'Désactivé':'Activé'}
+            ${p.enabled===false?'Activer':'Désactiver'}
           </button>
 
           <button
             class="btn secondary"
             type="button"
             onclick="editReferencedProduct('${p.id}')">
-            Modifier
-          </button>
-
-          <button
-            class="btn danger"
-            type="button"
-            onclick="deleteReferencedProduct('${p.id}',${JSON.stringify(p.product_name)})">
-            Supprimer
+            ✏️ Modifier
           </button>
         </div>
       </div>
@@ -1031,6 +1030,47 @@ async function loadSalesStats(){
 }
 
 
+
+async function loadCompanyMoney(){
+  const {data,error}=await db
+    .from('company_settings')
+    .select('company_money')
+    .eq('id',1)
+    .maybeSingle();
+
+  if(error){
+    $('companyMoneyMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  $('companyMoneyCurrent').textContent=money(Number(data?.company_money||0));
+}
+
+$('addCompanyMoney').onclick=async()=>{
+  const amount=Number($('companyMoneyAdd').value);
+  const msg=$('companyMoneyMsg');
+
+  if(!Number.isFinite(amount)||amount<=0){
+    msg.textContent='Entre un montant supérieur à 0.';
+    return;
+  }
+
+  msg.textContent='Ajout en cours...';
+
+  const {data,error}=await db.rpc('add_company_money',{
+    p_amount:amount
+  });
+
+  if(error){
+    msg.textContent='Erreur : '+error.message;
+    return;
+  }
+
+  $('companyMoneyAdd').value='';
+  $('companyMoneyCurrent').textContent=money(Number(data||0));
+  msg.textContent='Argent ajouté à la caisse de l’entreprise.';
+};
+
 async function loadTreatmentPercent(){
   const {data,error}=await db
     .from('company_settings')
@@ -1203,6 +1243,7 @@ $('refreshClearHistory').onclick=loadClearHistory;
 (async()=>{
   if(await guard()){
     await loadInventory();
+    await loadCompanyMoney();
   }
 })();
 </script>
