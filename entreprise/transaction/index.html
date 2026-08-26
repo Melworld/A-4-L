@@ -8,7 +8,7 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.shell{max
 @media(max-width:850px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}@media(max-width:600px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
 </style></head>
 <body><div class="shell"><div class="top"><div><div class="kicker">Entreprise / Direction</div><h1>Transactions</h1></div><a class="back" href="../index.html">← Récap entreprise</a></div>
-<div class="grid grid4"><div class="card stat"><span>Argent entreprise</span><b id="companyMoney">0 €</b></div><div class="card stat"><span>Chiffre d'affaires validé</span><b id="ca">0 €</b></div><div class="card stat"><span>À valider</span><b id="wait">0 €</b></div><div class="card stat"><span>Ventes validées</span><b id="count">0</b></div></div>
+<div class="grid grid4"><div class="card stat"><span>Argent entreprise</span><b id="companyMoney">0 €</b></div><div class="card stat"><span>CA validé</span><b id="ca">0 €</b></div><div class="card stat"><span>À valider</span><b id="wait">0 €</b></div><div class="card stat"><span>Ventes validées</span><b id="count">0</b></div></div>
 <div class="section-title"><div><h2>Ventes à valider</h2><div class="muted">Gestionnaire, Patron, Modérateur ou Administrateur.</div></div></div>
 <div class="table-wrap"><table><thead><tr><th>Date</th><th>Salarié</th><th>Produit</th><th>Qté</th><th>Total</th><th>Action</th></tr></thead><tbody id="pending"></tbody></table></div>
 <div class="section-title"><div><h2>Historique des transactions</h2><div class="muted">Ventes validées et transactions annulées.</div></div></div>
@@ -52,7 +52,7 @@ async function guard(){
 async function validateSale(id){
   if(!confirm(
     'Valider cette transaction ?\n\n'
-    +'Le montant de la vente sera retiré de l’argent de l’entreprise.'
+    +'Le montant sera retiré de la caisse et la quantité sera ajoutée à l’inventaire.'
   )){
     return;
   }
@@ -66,7 +66,7 @@ async function validateSale(id){
     return;
   }
 
-  alert(data||'Transaction validée.');
+  alert(data||'Transaction validée et ajoutée à l’inventaire.');
   load();
 }
 async function cancelSale(id){
