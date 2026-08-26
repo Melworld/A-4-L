@@ -263,7 +263,7 @@ async function products(){
 
   const {data,error}=await db
     .from('company_inventory')
-    .select('id,product_name,unit_price,quantity,enabled,treated')
+    .select('id,product_name,unit_price,enabled,treated')
     .eq('enabled',true)
     .order('product_name');
 
@@ -279,7 +279,6 @@ async function products(){
     id:p.id,
     name:p.product_name,
     price:Number(p.unit_price||0),
-    quantity:Number(p.quantity||0),
     treated:p.treated===true
   }));
 
@@ -297,7 +296,7 @@ async function products(){
   $('saleProduct').innerHTML=PRODUCTS
     .map((p,i)=>`
       <option value="${i}">
-        ${p.name} — ${money(p.price)} — Stock : ${p.quantity}
+        ${p.name} — ${money(p.price)}
       </option>
     `)
     .join('');
@@ -355,12 +354,7 @@ $('addSale').onclick=async()=>{
   const sale=getSaleCalculation();
 
   if(!sale.product){
-    $('saleMsg').textContent='Aucun produit actif référencé dans l’inventaire.';
-    return;
-  }
-
-  if(sale.quantity>sale.product.quantity){
-    $('saleMsg').textContent='Stock insuffisant : '+sale.product.quantity+' unité(s) disponible(s).';
+    $('saleMsg').textContent='Aucun produit actif référencé.';
     return;
   }
 
