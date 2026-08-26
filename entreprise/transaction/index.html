@@ -2,13 +2,13 @@
 :root{--bg:#09090b;--panel:#111113;--panel2:#17171b;--line:#28282f;--text:#fff;--muted:#92929d;--orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;--blue:#60a5fa}
 *{box-sizing:border-box}html{color-scheme:dark}body{margin:0;min-height:100vh;background:radial-gradient(circle at 15% 0,rgba(249,115,22,.08),transparent 25%),var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
 a{color:inherit;text-decoration:none}button,input,select{font:inherit}.shell{max-width:1250px;margin:auto;padding:30px 22px 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:30px}.kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}.top h1{margin:5px 0 0;font-size:34px}.back{color:#aaa;font-weight:800}.back:hover{color:#fff}
-.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}.grid{display:grid;gap:15px}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.stat span{display:block;color:var(--muted);font-size:12px}.stat b{display:block;margin-top:5px;font-size:24px}.muted{color:var(--muted);font-size:13px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}.secondary{background:#202025;color:#fff;border:1px solid #34343b}.danger{background:#3c1719;color:#fecaca;border:1px solid #5f2227}.action-buttons{display:flex;gap:8px;flex-wrap:wrap}.row{display:grid;gap:7px}.row label{font-size:12px;font-weight:850;color:#d4d4d8}.row input,.row select{background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row input:focus,.row select:focus{border-color:var(--orange)}
+.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}.grid{display:grid;gap:15px}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid5{grid-template-columns:repeat(5,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.stat span{display:block;color:var(--muted);font-size:12px}.stat b{display:block;margin-top:5px;font-size:24px}.muted{color:var(--muted);font-size:13px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}.secondary{background:#202025;color:#fff;border:1px solid #34343b}.danger{background:#3c1719;color:#fecaca;border:1px solid #5f2227}.action-buttons{display:flex;gap:8px;flex-wrap:wrap}.row{display:grid;gap:7px}.row label{font-size:12px;font-weight:850;color:#d4d4d8}.row input,.row select{background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row input:focus,.row select:focus{border-color:var(--orange)}
 .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px}th{color:#aaa;background:#0d0d10;font-size:11px;text-transform:uppercase;letter-spacing:.05em}tr:last-child td{border-bottom:0}.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}.ok{color:#86efac}.pending{color:#fdba74}
 .nav-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:18px}.nav-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:.18s}.nav-card:hover{transform:translateY(-3px);border-color:#5a3a22}.nav-card h3{margin:8px 0}.nav-card p{color:var(--muted);margin:0;line-height:1.55}.locked{opacity:.5;cursor:not-allowed}.section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}.section-title h2{margin:0}
-@media(max-width:850px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}@media(max-width:600px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
+@media(max-width:850px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}@media(max-width:600px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
 </style></head>
 <body><div class="shell"><div class="top"><div><div class="kicker">Entreprise / Direction</div><h1>Transactions</h1></div><a class="back" href="../index.html">← Récap entreprise</a></div>
-<div class="grid grid4"><div class="card stat"><span>CA validé</span><b id="ca">0 €</b></div><div class="card stat"><span>À valider</span><b id="wait">0 €</b></div><div class="card stat"><span>Panier moyen</span><b id="avg">0 €</b></div><div class="card stat"><span>Ventes validées</span><b id="count">0</b></div></div>
+<div class="grid grid5"><div class="card stat"><span>Argent entreprise</span><b id="companyMoney">0 €</b></div><div class="card stat"><span>Chiffre d'affaires validé</span><b id="ca">0 €</b></div><div class="card stat"><span>À valider</span><b id="wait">0 €</b></div><div class="card stat"><span>Panier moyen</span><b id="avg">0 €</b></div><div class="card stat"><span>Ventes validées</span><b id="count">0</b></div></div>
 <div class="section-title"><div><h2>Ventes à valider</h2><div class="muted">Gestionnaire, Patron, Modérateur ou Administrateur.</div></div></div>
 <div class="table-wrap"><table><thead><tr><th>Date</th><th>Salarié</th><th>Produit</th><th>Qté</th><th>Total</th><th>Action</th></tr></thead><tbody id="pending"></tbody></table></div>
 <div class="section-title"><div><h2>Historique des transactions</h2><div class="muted">Ventes validées et transactions annulées.</div></div></div>
@@ -50,29 +50,25 @@ async function guard(){
 }
 
 async function validateSale(id){
-  if(!confirm('Valider cette transaction ?')){
+  if(!confirm(
+    'Valider cette transaction ?\n\n'
+    +'Le montant de la vente sera retiré de l’argent de l’entreprise.'
+  )){
     return;
   }
 
-  const {error}=await db
-    .from('company_sales')
-    .update({
-      status:'validated',
-      validated_by:user.id,
-      validated_by_rp:profile.rp_name,
-      validated_at:new Date().toISOString()
-    })
-    .eq('id',id)
-    .eq('status','pending');
+  const {data,error}=await db.rpc('validate_company_sale',{
+    p_sale_id:id
+  });
 
   if(error){
-    alert(error.message);
+    alert('Erreur : '+error.message);
     return;
   }
 
+  alert(data||'Transaction validée.');
   load();
 }
-
 async function cancelSale(id){
   if(!confirm(
     'Annuler cette transaction ?\n\n'
@@ -110,6 +106,14 @@ async function load(){
     alert(error.message);
     return;
   }
+
+  const {data:settings}=await db
+    .from('company_settings')
+    .select('company_money')
+    .eq('id',1)
+    .maybeSingle();
+
+  $('companyMoney').textContent=money(Number(settings?.company_money||0));
 
   const all=data||[];
   const pending=all.filter(x=>x.status==='pending');
