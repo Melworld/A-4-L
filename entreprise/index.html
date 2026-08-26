@@ -73,14 +73,14 @@ tr:last-child td{border-bottom:0}
  <div class="card stat"><span>Valeur de l'inventaire</span><b id="stockValue">0 €</b></div>
 </div>
 
-<div class="section-title">
+<div class="section-title" id="saleSectionTitle">
   <div>
     <h2>Ajouter une vente</h2>
     <div class="muted">Accessible aux membres de l'entreprise.</div>
   </div>
 </div>
 
-<div class="card">
+<div class="card" id="saleSectionCard">
  <div class="grid grid4">
   <div class="row">
     <label>Nom RP</label>
@@ -134,11 +134,11 @@ tr:last-child td{border-bottom:0}
 <div class="section-title">
   <div>
     <h2>Gestion de l'entreprise</h2>
-    <div class="muted">Les accès sensibles sont réservés à la direction et au staff.</div>
+    <div class="muted">Les accès sont adaptés automatiquement selon votre rang dans l’entreprise.</div>
   </div>
 </div>
    
-<a class="nav-card nav-card-full restricted" href="">
+<a class="nav-card nav-card-full" href="infoclient/index.html">
    <div class="info-left">
      <div class="info-icon">👤</div>
      <div>
@@ -150,22 +150,22 @@ tr:last-child td{border-bottom:0}
  </a>  
 
 <div class="nav-cards">
- <a class="nav-card restricted" href="transaction/index.html">
+ <a class="nav-card direction-access" href="transaction/index.html">
    <div>💳</div><h3>Transactions</h3>
    <p>Validation, historique, entrées/sorties et calculs financiers.</p>
  </a>
 
- <a class="nav-card restricted" href="inventaire/index.html">
+ <a class="nav-card direction-access" href="inventaire/index.html">
    <div>📦</div><h3>Inventaire</h3>
    <p>Stocks, produits référencés, traitements et valeur totale.</p>
  </a>
 
- <a class="nav-card" href="infosalaries/index.html">
+ <a class="nav-card associate-access" href="infosalaries/index.html">
    <div>👥</div><h3>Informations salariés</h3>
    <p>Liste de l'équipe et historique individuel des ventes.</p>
  </a>
 
- <a class="nav-card nav-card-full restricted" href="vehicules/index.html">
+ <a class="nav-card nav-card-full direction-access" href="vehicules/index.html">
    <div class="vehicle-left">
      <div class="vehicle-icon">🚛</div>
      <div>
@@ -214,21 +214,43 @@ async function identity(){
 
   profile=data;
 
-  if(!profile?.company_rank){
+  const isStaff=['moderator','admin'].includes(profile?.role);
+  const isCompanyMember=!!profile?.company_rank;
+
+  if(!isCompanyMember && !isStaff){
     return location.href='../gestion/index.html';
   }
 
   $('saleRp').value=profile.rp_name||'';
 
-  const elevated=
-    ['manager','pdg'].includes(profile.company_rank)
-    || ['moderator','admin'].includes(profile.role);
+  if(!isCompanyMember){
+    const saleTitle=$('saleSectionTitle');
+    const saleCard=$('saleSectionCard');
+    if(saleTitle)saleTitle.style.display='none';
+    if(saleCard)saleCard.style.display='none';
+  }
 
-  document.querySelectorAll('.restricted').forEach(a=>{
-    if(!elevated){
+  const canSeeEmployees=
+    ['associate','manager','pdg'].includes(profile?.company_rank)
+    || ['moderator','admin'].includes(profile?.role);
+
+  const canManageCompany=
+    ['manager','pdg'].includes(profile?.company_rank)
+    || profile?.role==='admin';
+
+  document.querySelectorAll('.associate-access').forEach(a=>{
+    if(!canSeeEmployees){
       a.removeAttribute('href');
       a.classList.add('locked');
-      a.title='Accès Gestionnaire / Patron / Modérateur / Administrateur';
+      a.title='Accès Associé / Gestionnaire / Patron / Modérateur / Administrateur';
+    }
+  });
+
+  document.querySelectorAll('.direction-access').forEach(a=>{
+    if(!canManageCompany){
+      a.removeAttribute('href');
+      a.classList.add('locked');
+      a.title='Accès Gestionnaire / Patron / Administrateur';
     }
   });
 }
