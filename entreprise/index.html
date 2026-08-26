@@ -40,7 +40,7 @@ tr:last-child td{border-bottom:0}
 .nav-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:.18s}
 .nav-card:hover{transform:translateY(-3px);border-color:#5a3a22}
 .nav-card h3{margin:8px 0}
-.nav-card p{color:var(--muted);margin:0;line-height:1.55}
+.nav-card p{color:var(--muted);margin:0;line-height:1.55}.nav-card-full{grid-column:1/-1;min-height:120px;display:flex;align-items:center;justify-content:space-between;gap:18px}.nav-card-full .vehicle-left{display:flex;align-items:center;gap:16px}.nav-card-full .vehicle-icon{font-size:34px}.nav-card-full .vehicle-arrow{font-size:24px;color:var(--orange);font-weight:950}
 .locked{opacity:.5;cursor:not-allowed}
 .section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}
 .section-title h2{margin:0}
@@ -129,7 +129,18 @@ tr:last-child td{border-bottom:0}
 
  <div class="muted" id="saleMsg" style="margin-top:10px"></div>
 </div>
-
+  
+<a class="nav-card nav-card-full restricted" href="">
+   <div class="info-left">
+     <div class="info-icon">👤</div>
+     <div>
+       <h3>Mes Informations</h3>
+       <p>Accéder à mes ventes, mes primes, mes droits, et faire quelques demande pour l'entreprise !</p>
+     </div>
+   </div>
+   <div class="vehicle-arrow">→</div>
+ </a>
+  
 <div class="section-title">
   <div>
     <h2>Gestion de l'entreprise</h2>
@@ -151,6 +162,17 @@ tr:last-child td{border-bottom:0}
  <a class="nav-card" href="infosalaries/index.html">
    <div>👥</div><h3>Informations salariés</h3>
    <p>Liste de l'équipe et historique individuel des ventes.</p>
+ </a>
+
+ <a class="nav-card nav-card-full restricted" href="vehicules/index.html">
+   <div class="vehicle-left">
+     <div class="vehicle-icon">🚛</div>
+     <div>
+       <h3>Véhicules de l'entreprise</h3>
+       <p>Accéder aux camions et aux véhicules liés à Vory V Industry.</p>
+     </div>
+   </div>
+   <div class="vehicle-arrow">→</div>
  </a>
 </div>
 </div>
