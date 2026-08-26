@@ -440,6 +440,11 @@ tr:last-child td{border-bottom:0}
           <div class="muted" style="margin-bottom:16px">
             Gère ici les différents bonus appliqués aux ventes et, plus tard, aux salariés.
           </div>
+
+          <div class="clear-warning" style="margin-top:16px;border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)">
+            <b>Fonctionnalités en développement.</b><br>
+            Pour l'instant, cette partie sert uniquement d'aperçu. Les systèmes seront utilisé plus tard et aucun montant saisi ici n'est enregistré.
+          </div>
         </div>
 
         <div class="card" style="margin-top:16px">
@@ -448,20 +453,15 @@ tr:last-child td{border-bottom:0}
             Ce pourcentage est ajouté automatiquement au prix d'une vente lorsque le membre sélectionne « Traité : Oui ».
           </div>
 
-          <div class="clear-warning" style="margin-top:16px;border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)">
-            <b>Fonctionnalité en développement.</b><br>
-            Pour l'instant, cette partie sert uniquement d'aperçu. Le système de pourcentage sera utilisé plus tard et aucun montant saisi ici n'est enregistré.
-          </div>
-
           <div class="grid grid3">
             <div class="stat">
               <span>Pourcentage actuel</span>
-              <b id="currentTreatmentPercent">0 %</b>
+              <b id="currentTreatmentPercent">5 %</b>
             </div>
 
             <div class="row">
               <label>Nouveau pourcentage</label>
-              <input id="treatmentPercent" type="number" min="0" max="100" step="0.1" value="0" disabled>
+              <input id="treatmentPercent" type="number" min="0" max="100" step="0.1" value="5">
             </div>
 
             <div style="display:flex;align-items:end">
@@ -486,15 +486,10 @@ tr:last-child td{border-bottom:0}
             <span class="badge pending">En développement</span>
           </div>
 
-          <div class="clear-warning" style="margin-top:16px;border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)">
-            <b>Fonctionnalité en développement.</b><br>
-            Pour l'instant, cette partie sert uniquement d'aperçu. Le système de bonus de paie sera utilisé plus tard et aucun montant saisi ici n'est enregistré.
-          </div>
-
           <div class="grid grid3" style="margin-top:16px">
             <div class="row">
               <label>Nom RP</label>
-              <input id="payBonusRp" type="text" placeholder="Ex. Jean Dublin" disabled>
+              <input id="payBonusRp" type="text" placeholder="Ex. Richard Snow" disabled>
             </div>
 
             <div class="row">
