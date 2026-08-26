@@ -211,7 +211,7 @@ tr:last-child td{border-bottom:0}
           <div class="grid grid3">
             <div class="row" style="grid-column:span 2">
               <label>Produit</label>
-              <input id="name" placeholder="Ex. SPAR-16">
+              <input id="name" placeholder="Ex. Diamant">
             </div>
             <div class="row">
               <label>Prix unitaire</label>
@@ -318,11 +318,10 @@ tr:last-child td{border-bottom:0}
           <div style="height:1px;background:var(--line);margin:18px 0 14px"></div>
 
           <button
-            class="private-clear-line"
+            class="btn danger private-clear-button"
             id="clearPrivateStorage"
             type="button">
-            <span>Vider le stockage privé</span>
-            <span>→</span>
+            🗑 Vider le stockage privé
           </button>
         </div>
       </div>
@@ -623,14 +622,10 @@ function editReferencedProduct(id){
 }
 
 async function deleteReferencedProduct(id,name){
-  const p=inventory.find(x=>String(x.id)===String(id));
-
-  if((p?.storage_location==='inventory'||p?.storage_location==='private') && Number(p?.quantity||0)>0){
-    alert('Ce produit possède encore du stock. Vide ou déplace son stock avant de supprimer sa référence.');
-    return;
-  }
-
-  if(!confirm('Supprimer définitivement la référence "'+name+'" ?')){
+  if(!confirm(
+    'Supprimer définitivement la référence "'+name+'" ?\n\n'
+    +'Cette action supprimera le produit de company_inventory.'
+  )){
     return;
   }
 
@@ -640,14 +635,20 @@ async function deleteReferencedProduct(id,name){
     .eq('id',id);
 
   if(error){
-    alert('Erreur : '+error.message);
+    alert('Erreur suppression : '+error.message);
     return;
   }
 
-  await logMovement('delete',name,p?.quantity??null,null,'Référence supprimée');
+  await logMovement(
+    'delete',
+    name,
+    null,
+    null,
+    'Produit supprimé des références'
+  );
+
   await loadInventory();
 }
-
 async function toggleProduct(id,currentEnabled){
   const p=inventory.find(x=>String(x.id)===String(id));
   const next=!currentEnabled;
