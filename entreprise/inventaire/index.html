@@ -309,10 +309,12 @@ tr:last-child td{border-bottom:0}
 
     <aside class="inventory-menu">
       <button class="active" type="button" data-panel="money">Gérer l'argent de l'entreprise</button>
+      <button type="button" data-panel="treatment">Gérer les bonus de l'entreprise</button>
+
       <div class="menu-separator"></div>
+
       <button type="button" data-panel="reference">Référencer un produit</button>
       <button type="button" data-panel="referenced">Produits référencés</button>
-      <button type="button" data-panel="treatment">Pourcentage vente traitée</button>
 
       <div class="menu-separator"></div>
 
@@ -432,25 +434,38 @@ tr:last-child td{border-bottom:0}
       </div>
 
       <div class="inventory-panel" id="panel-treatment">
+
         <div class="card">
+          <h2 style="margin-top:0">Gérer les bonus de l'entreprise</h2>
+          <div class="muted" style="margin-bottom:16px">
+            Gère ici les différents bonus appliqués aux ventes et, plus tard, aux salariés.
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
           <h2 style="margin-top:0">Pourcentage d'une vente traitée</h2>
           <div class="muted" style="margin-bottom:16px">
             Ce pourcentage est ajouté automatiquement au prix d'une vente lorsque le membre sélectionne « Traité : Oui ».
           </div>
 
+          <div class="clear-warning" style="margin-top:16px;border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)">
+            <b>Fonctionnalité en développement.</b><br>
+            Pour l'instant, cette partie sert uniquement d'aperçu. Le système de pourcentage sera utilisé plus tard et aucun montant saisi ici n'est enregistré.
+          </div>
+
           <div class="grid grid3">
             <div class="stat">
               <span>Pourcentage actuel</span>
-              <b id="currentTreatmentPercent">5 %</b>
+              <b id="currentTreatmentPercent">0 %</b>
             </div>
 
             <div class="row">
               <label>Nouveau pourcentage</label>
-              <input id="treatmentPercent" type="number" min="0" max="100" step="0.1" value="5">
+              <input id="treatmentPercent" type="number" min="0" max="100" step="0.1" value="0" disabled>
             </div>
 
             <div style="display:flex;align-items:end">
-              <button class="btn primary" id="saveTreatmentPercent" type="button" style="width:100%">
+              <button class="btn primary" id="saveTreatmentPercent" type="button" style="width:100%" cursor=not-allowed">
                 Enregistrer le pourcentage
               </button>
             </div>
@@ -458,8 +473,47 @@ tr:last-child td{border-bottom:0}
 
           <div class="muted" id="treatmentPercentMsg" style="margin-top:12px"></div>
         </div>
-      </div>
 
+        <div class="card" style="margin-top:16px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+            <div>
+              <h2 style="margin:0">Bonus de paie</h2>
+              <div class="muted" style="margin-top:5px">
+                Prépare l'attribution d'un bonus exceptionnel à un salarié.
+              </div>
+            </div>
+
+            <span class="badge pending">En développement</span>
+          </div>
+
+          <div class="clear-warning" style="margin-top:16px;border-color:rgba(249,115,22,.28);background:rgba(249,115,22,.07)">
+            <b>Fonctionnalité en développement.</b><br>
+            Pour l'instant, cette partie sert uniquement d'aperçu. Le système de bonus de paie sera utilisé plus tard et aucun montant saisi ici n'est enregistré.
+          </div>
+
+          <div class="grid grid3" style="margin-top:16px">
+            <div class="row">
+              <label>Nom RP</label>
+              <input id="payBonusRp" type="text" placeholder="Ex. Jean Dublin" disabled>
+            </div>
+
+            <div class="row">
+              <label>Montant du bonus</label>
+              <input id="payBonusAmount" type="number" min="0" placeholder="Ex. 5 000" disabled>
+            </div>
+
+            <div class="row">
+              <label>Motif</label>
+              <input id="payBonusReason" type="text" placeholder="Ex. Prime exceptionnelle" disabled>
+            </div>
+          </div>
+
+          <button class="btn secondary" type="button" disabled style="margin-top:15px;opacity:.55;cursor:not-allowed">
+            Ajouter le bonus de paie
+          </button>
+        </div>
+
+      </div>
       <div class="inventory-panel" id="panel-movements">
         <div class="card">
           <div class="top" style="margin-bottom:16px">
