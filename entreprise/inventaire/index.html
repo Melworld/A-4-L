@@ -128,6 +128,132 @@ tr:last-child td{border-bottom:0}
   .stock-movement,.sale-stat-row,.clear-history-item{grid-template-columns:1fr}
   .stock-movement-date{text-align:left}
 }
+
+/* --- Caisse VoryV : version compacte inspirée du croquis --- */
+.vory-cash-card{
+  background:linear-gradient(180deg,#121215,#0f0f12);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:20px;
+}
+.vory-cash-head{
+  text-align:center;
+  margin-bottom:20px;
+}
+.vory-cash-head h2{
+  margin:0;
+  font-size:25px;
+  line-height:1.2;
+}
+.vory-cash-head p{
+  margin:6px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+.vory-cash-fields{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(210px,.55fr);
+  gap:14px;
+  align-items:end;
+}
+.vory-cash-fields .row input{
+  min-height:45px;
+}
+.vory-cash-bottom{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(120px,.8fr) minmax(120px,.8fr);
+  gap:10px;
+  margin-top:17px;
+}
+.vory-total-box{
+  min-height:45px;
+  background:#0b0b0d;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:8px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.vory-total-box span{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:850;
+}
+.vory-total-box b{
+  font-size:18px;
+  white-space:nowrap;
+}
+.vory-cash-btn{
+  min-height:45px;
+  border-radius:10px;
+  font-weight:950;
+  cursor:pointer;
+}
+.vory-cash-add{
+  background:#166534 !important;
+  color:#dcfce7 !important;
+  border:1px solid #238142 !important;
+}
+.vory-cash-add:hover{
+  background:#1d7a3d !important;
+}
+.vory-cash-remove{
+  background:#3c1719 !important;
+  color:#fecaca !important;
+  border:1px solid #70262c !important;
+}
+.vory-cash-remove:hover{
+  background:#521c21 !important;
+}
+.vory-cash-message{
+  min-height:18px;
+  margin-top:8px;
+}
+.money-history-list{
+  display:grid;
+  gap:9px;
+}
+.money-history-item{
+  display:grid;
+  grid-template-columns:90px minmax(0,1fr) 145px 165px;
+  gap:12px;
+  align-items:center;
+  padding:12px 13px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:#0d0d10;
+}
+.money-history-type{
+  font-size:11px;
+  font-weight:950;
+}
+.money-history-type.add{color:#86efac}
+.money-history-type.remove{color:#fca5a5}
+.money-history-amount{
+  font-weight:950;
+  text-align:right;
+}
+.money-history-date{
+  color:var(--muted);
+  font-size:11px;
+  text-align:right;
+}
+@media(max-width:760px){
+  .vory-cash-fields,
+  .vory-cash-bottom{
+    grid-template-columns:1fr;
+  }
+  .money-history-item{
+    grid-template-columns:1fr;
+  }
+  .money-history-amount,
+  .money-history-date{
+    text-align:left;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -181,7 +307,7 @@ tr:last-child td{border-bottom:0}
   <div class="inventory-management">
 
     <aside class="inventory-menu">
-      <button class="active" type="button" data-panel="money">Ajouter de l'argent à l'entreprise</button>
+      <button class="active" type="button" data-panel="money">Gérer l'argent de l'entreprise</button>
       <div class="menu-separator"></div>
       <button type="button" data-panel="reference">Référencer un produit</button>
       <button type="button" data-panel="referenced">Produits référencés</button>
@@ -202,35 +328,69 @@ tr:last-child td{border-bottom:0}
     <section>
 
       <div class="inventory-panel active" id="panel-money">
-        <div class="card">
-          <h2 style="margin-top:0">Ajouter de l'argent à l'entreprise</h2>
-          <div class="muted" style="margin-bottom:16px">
-            L'argent ajouté ici alimente directement la caisse de Vory V Industry.
-            Le montant est visible par tous les membres depuis le récap de l'entreprise.
+
+        <div class="vory-cash-card">
+          <div class="vory-cash-head">
+            <h2>Caisse de VoryV Industry</h2>
+            <p>Ajoute ou retire de l'argent de la caisse de l'entreprise.</p>
           </div>
 
-          <div class="grid grid3">
-            <div class="stat">
-              <span>Argent actuel de l'entreprise</span>
-              <b id="companyMoneyCurrent">0 €</b>
+          <div class="vory-cash-fields">
+            <div class="row">
+              <label>Nom RP</label>
+              <input
+                id="companyMoneyName"
+                type="text"
+                placeholder="Nom RP">
             </div>
 
             <div class="row">
-              <label>Montant à ajouter</label>
-              <input id="companyMoneyAdd" type="number" min="0.01" step="0.01" placeholder="Ex. 50000">
-            </div>
-
-            <div style="display:flex;align-items:end">
-              <button class="btn primary" id="addCompanyMoney" type="button" style="width:100%">
-                Ajouter à la caisse
-              </button>
+              <label>Argent à ajouter / retirer</label>
+              <input
+                id="companyMoneyAmount"
+                type="number"
+                min="0.01"
+                step="0.01"
+                placeholder="Montant">
             </div>
           </div>
 
-          <div class="muted" id="companyMoneyMsg" style="margin-top:12px"></div>
+          <div class="vory-cash-bottom">
+            <div class="vory-total-box">
+              <span>Total argent</span>
+              <b id="companyMoneyCurrent">0 €</b>
+            </div>
+
+            <button
+              class="btn vory-cash-btn vory-cash-add"
+              id="addCompanyMoney"
+              type="button">
+              Ajouter
+            </button>
+
+            <button
+              class="btn vory-cash-btn vory-cash-remove"
+              id="removeCompanyMoney"
+              type="button">
+              Retirer
+            </button>
+          </div>
+
+          <div class="muted vory-cash-message" id="companyMoneyMsg"></div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <div class="top" style="margin-bottom:14px">
+            <div>
+              <h2 style="margin:0">Historique de la caisse</h2>
+              <div class="muted" style="margin-top:4px">Derniers ajouts et retraits.</div>
+            </div>
+            <button class="btn secondary" id="refreshMoneyHistory" type="button">Actualiser</button>
+          </div>
+
+          <div class="money-history-list" id="companyMoneyHistory"></div>
         </div>
       </div>
-
       <div class="inventory-panel" id="panel-reference">
         <div class="card">
           <h2 style="margin-top:0">Référencer / modifier un produit</h2>
@@ -488,7 +648,7 @@ document.querySelectorAll('.inventory-menu button[data-panel]').forEach(btn=>{
     document.querySelectorAll('.inventory-panel')
       .forEach(x=>x.classList.toggle('active',x.id==='panel-'+panel));
 
-    if(panel==='money')loadCompanyMoney();
+    if(panel==='money'){loadCompanyMoney();loadCompanyMoneyHistory();}
     if(panel==='treatment')loadTreatmentPercent();
     if(panel==='movements')loadMovements();
     if(panel==='private')renderPrivateStock();
@@ -1044,21 +1204,47 @@ async function loadCompanyMoney(){
   }
 
   $('companyMoneyCurrent').textContent=money(Number(data?.company_money||0));
+
+  if(!$('companyMoneyName').value.trim()){
+    $('companyMoneyName').placeholder='Nom RP';
+  }
 }
 
-$('addCompanyMoney').onclick=async()=>{
-  const amount=Number($('companyMoneyAdd').value);
+async function changeCompanyMoney(type){
+  const amount=Number($('companyMoneyAmount').value);
+  const name=$('companyMoneyName').value.trim();
   const msg=$('companyMoneyMsg');
+
+  if(!name){
+    msg.textContent='Le nom est obligatoire.';
+    return;
+  }
 
   if(!Number.isFinite(amount)||amount<=0){
     msg.textContent='Entre un montant supérieur à 0.';
     return;
   }
 
-  msg.textContent='Ajout en cours...';
+  const label=type==='add'?'ajout':'retrait';
 
-  const {data,error}=await db.rpc('add_company_money',{
-    p_amount:amount
+  if(type==='remove'){
+    const currentText=$('companyMoneyCurrent').textContent
+      .replace(/[^\d,.-]/g,'')
+      .replace(',','.');
+    const current=Number(currentText)||0;
+
+    if(amount>current){
+      msg.textContent='Impossible de retirer plus que l’argent actuellement disponible.';
+      return;
+    }
+  }
+
+  msg.textContent=type==='add'?'Ajout en cours...':'Retrait en cours...';
+
+  const {data,error}=await db.rpc('change_company_money',{
+    p_action:type,
+    p_amount:amount,
+    p_name:name
   });
 
   if(error){
@@ -1066,10 +1252,68 @@ $('addCompanyMoney').onclick=async()=>{
     return;
   }
 
-  $('companyMoneyAdd').value='';
+  $('companyMoneyAmount').value='';
   $('companyMoneyCurrent').textContent=money(Number(data||0));
-  msg.textContent='Argent ajouté à la caisse de l’entreprise.';
-};
+  msg.textContent=type==='add'
+    ? 'Argent ajouté à la caisse.'
+    : 'Argent retiré de la caisse.';
+
+  await loadCompanyMoneyHistory();
+}
+
+$('addCompanyMoney').onclick=()=>changeCompanyMoney('add');
+$('removeCompanyMoney').onclick=()=>changeCompanyMoney('remove');
+
+async function loadCompanyMoneyHistory(){
+  const box=$('companyMoneyHistory');
+
+  if(!box)return;
+
+  box.innerHTML='<div class="muted">Chargement...</div>';
+
+  const {data,error}=await db
+    .from('company_money_movements')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(50);
+
+  if(error){
+    box.innerHTML='<div class="muted">Erreur : '+error.message+'</div>';
+    return;
+  }
+
+  const rows=data||[];
+
+  if(!rows.length){
+    box.innerHTML='<div class="muted">Aucun mouvement de caisse pour le moment.</div>';
+    return;
+  }
+
+  box.innerHTML=rows.map(m=>`
+    <div class="money-history-item">
+      <div class="money-history-type ${m.action==='add'?'add':'remove'}">
+        ${m.action==='add'?'Ajout':'Retrait'}
+      </div>
+
+      <div>
+        <b>${m.name||'—'}</b>
+        <div class="muted" style="margin-top:3px">
+          Action effectuée par ${m.actor_rp||'Staff'}
+        </div>
+      </div>
+
+      <div class="money-history-amount">
+        ${m.action==='add'?'+':'−'} ${money(m.amount)}
+      </div>
+
+      <div class="money-history-date">
+        ${new Date(m.created_at).toLocaleString('fr-FR')}
+      </div>
+    </div>
+  `).join('');
+}
+
+$('refreshMoneyHistory').onclick=loadCompanyMoneyHistory;
 
 async function loadTreatmentPercent(){
   const {data,error}=await db
@@ -1244,6 +1488,7 @@ $('refreshClearHistory').onclick=loadClearHistory;
   if(await guard()){
     await loadInventory();
     await loadCompanyMoney();
+    await loadCompanyMoneyHistory();
   }
 })();
 </script>
