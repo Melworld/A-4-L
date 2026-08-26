@@ -1,1 +1,50 @@
-
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vory V — Entreprise</title><style>
+:root{--bg:#09090b;--panel:#111113;--panel2:#17171b;--line:#28282f;--text:#fff;--muted:#92929d;--orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;--blue:#60a5fa}
+*{box-sizing:border-box}html{color-scheme:dark}body{margin:0;background:radial-gradient(circle at 15% 0,rgba(249,115,22,.08),transparent 25%),var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
+a{color:inherit;text-decoration:none}button,input,select{font:inherit}.shell{max-width:1250px;margin:auto;padding:30px 22px 70px}.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:30px}.kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}.top h1{margin:5px 0 0;font-size:34px}.back{color:#aaa;font-weight:800}.back:hover{color:#fff}
+.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}.grid{display:grid;gap:15px}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.stat span{display:block;color:var(--muted);font-size:12px}.stat b{display:block;margin-top:5px;font-size:24px}.muted{color:var(--muted);font-size:13px}.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}.primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}.secondary{background:#202025;color:#fff;border:1px solid #34343b}.danger{background:#3c1719;color:#fecaca}.row{display:grid;gap:7px}.row label{font-size:12px;font-weight:850;color:#d4d4d8}.row input,.row select{background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}.row input:focus,.row select:focus{border-color:var(--orange)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px}th{color:#aaa;background:#0d0d10;font-size:11px;text-transform:uppercase;letter-spacing:.05em}tr:last-child td{border-bottom:0}.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}.ok{color:#86efac}.pending{color:#fdba74}
+.nav-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:18px}.nav-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:.18s}.nav-card:hover{transform:translateY(-3px);border-color:#5a3a22}.nav-card h3{margin:8px 0}.nav-card p{color:var(--muted);margin:0;line-height:1.55}.locked{opacity:.5;cursor:not-allowed}.section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}.section-title h2{margin:0}
+@media(max-width:850px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}@media(max-width:600px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
+</style></head>
+<body><div class="shell">
+<div class="top"><div><div class="kicker">Vory V Industry</div><h1>Récapitulatif de l'entreprise</h1></div><a class="back" href="../index.html">← Retour à mon Espace Membre</a></div>
+<div class="grid grid4">
+ <div class="card stat"><span>Chiffre d'affaires validé</span><b id="turnover">0 €</b></div>
+ <div class="card stat"><span>Ventes validées</span><b id="salesCount">0</b></div>
+ <div class="card stat"><span>Transactions en attente</span><b id="pendingCount">0</b></div>
+ <div class="card stat"><span>Valeur de l'inventaire</span><b id="stockValue">0 €</b></div>
+</div>
+<div class="section-title"><div><h2>Ajouter une vente</h2><div class="muted">Accessible aux membres de l'entreprise.</div></div></div>
+<div class="card">
+ <div class="grid grid3">
+  <div class="row"><label>Nom RP</label><input id="saleRp" readonly></div>
+  <div class="row"><label>Nombre de la vente</label><input id="saleQty" type="number" min="1" value="1"></div>
+  <div class="row"><label>Produit</label><select id="saleProduct"></select></div>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:18px;flex-wrap:wrap">
+   <div><span class="muted">Total de la vente</span><div style="font-size:28px;font-weight:950" id="saleTotal">0 €</div></div>
+   <button class="btn primary" id="addSale">Ajouter la vente</button>
+ </div>
+ <div class="muted" id="saleMsg" style="margin-top:10px"></div>
+</div>
+<div class="section-title"><div><h2>Gestion de l'entreprise</h2><div class="muted">Les accès sensibles sont réservés à la direction et au staff.</div></div></div>
+<div class="nav-cards">
+ <a class="nav-card restricted" href="transaction/index.html"><div>💳</div><h3>Transactions</h3><p>Validation, historique, entrées/sorties et calculs financiers.</p></a>
+ <a class="nav-card restricted" href="inventaire/index.html"><div>📦</div><h3>Inventaire</h3><p>Stocks, prix unitaires, seuils faibles et valeur totale.</p></a>
+ <a class="nav-card" href="infosalaries/index.html"><div>👥</div><h3>Informations salariés</h3><p>Liste de l'équipe et historique individuel des ventes.</p></a>
+</div>
+</div>
+<script src="../database.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $=x=>document.getElementById(x);let db,user,profile;
+const PRODUCTS=[{name:'Produit A',price:1000},{name:'Produit B',price:2500},{name:'Produit C',price:5000}];
+const money=n=>Number(n||0).toLocaleString('fr-FR')+' €';
+async function identity(){db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();user=session?.user;if(!user)return location.href='../gestion/index.html';const {data}=await db.from('profiles').select('*').eq('id',user.id).single();profile=data;if(!profile?.company_rank)return location.href='../gestion/index.html';$('saleRp').value=profile.rp_name||'';const elevated=['manager','pdg'].includes(profile.company_rank)||['moderator','admin'].includes(profile.role);document.querySelectorAll('.restricted').forEach(a=>{if(!elevated){a.removeAttribute('href');a.classList.add('locked');a.title='Accès Gestionnaire / Patron / Modérateur / Administrateur';}})}
+function products(){ $('saleProduct').innerHTML=PRODUCTS.map((p,i)=>`<option value="${i}">${p.name} — ${money(p.price)}</option>`).join('');calc()}
+function calc(){const p=PRODUCTS[+$('saleProduct').value]||PRODUCTS[0],q=Math.max(1,+$('saleQty').value||1);$('saleTotal').textContent=money(p.price*q)}
+$('saleQty').oninput=calc;$('saleProduct').onchange=calc;
+$('addSale').onclick=async()=>{const p=PRODUCTS[+$('saleProduct').value],q=Math.max(1,+$('saleQty').value||1);const payload={seller_id:user.id,seller_rp:profile.rp_name,product_name:p.name,quantity:q,unit_price:p.price,total_amount:p.price*q,status:'pending'};const {error}=await db.from('company_sales').insert(payload);$('saleMsg').textContent=error?'Erreur : '+error.message:'Vente ajoutée, en attente de validation.';if(!error){$('saleQty').value=1;calc();loadStats()}};
+async function loadStats(){const {data:sales}=await db.from('company_sales').select('total_amount,status');const valid=(sales||[]).filter(x=>x.status==='validated');$('turnover').textContent=money(valid.reduce((a,x)=>a+Number(x.total_amount||0),0));$('salesCount').textContent=valid.length;$('pendingCount').textContent=(sales||[]).filter(x=>x.status==='pending').length;const {data:stock}=await db.from('company_inventory').select('quantity,unit_price');$('stockValue').textContent=money((stock||[]).reduce((a,x)=>a+Number(x.quantity||0)*Number(x.unit_price||0),0))}
+(async()=>{await identity();products();loadStats()})();
+</script></body></html>
