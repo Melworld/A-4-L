@@ -16,7 +16,7 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}
 .back{color:#aaa;font-weight:800}.back:hover{color:#fff}
 .card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}
 .grid{display:grid;gap:15px}
-.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid5{grid-template-columns:repeat(5,minmax(0,1fr))}
 .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .stat span{display:block;color:var(--muted);font-size:12px}
 .stat b{display:block;margin-top:5px;font-size:24px}
@@ -50,8 +50,8 @@ tr:last-child td{border-bottom:0}
 .sale-total-line b{font-size:18px}
 .sale-total-final b{font-size:30px;color:#fff}
 .treatment-note{color:#fdba74;font-size:12px;margin-top:5px}
-@media(max-width:850px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}
-@media(max-width:600px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
+@media(max-width:850px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}
+@media(max-width:600px){.grid5,.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
 </style>
 </head>
 
@@ -65,7 +65,8 @@ tr:last-child td{border-bottom:0}
   <a class="back" href="../index.html">← Retour à mon Espace Membre</a>
 </div>
 
-<div class="grid grid4">
+<div class="grid grid5">
+ <div class="card stat"><span>Argent de l'entreprise</span><b id="companyMoney">0 €</b></div>
  <div class="card stat"><span>Chiffre d'affaires validé</span><b id="turnover">0 €</b></div>
  <div class="card stat"><span>Ventes validées</span><b id="salesCount">0</b></div>
  <div class="card stat"><span>Transactions en attente</span><b id="pendingCount">0</b></div>
@@ -397,6 +398,23 @@ $('addSale').onclick=async()=>{
   loadStats();
 };
 
+
+async function loadCompanyMoney(){
+  const {data,error}=await db
+    .from('company_settings')
+    .select('company_money')
+    .eq('id',1)
+    .maybeSingle();
+
+  if(error){
+    console.warn('Argent entreprise :',error.message);
+    $('companyMoney').textContent='—';
+    return;
+  }
+
+  $('companyMoney').textContent=money(Number(data?.company_money||0));
+}
+
 async function loadStats(){
   const {data:sales}=await db
     .from('company_sales')
@@ -417,7 +435,9 @@ async function loadStats(){
 
   const {data:stock}=await db
     .from('company_inventory')
-    .select('quantity,unit_price');
+    .select('quantity,unit_price,enabled,storage_location')
+    .eq('storage_location','inventory')
+    .eq('enabled',true);
 
   $('stockValue').textContent=money(
     (stock||[]).reduce(
@@ -431,6 +451,7 @@ async function loadStats(){
   await identity();
   await loadTreatmentPercentage();
   await products();
+  await loadCompanyMoney();
   loadStats();
 })();
 </script>
