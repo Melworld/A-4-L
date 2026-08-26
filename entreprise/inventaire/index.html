@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Vory V — Inventaire</title>
+<style>
+:root{
+  --bg:#09090b;--panel:#111113;--panel2:#151518;--muted:#8b8b94;--line:#25252b;
+  --orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{
+  margin:0;min-height:100vh;color:#fff;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 15% 0,rgba(249,115,22,.08),transparent 25%),
+    var(--bg);
+}
+button,input,select{font:inherit}
+a{color:inherit;text-decoration:none}
+.shell{max-width:1250px;margin:auto;padding:30px 22px 70px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:30px}
+.kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}
+.top h1{margin:5px 0 0;font-size:34px}
+.back{color:#aaa;font-weight:800}.back:hover{color:#fff}
+.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}
+.grid{display:grid;gap:15px}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.stat span{display:block;color:var(--muted);font-size:12px}.stat b{display:block;margin-top:5px;font-size:24px}
+.muted{color:var(--muted);font-size:13px}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
+.primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}
+.secondary{background:#202025;color:#fff;border:1px solid #34343b}
+.danger{background:#3c1719;color:#fecaca;border:1px solid #5f2227}
+.row{display:grid;gap:7px}
+.row label{font-size:12px;font-weight:850;color:#d4d4d8}
+.row input{background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}
+.row input:focus{border-color:var(--orange)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:920px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px}
+th{color:#aaa;background:#0d0d10;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:0}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}
+.ok{color:#86efac}.pending{color:#fdba74}
+.section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}
+.section-title h2{margin:0}
+.inventory-actions{display:flex;gap:8px;flex-wrap:wrap}
+.edit-product{border:1px solid #34343b;border-radius:10px;padding:9px 11px;background:#202025;color:#fff;font-weight:850;cursor:pointer}
+.delete-product{border:1px solid #5f2227;border-radius:10px;padding:9px 11px;background:#3a1518;color:#fecaca;font-weight:850;cursor:pointer}
+
+.treated-btn{
+  min-width:88px;min-height:37px;border:1px solid #34343b;border-radius:10px;
+  padding:8px 12px;background:#202025;color:#fff;font-weight:900;cursor:pointer
+}
+.treated-btn.yes{background:#16301f;border-color:#275f38;color:#bbf7d0}
+.treated-btn.no{background:#3a1518;border-color:#5f2227;color:#fecaca}
+
+.inventory-management{display:grid;grid-template-columns:270px minmax(0,1fr);gap:18px;align-items:start}
+.inventory-menu{
+  background:var(--panel);border:1px solid var(--line);border-radius:15px;
+  padding:9px;position:sticky;top:20px
+}
+.inventory-menu button{
+  width:100%;border:0;background:transparent;color:#aaa;text-align:left;padding:13px 14px;
+  border-radius:10px;cursor:pointer;font-weight:850;display:flex;align-items:center;
+  justify-content:space-between;gap:10px
+}
+.inventory-menu button::after{content:"›";font-size:20px;color:#666}
+.inventory-menu button:hover{background:#18181b;color:#fff}
+.inventory-menu button.active{background:#1b1b1f;color:#fff}
+.inventory-menu button.active::after{color:var(--orange)}
+.menu-separator{height:1px;background:var(--line);margin:10px 7px}
+.inventory-panel{display:none}.inventory-panel.active{display:block}
+
+.ref-product{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;padding:14px;
+  border:1px solid var(--line);border-radius:12px;background:#0d0d10;margin-bottom:10px
+}
+.ref-product-main{min-width:0}.ref-product-name{font-weight:950}
+.ref-product-meta{color:var(--muted);font-size:12px;margin-top:5px}
+.switch-btn{
+  border:1px solid #34343b;border-radius:999px;padding:8px 12px;background:#16301f;
+  color:#bbf7d0;font-weight:850;cursor:pointer;white-space:nowrap
+}
+.switch-btn.off{background:#3a1518;color:#fecaca;border-color:#5f2227}
+
+.stock-movement{
+  display:grid;grid-template-columns:140px minmax(0,1fr) 165px;gap:14px;align-items:center;
+  padding:13px 14px;background:#0d0d10;border:1px solid var(--line);
+  border-radius:12px;margin-bottom:9px
+}
+.stock-movement-type{font-weight:900}
+.stock-movement-date{color:var(--muted);font-size:11px;text-align:right}
+
+.sale-stat-row{
+  display:grid;grid-template-columns:minmax(0,1fr) 130px 180px;
+  gap:14px;align-items:center;padding:14px;border-bottom:1px solid var(--line)
+}
+.sale-stat-row:last-child{border-bottom:0}
+.sale-stat-name{font-weight:950}
+
+.clear-warning{
+  border:1px solid rgba(239,68,68,.25);background:rgba(127,29,29,.10);
+  border-radius:13px;padding:16px;line-height:1.6
+}
+.clear-history-item{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;padding:14px;
+  border:1px solid var(--line);border-radius:12px;background:#0d0d10;margin-bottom:9px
+}
+.clear-history-title{font-weight:950}
+.clear-history-meta{color:var(--muted);font-size:12px;margin-top:5px}
+
+@media(max-width:850px){
+  .grid3{grid-template-columns:1fr 1fr}
+  .inventory-management{grid-template-columns:1fr}
+  .inventory-menu{position:static}
+}
+@media(max-width:650px){
+  .grid3{grid-template-columns:1fr}
+  .shell{padding:22px 14px 55px}
+  .top{align-items:flex-start}
+  .top h1{font-size:28px}
+  .stock-movement,.sale-stat-row,.clear-history-item{grid-template-columns:1fr}
+  .stock-movement-date{text-align:left}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="top">
+    <div>
+      <div class="kicker">Entreprise / Direction</div>
+      <h1>Inventaire</h1>
+    </div>
+    <a class="back" href="../index.html">← Récap entreprise</a>
+  </div>
+
+  <div class="grid grid3">
+    <div class="card stat"><span>Produits référencés</span><b id="refs">0</b></div>
+    <div class="card stat"><span>Unités en stock</span><b id="units">0</b></div>
+    <div class="card stat"><span>Valeur du stock</span><b id="value">0 €</b></div>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>Inventaire actuel</h2>
+      <div class="muted">Les produits sont affichés ici en priorité.</div>
+    </div>
+
+
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Prix unitaire</th>
+          <th>Valeur</th>
+          <th>Traité</th>
+          <th>État</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="stock"></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">
+    <div>
+      <h2>Gestion des produits</h2>
+      <div class="muted">Gestion privée de l’inventaire Vory V Industry.</div>
+    </div>
+  </div>
+
+  <div class="inventory-management">
+
+    <aside class="inventory-menu">
+      <button class="active" type="button" data-panel="reference">Référencer un produit</button>
+      <button type="button" data-panel="referenced">Produits référencés</button>
+
+      <div class="menu-separator"></div>
+
+      <button type="button" data-panel="movements">Mouvements de stock</button>
+      <button type="button" data-panel="salesstats">Statistiques par ventes</button>
+
+      <div class="menu-separator"></div>
+
+      <button type="button" data-panel="clear">Vider l’inventaire</button>
+      <button type="button" data-panel="clearhistory">Historique des vidages</button>
+    </aside>
+
+    <section>
+
+      <div class="inventory-panel active" id="panel-reference">
+        <div class="card">
+          <h2 style="margin-top:0">Référencer / modifier un produit</h2>
+          <div class="muted" style="margin-bottom:16px">
+            Ajoute un nouveau produit ou utilise « Modifier » dans l’inventaire pour charger ses informations.
+          </div>
+
+          <input type="hidden" id="editId">
+
+          <div class="grid grid3">
+            <div class="row">
+              <label>Produit</label>
+              <input id="name" placeholder="Ex. SPAR-16">
+            </div>
+            <div class="row">
+              <label>Quantité</label>
+              <input id="qty" type="number" min="0" value="0">
+            </div>
+            <div class="row">
+              <label>Prix unitaire</label>
+              <input id="price" type="number" min="0" value="0">
+            </div>
+          </div>
+
+          <div class="inventory-actions" style="margin-top:15px">
+            <button class="btn primary" id="save">Enregistrer</button>
+            <button class="btn secondary" id="cancelEdit" type="button">Annuler la modification</button>
+          </div>
+
+          <div class="muted" id="msg" style="margin-top:8px"></div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-referenced">
+        <div class="card">
+          <h2 style="margin-top:0">Produits référencés</h2>
+          <div class="muted" style="margin-bottom:16px">
+            Désactiver un produit le conserve dans la base de données mais permet de le masquer des listes de vente.
+          </div>
+          <div id="referencedProducts"></div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-movements">
+        <div class="card">
+          <div class="top" style="margin-bottom:16px">
+            <div>
+              <h2 style="margin:0">Mouvements de stock</h2>
+              <div class="muted" style="margin-top:5px">
+                Historique privé des modifications effectuées sur l’inventaire.
+              </div>
+            </div>
+            <button class="btn secondary" id="refreshMovements" type="button">Actualiser</button>
+          </div>
+          <div id="stockMovements"></div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-salesstats">
+        <div class="card">
+          <div class="top" style="margin-bottom:16px">
+            <div>
+              <h2 style="margin:0">Statistiques par ventes</h2>
+              <div class="muted" style="margin-top:5px">
+                Les calculs utilisent uniquement les ventes validées.
+              </div>
+            </div>
+            <button class="btn secondary" id="refreshSalesStats" type="button">Actualiser</button>
+          </div>
+
+          <div class="grid grid3" style="margin-bottom:16px">
+            <div class="stat"><span>Produits différents vendus</span><b id="soldProductRefs">0</b></div>
+            <div class="stat"><span>Unités vendues</span><b id="soldUnits">0</b></div>
+            <div class="stat"><span>Argent généré</span><b id="salesGenerated">0 €</b></div>
+          </div>
+
+          <div style="border:1px solid var(--line);border-radius:13px;overflow:hidden">
+            <div class="sale-stat-row" style="background:#0d0d10;color:var(--muted);font-size:11px;font-weight:900;text-transform:uppercase">
+              <div>Produit</div>
+              <div>Vendus</div>
+              <div>Argent généré</div>
+            </div>
+            <div id="salesStatsList"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-clear">
+        <div class="card">
+          <h2 style="margin-top:0">Vider l’inventaire</h2>
+
+          <div class="clear-warning">
+            <b>Cette action ne supprime ni les produits ni les ventes.</b><br>
+            Toutes les quantités de l’inventaire passent simplement à <b>0</b>.
+            Le vidage est enregistré automatiquement dans l’historique.
+          </div>
+
+          <div class="grid grid3" style="margin-top:16px">
+            <div class="stat"><span>Produits contenant du stock</span><b id="clearProductCount">0</b></div>
+            <div class="stat"><span>Unités à vider</span><b id="clearUnitCount">0</b></div>
+            <div class="stat"><span>Valeur du stock</span><b id="clearValue">0 €</b></div>
+          </div>
+
+          <button class="btn danger" id="clearInventory" type="button" style="margin-top:18px">
+            Vider l’inventaire maintenant
+          </button>
+        </div>
+      </div>
+
+      <div class="inventory-panel" id="panel-clearhistory">
+        <div class="card">
+          <div class="top" style="margin-bottom:16px">
+            <div>
+              <h2 style="margin:0">Historique des vidages</h2>
+              <div class="muted" style="margin-top:5px">
+                Chaque remise à zéro de l’inventaire reste enregistrée.
+              </div>
+            </div>
+            <button class="btn secondary" id="refreshClearHistory" type="button">Actualiser</button>
+          </div>
+          <div id="clearHistory"></div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+<script src="../../database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toLocaleString('fr-FR')+' €';
+
+let db=null;
+let user=null;
+let profile=null;
+let inventory=[];
+
+async function guard(){
+  db=window.supabase.createClient(
+    window.VORY_SUPABASE_URL,
+    window.VORY_SUPABASE_KEY
+  );
+
+  const {data:{session}}=await db.auth.getSession();
+  user=session?.user||null;
+
+  if(!user){
+    location.href='../../gestion/index.html';
+    return false;
+  }
+
+  const {data,error}=await db
+    .from('profiles')
+    .select('*')
+    .eq('id',user.id)
+    .single();
+
+  if(error||!data){
+    location.href='../../gestion/index.html';
+    return false;
+  }
+
+  profile=data;
+
+  const allowed=
+    ['manager','pdg'].includes(profile.company_rank)
+    || ['moderator','admin'].includes(profile.role);
+
+  if(!allowed){
+    location.href='../index.html';
+    return false;
+  }
+
+  return true;
+}
+
+document.querySelectorAll('.inventory-menu button[data-panel]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const panel=btn.dataset.panel;
+
+    document.querySelectorAll('.inventory-menu button[data-panel]')
+      .forEach(x=>x.classList.toggle('active',x===btn));
+
+    document.querySelectorAll('.inventory-panel')
+      .forEach(x=>x.classList.toggle('active',x.id==='panel-'+panel));
+
+    if(panel==='movements')loadMovements();
+    if(panel==='salesstats')loadSalesStats();
+    if(panel==='clearhistory')loadClearHistory();
+    if(panel==='clear')renderClearSummary();
+  });
+});
+
+function inventorySnapshot(){
+  const stocked=inventory.filter(x=>Number(x.quantity||0)>0);
+
+  return {
+    product_count:stocked.length,
+    unit_count:stocked.reduce((sum,x)=>sum+Number(x.quantity||0),0),
+    total_value:stocked.reduce(
+      (sum,x)=>sum+Number(x.quantity||0)*Number(x.unit_price||0),
+      0
+    )
+  };
+}
+
+function renderClearSummary(){
+  const snap=inventorySnapshot();
+  $('clearProductCount').textContent=snap.product_count;
+  $('clearUnitCount').textContent=snap.unit_count;
+  $('clearValue').textContent=money(snap.total_value);
+}
+
+async function logMovement(type,productName,beforeQty,afterQty,note=''){
+  const {error}=await db
+    .from('company_stock_movements')
+    .insert({
+      movement_type:type,
+      product_name:productName||null,
+      quantity_before:beforeQty??null,
+      quantity_after:afterQty??null,
+      note:note||null,
+      actor_id:user.id,
+      actor_rp:profile.rp_name||null
+    });
+
+  if(error){
+    console.warn('Impossible d’enregistrer le mouvement :',error.message);
+  }
+}
+
+function clearForm(){
+  $('editId').value='';
+  $('name').value='';
+  $('qty').value='0';
+  $('price').value='0';
+  $('msg').textContent='';
+}
+
+$('cancelEdit').onclick=clearForm;
+
+$('save').onclick=async()=>{
+  const id=$('editId').value;
+  const product_name=$('name').value.trim();
+  const quantity=Math.max(0,Number($('qty').value)||0);
+  const unit_price=Math.max(0,Number($('price').value)||0);
+
+  if(!product_name){
+    $('msg').textContent='Nom du produit obligatoire.';
+    return;
+  }
+
+  $('msg').textContent='Enregistrement...';
+
+  const previous=id
+    ? inventory.find(x=>String(x.id)===String(id))
+    : null;
+
+  let result;
+
+  if(id){
+    result=await db
+      .from('company_inventory')
+      .update({
+        product_name,
+        quantity,
+        unit_price,
+        updated_at:new Date().toISOString(),
+        updated_by:user.id
+      })
+      .eq('id',id);
+  }else{
+    result=await db
+      .from('company_inventory')
+      .insert({
+        product_name,
+        quantity,
+        unit_price,
+        enabled:true,
+        treated:false,
+        updated_by:user.id
+      });
+  }
+
+  if(result.error){
+    $('msg').textContent='Erreur : '+result.error.message;
+    return;
+  }
+
+  await logMovement(
+    id?'edit':'create',
+    product_name,
+    previous?.quantity??null,
+    quantity,
+    id?'Produit modifié':'Produit référencé'
+  );
+
+  $('msg').textContent=id?'Produit modifié.':'Produit référencé.';
+  clearForm();
+  await loadInventory();
+};
+
+function editProduct(id){
+  const p=inventory.find(x=>String(x.id)===String(id));
+  if(!p)return;
+
+  $('editId').value=p.id;
+  $('name').value=p.product_name||'';
+  $('qty').value=p.quantity??0;
+  $('price').value=p.unit_price??0;
+
+  document.querySelector('[data-panel="reference"]').click();
+  $('msg').textContent='Modification de '+p.product_name+'.';
+  document.querySelector('.inventory-management').scrollIntoView({behavior:'smooth'});
+}
+
+async function deleteProduct(id,name){
+  const p=inventory.find(x=>String(x.id)===String(id));
+
+  if(!confirm('Supprimer définitivement "'+name+'" des produits référencés ?')){
+    return;
+  }
+
+  const {error}=await db
+    .from('company_inventory')
+    .delete()
+    .eq('id',id);
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await logMovement(
+    'delete',
+    name,
+    p?.quantity??null,
+    null,
+    'Produit supprimé des références'
+  );
+
+  await loadInventory();
+}
+
+async function toggleProduct(id,currentEnabled){
+  const p=inventory.find(x=>String(x.id)===String(id));
+  const next=!currentEnabled;
+
+  const {error}=await db
+    .from('company_inventory')
+    .update({
+      enabled:next,
+      updated_at:new Date().toISOString(),
+      updated_by:user.id
+    })
+    .eq('id',id);
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await logMovement(
+    next?'enable':'disable',
+    p?.product_name||null,
+    p?.quantity??null,
+    p?.quantity??null,
+    next?'Produit activé':'Produit désactivé'
+  );
+
+  await loadInventory();
+}
+
+async function toggleTreated(id,currentTreated){
+  const p=inventory.find(x=>String(x.id)===String(id));
+  const next=!currentTreated;
+
+  const {error}=await db
+    .from('company_inventory')
+    .update({
+      treated:next,
+      updated_at:new Date().toISOString(),
+      updated_by:user.id
+    })
+    .eq('id',id);
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await logMovement(
+    next?'treated_yes':'treated_no',
+    p?.product_name||null,
+    p?.quantity??null,
+    p?.quantity??null,
+    next?'Produit marqué traité':'Produit marqué non traité'
+  );
+
+  await loadInventory();
+}
+
+function renderInventory(){
+  $('stock').innerHTML=inventory.length
+    ? inventory.map(x=>`
+      <tr>
+        <td>
+          <b>${x.product_name}</b>
+          ${x.enabled===false
+            ? '<div class="muted" style="margin-top:3px">Produit désactivé</div>'
+            : ''}
+        </td>
+        <td>${x.quantity}</td>
+        <td>${money(x.unit_price)}</td>
+        <td>${money(Number(x.quantity||0)*Number(x.unit_price||0))}</td>
+
+        <td>
+          <button
+            class="treated-btn ${x.treated===true?'yes':'no'}"
+            onclick="toggleTreated('${x.id}',${x.treated===true})">
+            ${x.treated===true?'Oui':'Non'}
+          </button>
+        </td>
+
+        <td>
+          <span class="badge ${x.enabled===false?'pending':'ok'}">
+            ${x.enabled===false?'Désactivé':'Actif'}
+          </span>
+        </td>
+
+        <td>
+          <div class="inventory-actions">
+            <button class="edit-product" onclick="editProduct('${x.id}')">Modifier</button>
+            <button class="delete-product" onclick="deleteProduct('${x.id}',${JSON.stringify(x.product_name)})">Supprimer</button>
+          </div>
+        </td>
+      </tr>
+    `).join('')
+    : '<tr><td colspan="7" class="muted">Inventaire vide.</td></tr>';
+}
+
+function renderReferenced(){
+  const box=$('referencedProducts');
+
+  if(!inventory.length){
+    box.innerHTML='<div class="muted">Aucun produit référencé.</div>';
+    return;
+  }
+
+  box.innerHTML=inventory.map(p=>`
+    <div class="ref-product">
+      <div class="ref-product-main">
+        <div class="ref-product-name">${p.product_name}</div>
+        <div class="ref-product-meta">
+          ${p.quantity} unité(s) • ${money(p.unit_price)} / unité
+          • Traité : ${p.treated===true?'Oui':'Non'}
+        </div>
+      </div>
+
+      <button
+        class="switch-btn ${p.enabled===false?'off':''}"
+        onclick="toggleProduct('${p.id}',${p.enabled!==false})">
+        ${p.enabled===false?'Désactivé':'Activé'}
+      </button>
+    </div>
+  `).join('');
+}
+
+async function loadInventory(){
+  const {data,error}=await db
+    .from('company_inventory')
+    .select('*')
+    .order('product_name');
+
+  if(error){
+    alert('Erreur inventaire : '+error.message);
+    return;
+  }
+
+  inventory=data||[];
+
+  $('refs').textContent=inventory.length;
+  $('units').textContent=inventory.reduce(
+    (sum,x)=>sum+Number(x.quantity||0),0
+  );
+  $('value').textContent=money(
+    inventory.reduce(
+      (sum,x)=>sum+Number(x.quantity||0)*Number(x.unit_price||0),
+      0
+    )
+  );
+
+  renderInventory();
+  renderReferenced();
+  renderClearSummary();
+}
+
+async function loadMovements(){
+  const box=$('stockMovements');
+  box.innerHTML='<div class="muted">Chargement...</div>';
+
+  const {data,error}=await db
+    .from('company_stock_movements')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  if(error){
+    box.innerHTML='<div class="muted">Erreur : '+error.message+'</div>';
+    return;
+  }
+
+  const rows=data||[];
+
+  if(!rows.length){
+    box.innerHTML='<div class="muted">Aucun mouvement enregistré.</div>';
+    return;
+  }
+
+  const labels={
+    create:'Produit référencé',
+    edit:'Modification',
+    delete:'Produit supprimé',
+    enable:'Produit activé',
+    disable:'Produit désactivé',
+    treated_yes:'Traité : Oui',
+    treated_no:'Traité : Non',
+    inventory_clear:'Inventaire vidé'
+  };
+
+  box.innerHTML=rows.map(m=>`
+    <div class="stock-movement">
+      <div class="stock-movement-type">
+        ${labels[m.movement_type]||m.movement_type}
+      </div>
+
+      <div>
+        <b>${m.product_name||'Inventaire complet'}</b>
+        <div class="muted" style="margin-top:4px">
+          ${
+            m.quantity_before!==null && m.quantity_after!==null
+              ? m.quantity_before+' → '+m.quantity_after+' unité(s)'
+              : ''
+          }
+          ${
+            m.note
+              ? ((m.quantity_before!==null&&m.quantity_after!==null)?' • ':'')+m.note
+              : ''
+          }
+          <br>Par ${m.actor_rp||'Staff'}
+        </div>
+      </div>
+
+      <div class="stock-movement-date">
+        ${new Date(m.created_at).toLocaleString('fr-FR')}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadSalesStats(){
+  const list=$('salesStatsList');
+  list.innerHTML='<div class="muted" style="padding:14px">Chargement...</div>';
+
+  const {data,error}=await db
+    .from('company_sales')
+    .select('product_name,quantity,total_amount,status')
+    .eq('status','validated');
+
+  if(error){
+    list.innerHTML='<div class="muted" style="padding:14px">Erreur : '+error.message+'</div>';
+    return;
+  }
+
+  const sales=data||[];
+  const byProduct={};
+
+  for(const sale of sales){
+    const name=sale.product_name||'Produit inconnu';
+
+    if(!byProduct[name]){
+      byProduct[name]={quantity:0,total:0};
+    }
+
+    byProduct[name].quantity+=Number(sale.quantity||0);
+    byProduct[name].total+=Number(sale.total_amount||0);
+  }
+
+  const rows=Object.entries(byProduct)
+    .map(([name,v])=>({name,...v}))
+    .sort((a,b)=>b.total-a.total);
+
+  $('soldProductRefs').textContent=rows.length;
+  $('soldUnits').textContent=sales.reduce(
+    (sum,x)=>sum+Number(x.quantity||0),0
+  );
+  $('salesGenerated').textContent=money(
+    sales.reduce((sum,x)=>sum+Number(x.total_amount||0),0)
+  );
+
+  list.innerHTML=rows.length
+    ? rows.map(r=>`
+      <div class="sale-stat-row">
+        <div class="sale-stat-name">${r.name}</div>
+        <div>${r.quantity}</div>
+        <div><b>${money(r.total)}</b></div>
+      </div>
+    `).join('')
+    : '<div class="muted" style="padding:14px">Aucune vente validée.</div>';
+}
+
+$('clearInventory').onclick=async()=>{
+  const snap=inventorySnapshot();
+
+  if(snap.unit_count===0){
+    alert('L’inventaire est déjà vide.');
+    return;
+  }
+
+  if(!confirm(
+    'Vider tout l’inventaire ?\n\n'
+    +snap.unit_count+' unité(s) passeront à 0.\n'
+    +'Valeur actuelle : '+money(snap.total_value)+'.\n\n'
+    +'Les produits et les ventes seront conservés.'
+  )){
+    return;
+  }
+
+  const {data,error}=await db.rpc('clear_company_inventory');
+
+  if(error){
+    alert('Erreur : '+error.message);
+    return;
+  }
+
+  await loadInventory();
+  await loadMovements();
+  await loadClearHistory();
+
+  alert(data||'Inventaire vidé.');
+};
+
+async function loadClearHistory(){
+  const box=$('clearHistory');
+  box.innerHTML='<div class="muted">Chargement...</div>';
+
+  const {data,error}=await db
+    .from('company_inventory_clears')
+    .select('*')
+    .order('created_at',{ascending:false})
+    .limit(100);
+
+  if(error){
+    box.innerHTML='<div class="muted">Erreur : '+error.message+'</div>';
+    return;
+  }
+
+  const rows=data||[];
+
+  if(!rows.length){
+    box.innerHTML='<div class="muted">Aucun vidage enregistré.</div>';
+    return;
+  }
+
+  box.innerHTML=rows.map(r=>`
+    <div class="clear-history-item">
+      <div>
+        <div class="clear-history-title">
+          ${r.unit_count} unité(s) vidée(s) — ${money(r.total_value)}
+        </div>
+        <div class="clear-history-meta">
+          ${r.product_count} produit(s) concerné(s)
+          • Par ${r.cleared_by_rp||'Staff'}
+        </div>
+      </div>
+      <div class="muted">
+        ${new Date(r.created_at).toLocaleString('fr-FR')}
+      </div>
+    </div>
+  `).join('');
+}
+
+$('refreshMovements').onclick=loadMovements;
+$('refreshSalesStats').onclick=loadSalesStats;
+$('refreshClearHistory').onclick=loadClearHistory;
+
+(async()=>{
+  if(await guard()){
+    await loadInventory();
+  }
+})();
+</script>
+</body>
+</html>
