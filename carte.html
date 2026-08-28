@@ -57,19 +57,111 @@
 const MAP_SIZE=7744;
 const TABLE='map_points';
 const ICON_BUCKET='icone map';
-const ICON_FILES=Array.from({length:16},(_,i)=>`logo_${String(i+1).padStart(2,'0')}.png`);
+const EXPECTED_ICON_FILES=Array.from({length:16},(_,i)=>`logo_${String(i+1).padStart(2,'0')}.png`);
+const ICON_URLS=new Map();
+const ICON_PATHS=new Map();
+
+async function listMapIconFiles(path='',depth=0){
+  if(!db||depth>3)return [];
+
+  const {data,error}=await db.storage
+    .from(ICON_BUCKET)
+    .list(path,{limit:100,sortBy:{column:'name',order:'asc'}});
+
+  if(error){
+    console.warn('Liste icônes Supabase :',error.message);
+    return [];
+  }
+
+  const found=[];
+
+  for(const item of (data||[])){
+    const fullPath=path ? `${path}/${item.name}` : item.name;
+
+    // Un fichier Storage possède normalement un id.
+    if(item.id){
+      if(/^logo_\d{2}\.png$/i.test(item.name)){
+        found.push(fullPath);
+      }
+      continue;
+    }
+
+    // Dossier : on cherche aussi dedans.
+    if(depth<3){
+      const nested=await listMapIconFiles(fullPath,depth+1);
+      found.push(...nested);
+    }
+  }
+
+  return found;
+}
+
+async function buildMapIconUrl(path){
+  if(!db||!path)return '';
+
+  // Si le bucket est privé mais que l'utilisateur a le droit de lire,
+  // une URL signée permet quand même l'affichage.
+  const {data:signedData}=await db.storage
+    .from(ICON_BUCKET)
+    .createSignedUrl(path,60*60);
+
+  if(signedData?.signedUrl)return signedData.signedUrl;
+
+  // Sinon on tente l'URL publique.
+  const {data:publicData}=db.storage
+    .from(ICON_BUCKET)
+    .getPublicUrl(path);
+
+  return publicData?.publicUrl||'';
+}
 
 function mapIconUrl(value=''){
   const v=String(value||'').trim();
   if(!v)return '';
 
-  // Compatibilité avec les anciens points qui contiennent déjà une URL complète.
+  // Compatibilité anciens points avec URL complète.
   if(/^https?:\/\//i.test(v))return v;
 
-  const file=v.split('/').pop();
-  const base=String(window.VORY_SUPABASE_URL||'').replace(/\/$/,'');
-  return base+'/storage/v1/object/public/'+encodeURIComponent(ICON_BUCKET)+'/'+encodeURIComponent(file);
+  const basename=v.split('/').pop();
+
+  return ICON_URLS.get(v)
+    || ICON_URLS.get(basename)
+    || '';
 }
+
+async function prepareMapIcons(){
+  ICON_URLS.clear();
+  ICON_PATHS.clear();
+
+  let paths=await listMapIconFiles();
+
+  // Si la liste du bucket est bloquée par une policy, on tente quand même
+  // les noms attendus à la racine.
+  if(!paths.length){
+    paths=[...EXPECTED_ICON_FILES];
+  }
+
+  // On garde seulement logo_01.png -> logo_16.png.
+  paths=paths.filter(path=>{
+    const base=path.split('/').pop().toLowerCase();
+    return EXPECTED_ICON_FILES.includes(base);
+  });
+
+  for(const path of paths){
+    const basename=path.split('/').pop().toLowerCase();
+    const url=await buildMapIconUrl(path);
+
+    ICON_PATHS.set(basename,path);
+
+    if(url){
+      ICON_URLS.set(path,url);
+      ICON_URLS.set(basename,url);
+    }
+  }
+
+  return paths;
+}
+
 const fallbackColors={Lieu:'#3b82f6',Service:'#22c55e',Commerce:'#eab308',Zone:'#a855f7',Important:'#ef4444'};
 let colors={...fallbackColors};
 let categories=[];
@@ -123,6 +215,9 @@ async function loadIcons(){
   const picker=$('iconPicker');
   if(!picker)return;
 
+  picker.innerHTML='<div class="note">Chargement des icônes...</div>';
+
+  const paths=await prepareMapIcons();
   picker.innerHTML='';
 
   const none=document.createElement('button');
@@ -132,26 +227,37 @@ async function loadIcons(){
   none.textContent='Aucune';
   picker.appendChild(none);
 
-  ICON_FILES.forEach(file=>{
+  let loadedCount=0;
+
+  for(const expectedFile of EXPECTED_ICON_FILES){
+    const realPath=ICON_PATHS.get(expectedFile)||expectedFile;
+    const url=mapIconUrl(realPath)||mapIconUrl(expectedFile);
+
     const btn=document.createElement('button');
     btn.type='button';
     btn.className='icon-choice';
-    btn.dataset.icon=file;
+    btn.dataset.icon=realPath;
 
     const img=document.createElement('img');
-    img.src=mapIconUrl(file);
     img.alt='';
-    img.title=file;
+    img.title=expectedFile;
 
-    img.onerror=()=>{
+    if(url){
+      img.src=url;
+      img.onload=()=>{ loadedCount++; };
+      img.onerror=()=>{
+        btn.style.borderColor='#7f1d1d';
+        btn.title='Impossible de charger '+expectedFile;
+        console.error('Icône impossible à charger :',expectedFile,url);
+      };
+    }else{
       btn.style.borderColor='#7f1d1d';
-      btn.title='Impossible de charger '+file;
-      console.error('Icône introuvable :',img.src);
-    };
+      btn.title='URL introuvable pour '+expectedFile;
+    }
 
     btn.appendChild(img);
     picker.appendChild(btn);
-  });
+  }
 
   picker.querySelectorAll('.icon-choice').forEach(btn=>{
     btn.onclick=()=>{
@@ -160,6 +266,13 @@ async function loadIcons(){
         .forEach(x=>x.classList.toggle('selected',x===btn));
     };
   });
+
+  const info=$('iconPickerInfo');
+  if(info){
+    info.textContent=paths.length
+      ? `${paths.length} fichier(s) d’icône détecté(s) dans Supabase.`
+      : 'Impossible de lister le bucket. Vérifie que « icone map » est public ou lisible.';
+  }
 }
 
 function canSeeCategory(category){
@@ -199,7 +312,7 @@ async function loadRole(){
       currentProfile=data;
       currentRole=data.role||null;
 
-      const gangAccess=['right_hand','leader'].includes(data.gang_rank);
+      const gangAccess=!!(data.gang_rank && String(data.gang_rank).trim());
       const companyAccess=['manager','pdg'].includes(data.company_rank);
       const staffAccess=['admin','moderator'].includes(data.role);
 
@@ -251,6 +364,7 @@ function renderFilters(){
     render();
   });
 
+  // Only staff can add points, and they get the full category list.
   const addCats=categories.length?categories.map(c=>c.name):Object.keys(colors);
   $('catInput').innerHTML=addCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
