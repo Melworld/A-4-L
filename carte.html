@@ -31,7 +31,7 @@
   <div class="row"><label>Nom</label><input id="nameInput" placeholder="Ex. Commissariat"></div>
   <div class="row"><label>Description</label><textarea id="descInput" placeholder="Description facultative"></textarea></div>
   <div class="row"><label>Catégorie</label><select id="catInput"></select></div>
-  <div class="row"><label>Icône</label><select id="iconInput"><option value="">Aucune icône</option></select></div>
+  <div class="row"><label>Icône</label><select id="iconInput"><option value="">Aucune icône</option></select><p class="note" style="margin:5px 0 0">Icônes chargées depuis le bucket Supabase « icone map ».</p></div>
   <div class="form-msg" id="formMsg"></div>
   <div class="actions"><button class="btn secondary" id="cancelAdd">Annuler</button><button class="btn primary" id="savePoint">Ajouter</button></div>
 </div></div>
@@ -40,6 +40,8 @@
 <script>
 const MAP_SIZE=7744;
 const TABLE='map_points';
+const ICON_BUCKET='icone map';
+const ICON_FILES=Array.from({length:16},(_,i)=>`logo_${String(i+1).padStart(2,'0')}.png`);
 const fallbackColors={Lieu:'#3b82f6',Service:'#22c55e',Commerce:'#eab308',Zone:'#a855f7',Important:'#ef4444'};
 let colors={...fallbackColors};
 let categories=[];
@@ -91,19 +93,18 @@ async function loadCategories(){
 
 async function loadIcons(){
   if(!db)return;
-  const {data,error}=await db.from('map_icons')
-    .select('name,icon_url')
-    .eq('enabled',true)
-    .order('sort_order',{ascending:true})
-    .order('name',{ascending:true});
 
-  if(error){
-    console.warn('Icônes:',error.message);
-    return;
-  }
+  const icons=ICON_FILES.map((file,index)=>{
+    const {data}=db.storage.from(ICON_BUCKET).getPublicUrl(file);
+    return {
+      name:'Logo '+String(index+1).padStart(2,'0'),
+      file,
+      url:data?.publicUrl||''
+    };
+  }).filter(i=>i.url);
 
   $('iconInput').innerHTML='<option value="">Aucune icône</option>'+
-    (data||[]).map(i=>`<option value="${esc(i.icon_url)}">${esc(i.name)}</option>`).join('');
+    icons.map(i=>`<option value="${esc(i.url)}">${esc(i.name)}</option>`).join('');
 }
 
 function canSeeCategory(category){
@@ -195,7 +196,6 @@ function renderFilters(){
     render();
   });
 
-  // Only staff can add points, and they get the full category list.
   const addCats=categories.length?categories.map(c=>c.name):Object.keys(colors);
   $('catInput').innerHTML=addCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
 }
