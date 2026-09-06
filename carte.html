@@ -173,10 +173,58 @@ async function loadIcons(){
   }
 }
 
+function normalizeCategoryName(value=''){
+  return String(value||'')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[_-]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
 function canSeeCategory(category){
-  if(fullMapAccess)return true;
-  const cat=categories.find(c=>c.name===category);
-  return !!cat?.is_public;
+  const name=normalizeCategoryName(category);
+  const cat=categories.find(c=>normalizeCategoryName(c.name)===name);
+
+  // Modérateur / Administrateur : accès complet.
+  const staffAccess=['admin','moderator'].includes(currentProfile?.role);
+  if(staffAccess)return true;
+
+  // Catégories publiques (ex. Entreprise) : visibles par tous.
+  if(cat?.is_public)return true;
+
+  const gangRank=String(currentProfile?.gang_rank||'').trim().toLowerCase();
+  const isGangMember=!!gangRank;
+  const isGangDirection=['right_hand','leader','bras_droit','bras droit'].includes(gangRank);
+
+  // Membre Gang et au-dessus :
+  // - Illegal
+  // - Point de vente
+  if(
+    name==='illegal'
+    || name==='illegal'
+    || name==='point de vente'
+    || name.includes('point de vente')
+  ){
+    return isGangMember;
+  }
+
+  // Bras droit / Leader :
+  // - Replaqueur
+  // - Momo
+  // - Traitement
+  // Accepte aussi une catégorie nommée "Replaqueur/Momo".
+  if(
+    name.includes('replaqueur')
+    || name==='momo'
+    || name.includes('traitement')
+  ){
+    return isGangDirection;
+  }
+
+  // Toute autre catégorie privée reste masquée.
+  return false;
 }
 
 async function loadPoints(){
@@ -210,11 +258,11 @@ async function loadRole(){
       currentProfile=data;
       currentRole=data.role||null;
 
-      const gangAccess=!!(data.gang_rank && String(data.gang_rank).trim());
-      const companyAccess=['manager','pdg'].includes(data.company_rank);
       const staffAccess=['admin','moderator'].includes(data.role);
 
-      fullMapAccess=gangAccess||companyAccess||staffAccess;
+      // Les permissions de catégories sont gérées précisément
+      // dans canSeeCategory() selon le gang_rank.
+      fullMapAccess=staffAccess;
 
       if(staffAccess){
         btn.disabled=false;
@@ -229,7 +277,19 @@ async function loadRole(){
 }
 function fit(){const r=mapWrap.getBoundingClientRect();fitScale=Math.min(r.width/MAP_SIZE,r.height/MAP_SIZE)*.97;scale=fitScale;x=r.width/2-MAP_SIZE*scale/2;y=r.height/2-MAP_SIZE*scale/2;apply()}
 function apply(){stage.style.transform=`translate(${x}px,${y}px) scale(${scale})`;updateMarkerSizes()}
-function updateMarkerSizes(){const ratio=Math.max(.2,scale/fitScale);const screenSize=Math.max(12,Math.min(30,14*Math.pow(ratio,.38)));const comp=screenSize/(20*scale);document.documentElement.style.setProperty('--marker-comp',comp)}
+function updateMarkerSizes(){
+  const ratio=Math.max(.2,scale/fitScale);
+
+  // Taille visible à l'écran :
+  // ~26 px à l'affichage global puis augmente progressivement avec le zoom.
+  const screenSize=Math.max(
+    20,
+    Math.min(52,26*Math.pow(ratio,.42))
+  );
+
+  const comp=screenSize/(20*scale);
+  document.documentElement.style.setProperty('--marker-comp',comp);
+}
 function zoomAt(f,cx,cy){const ns=Math.max(fitScale*.5,Math.min(2.4,scale*f)),mx=(cx-x)/scale,my=(cy-y)/scale;x=cx-mx*ns;y=cy-my*ns;scale=ns;apply()}
 mapWrap.addEventListener('wheel',e=>{e.preventDefault();const r=mapWrap.getBoundingClientRect();zoomAt(e.deltaY<0?1.16:1/1.16,e.clientX-r.left,e.clientY-r.top)},{passive:false});
 mapWrap.addEventListener('mousedown',e=>{if(addMode||e.button!==0)return;dragging=true;mapWrap.classList.add('dragging');sx=e.clientX;sy=e.clientY;bx=x;by=y});
