@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vory V — Mes informations</title>
 <style>
-
 :root{
   --bg:#09090b;--panel:#111113;--panel2:#17171b;--line:#28282f;--text:#fff;--muted:#92929d;
-  --orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;--blue:#60a5fa;
+  --orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;--blue:#60a5fa;--purple:#a855f7;
 }
 *{box-sizing:border-box}
 html{color-scheme:dark}
@@ -19,87 +18,274 @@ body{
 }
 a{color:inherit;text-decoration:none}
 button,input,select,textarea{font:inherit}
-.shell{max-width:1250px;margin:auto;padding:30px 22px 70px}
-.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:30px}
+.shell{max-width:1320px;margin:auto;padding:30px 22px 70px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:26px}
 .kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}
 .top h1{margin:5px 0 0;font-size:34px}
 .back{color:#aaa;font-weight:800}.back:hover{color:#fff}
-.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}
-.grid{display:grid;gap:15px}.grid4{grid-template-columns:repeat(4,minmax(0,1fr))}.grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
-.stat span{display:block;color:var(--muted);font-size:12px}.stat b{display:block;margin-top:5px;font-size:24px}
 .muted{color:var(--muted);font-size:13px}
+.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}
+
+.member-summary{
+  display:flex;align-items:center;gap:16px;margin-bottom:18px;
+}
+.avatar{
+  width:70px;height:70px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:#1b1b20;border:1px solid #34343b;font-size:28px;flex:none;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.member-name{font-size:23px;font-weight:950}
+.member-rank{margin-top:3px;color:#c7c7ce;font-size:13px;font-weight:800}
+.member-meta{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:7px;color:var(--muted);font-size:12px}
+.member-meta b{color:#fff}
+
+.workspace{
+  display:grid;grid-template-columns:250px minmax(0,1fr);gap:18px;align-items:start;
+}
+.menu{
+  display:grid;gap:10px;position:sticky;top:20px;
+}
+.menu-btn{
+  width:100%;display:flex;align-items:center;gap:12px;text-align:left;
+  background:#111113;color:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:15px 14px;cursor:pointer;font-weight:900;transition:.16s;
+}
+.menu-btn:hover{background:#18181c;border-color:#3b3b44}
+.menu-btn.active{
+  background:rgba(249,115,22,.10);border-color:rgba(249,115,22,.55);
+  box-shadow:inset 3px 0 0 var(--orange);
+}
+.menu-icon{
+  width:32px;height:32px;border-radius:9px;display:grid;place-items:center;
+  background:#202025;font-size:16px;flex:none
+}
+.content{min-width:0}
+.panel{display:none}
+.panel.active{display:block}
+.panel-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:15px}
+.panel-head h2{margin:0;font-size:23px}
+.panel-head p{margin:5px 0 0;color:var(--muted);font-size:13px}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.stat{background:#0d0d10;border:1px solid var(--line);border-radius:13px;padding:14px}
+.stat span{display:block;color:var(--muted);font-size:11px}
+.stat b{display:block;font-size:20px;margin-top:5px}
+
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line);font-size:13px}
+th{background:#0d0d10;color:#aaa;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:0}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}
+.ok{color:#86efac}.pending{color:#fdba74}.bad{color:#fca5a5}.info{color:#93c5fd}
+
+.rights-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.right-card{background:#0d0d10;border:1px solid var(--line);border-radius:13px;padding:15px}
+.right-card h3{margin:0 0 7px;font-size:15px}
+.right-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.right-card.allowed{border-color:rgba(34,197,94,.28)}
+.right-card.locked{opacity:.58}
+
+.request-form{display:grid;gap:13px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.row{display:grid;gap:7px}
+.row label{font-size:12px;font-weight:850;color:#d4d4d8}
+.row input,.row select,.row textarea{
+  width:100%;background:#0b0b0d;color:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:11px;outline:none
+}
+.row input:focus,.row select:focus,.row textarea:focus{border-color:var(--orange)}
+.row textarea{min-height:105px;resize:vertical}
+.conditional{display:none}.conditional.show{display:grid}
+.actions{display:flex;justify-content:flex-end;gap:8px}
 .btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
 .primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}
 .secondary{background:#202025;color:#fff;border:1px solid #34343b}
-.danger{background:#3c1719;color:#fecaca;border:1px solid #5b2428}
-.row{display:grid;gap:7px}.row label{font-size:12px;font-weight:850;color:#d4d4d8}
-.row input,.row select,.row textarea{background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none}
-.row input:focus,.row select:focus,.row textarea:focus{border-color:var(--orange)}
-.row textarea{min-height:90px;resize:vertical}
-.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px}
-th{color:#aaa;background:#0d0d10;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
-tr:last-child td{border-bottom:0}
-.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}
-.ok{color:#86efac}.pending{color:#fdba74}.bad{color:#fca5a5}.blue{color:#93c5fd}
-.section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}.section-title h2{margin:0}
-.msg{min-height:18px;margin-top:10px;font-size:12px;color:#fca5a5}
-@media(max-width:850px){.grid4,.grid2{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}
-@media(max-width:600px){.grid4,.grid2{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
+.msg{min-height:18px;color:#fca5a5;font-size:12px;margin-top:7px}
+.empty{padding:22px;color:var(--muted);text-align:center}
 
-.profile{display:flex;align-items:center;gap:18px}
-.avatar{width:86px;height:86px;border-radius:50%;overflow:hidden;background:#1b1b20;border:1px solid #33333a;display:grid;place-items:center;font-size:34px;flex:none}
-.avatar img{width:100%;height:100%;object-fit:cover}
-.profile-name{font-size:25px;font-weight:950}
-.profile-rank{color:#c7c7ce;font-weight:800;margin-top:4px}
-.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
-.info-box{background:#0d0d10;border:1px solid var(--line);border-radius:12px;padding:14px}
-.info-box span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
-.info-box b{font-size:14px}
-@media(max-width:600px){.profile{align-items:flex-start}.info-grid{grid-template-columns:1fr}}
+@media(max-width:900px){
+  .workspace{grid-template-columns:1fr}
+  .menu{grid-template-columns:repeat(4,minmax(0,1fr));position:static}
+  .menu-btn{justify-content:center;padding:12px}
+  .menu-btn span:last-child{display:none}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+  .shell{padding:22px 14px 55px}
+  .top{align-items:flex-start}
+  .top h1{font-size:28px}
+  .member-summary{align-items:flex-start}
+  .grid2,.rights-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="shell">
   <div class="top">
-    <div><div class="kicker">Vory V Industry</div><h1>Mes informations</h1></div>
+    <div>
+      <div class="kicker">Vory V Industry</div>
+      <h1>Mes informations</h1>
+    </div>
     <a class="back" href="../index.html">← Récap entreprise</a>
   </div>
 
-  <div class="card">
-    <div class="profile">
-      <div class="avatar" id="avatar">👤</div>
-      <div>
-        <div class="profile-name" id="rpName">—</div>
-        <div class="profile-rank" id="rank">—</div>
+  <div class="card member-summary">
+    <div class="avatar" id="avatar">👤</div>
+    <div>
+      <div class="member-name" id="rpName">—</div>
+      <div class="member-rank" id="companyRank">—</div>
+      <div class="member-meta">
+        <span>N° : <b id="memberNumber">—</b></span>
+        <span>Mail RP : <b id="memberEmail">—</b></span>
       </div>
     </div>
-
-    <div class="info-grid">
-      <div class="info-box"><span>Numéro membre</span><b id="memberNumber">—</b></div>
-      <div class="info-box"><span>Email RP</span><b id="rpEmail">—</b></div>
-      <div class="info-box"><span>Rôle site</span><b id="siteRole">—</b></div>
-      <div class="info-box"><span>Statut entreprise</span><b id="companyStatus">—</b></div>
-    </div>
   </div>
 
-  <div class="section-title"><div><h2>Mon activité</h2><div class="muted">Résumé de tes ventes auprès de Vory V Industry.</div></div></div>
-  <div class="grid grid4">
-    <div class="card stat"><span>Argent généré</span><b id="generated">0 €</b></div>
-    <div class="card stat"><span>Ventes validées</span><b id="validatedCount">0</b></div>
-    <div class="card stat"><span>En attente</span><b id="pendingCount">0</b></div>
-    <div class="card stat"><span>Ventes refusées</span><b id="rejectedCount">0</b></div>
-  </div>
+  <div class="workspace">
+    <aside class="menu">
+      <button class="menu-btn active" data-panel="salesPanel">
+        <span class="menu-icon">💰</span><span>Mes ventes</span>
+      </button>
+      <button class="menu-btn" data-panel="bonusPanel">
+        <span class="menu-icon">🎁</span><span>Mes primes</span>
+      </button>
+      <button class="menu-btn" data-panel="rightsPanel">
+        <span class="menu-icon">🔐</span><span>Mes droits</span>
+      </button>
+      <button class="menu-btn" data-panel="requestsPanel">
+        <span class="menu-icon">📩</span><span>Mes demandes</span>
+      </button>
+    </aside>
 
-  <div class="section-title"><div><h2>Historique de mes ventes</h2><div class="muted">Toutes tes ventes enregistrées dans l'entreprise.</div></div></div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Date</th><th>Produit</th><th>Quantité</th><th>Prix unitaire</th><th>Total</th><th>Traitement</th><th>Statut</th></tr></thead>
-      <tbody id="sales"><tr><td colspan="7" class="muted">Chargement...</td></tr></tbody>
-    </table>
+    <main class="content">
+      <!-- MES VENTES -->
+      <section class="panel active" id="salesPanel">
+        <div class="panel-head">
+          <div><h2>Mes ventes</h2><p>Retrouve les ventes que tu as réalisées auprès de l'entreprise.</p></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Argent généré</span><b id="salesTotal">0 €</b></div>
+          <div class="stat"><span>Validées</span><b id="validatedCount">0</b></div>
+          <div class="stat"><span>En attente</span><b id="pendingCount">0</b></div>
+          <div class="stat"><span>Refusées</span><b id="rejectedCount">0</b></div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Produit</th><th>Quantité</th><th>Total</th><th>Statut</th></tr></thead>
+            <tbody id="salesBody"><tr><td colspan="5" class="empty">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MES PRIMES -->
+      <section class="panel" id="bonusPanel">
+        <div class="panel-head">
+          <div><h2>Mes primes</h2><p>Cette partie affichera les primes qui t'ont été attribuées.</p></div>
+        </div>
+
+        <div class="card">
+          <div style="font-size:36px;margin-bottom:8px">🎁</div>
+          <b>Système de primes en préparation</b>
+          <div class="muted" style="margin-top:6px;line-height:1.55">
+            Le suivi réel des primes sera branché ici lorsqu'on mettra en place le système de paie.
+            Tu peux déjà demander une prime depuis l'onglet « Mes demandes ».
+          </div>
+        </div>
+      </section>
+
+      <!-- MES DROITS -->
+      <section class="panel" id="rightsPanel">
+        <div class="panel-head">
+          <div><h2>Mes droits</h2><p>Les accès dépendent de ton rang dans Vory V Industry.</p></div>
+        </div>
+        <div class="rights-grid" id="rightsGrid"></div>
+      </section>
+
+      <!-- MES DEMANDES -->
+      <section class="panel" id="requestsPanel">
+        <div class="panel-head">
+          <div><h2>Mes demandes</h2><p>Envoie une demande à la direction de l'entreprise.</p></div>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="request-form">
+            <div class="row">
+              <label>Type de demande</label>
+              <select id="requestType">
+                <option value="rankup">Demande de Rank Up</option>
+                <option value="truck">Demande de camion</option>
+                <option value="bonus">Demande de prime</option>
+                <option value="price_increase">Augmentation du prix d'un objet</option>
+                <option value="buyback">Rachat d'un nouvel objet</option>
+              </select>
+            </div>
+
+            <div class="conditional show" id="rankField">
+              <div class="row">
+                <label>Rang souhaité</label>
+                <select id="targetRank">
+                  <option value="associate">Associé</option>
+                  <option value="manager">Gestionnaire</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="conditional" id="truckField">
+              <div class="row">
+                <label>Camion / véhicule souhaité</label>
+                <input id="truckName" placeholder="Ex. Volvo FH16 460 LB">
+              </div>
+            </div>
+
+            <div class="conditional" id="bonusField">
+              <div class="row">
+                <label>Montant de prime souhaité</label>
+                <input id="bonusAmount" type="number" min="0" step="0.01" placeholder="Ex. 2500">
+              </div>
+            </div>
+
+            <div class="conditional" id="productField">
+              <div class="grid2">
+                <div class="row">
+                  <label>Nom de l'objet</label>
+                  <input id="productName" placeholder="Ex. Lingot d'or">
+                </div>
+                <div class="row">
+                  <label id="productValueLabel">Nouveau prix souhaité</label>
+                  <input id="productValue" type="number" min="0" step="0.01" placeholder="Ex. 850">
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <label>Motif / informations</label>
+              <textarea id="requestMessage" placeholder="Explique ta demande le plus clairement possible..."></textarea>
+            </div>
+
+            <div class="actions">
+              <button class="btn primary" id="sendRequest">Envoyer la demande</button>
+            </div>
+            <div class="msg" id="requestMsg"></div>
+          </div>
+        </div>
+
+        <div class="panel-head" style="margin-top:24px">
+          <div><h2 style="font-size:18px">Historique de mes demandes</h2><p>Les réponses de la direction pourront être ajoutées plus tard.</p></div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Détails</th><th>Statut</th></tr></thead>
+            <tbody id="requestsBody"><tr><td colspan="4" class="empty">Chargement...</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
   </div>
-  <div class="msg" id="msg"></div>
 </div>
 
 <script src="../../database.js"></script>
@@ -107,15 +293,37 @@ tr:last-child td{border-bottom:0}
 <script>
 const $=id=>document.getElementById(id);
 const money=n=>Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
-const ranks={employee:'Employé',associate:'Associé',manager:'Gestionnaire',pdg:'Patron'};
-const roles={member:'Membre',moderator:'Modérateur',admin:'Administrateur'};
+
 let db=null,currentUser=null,currentProfile=null;
 
-function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+const ranks={
+  employee:'Employé',
+  associate:'Associé',
+  manager:'Gestionnaire',
+  pdg:'Patron'
+};
+
+const requestLabels={
+  rankup:'Rank Up',
+  truck:'Camion',
+  bonus:'Prime',
+  price_increase:'Augmentation de prix',
+  buyback:'Rachat d’objet'
+};
+
+function esc(s=''){
+  return String(s??'').replace(/[&<>'"]/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
 
 async function guard(){
-  if(!window.vorySupabaseConfigured || !window.vorySupabaseConfigured()) return location.href='../../gestion/index.html';
+  if(!window.vorySupabaseConfigured || !window.vorySupabaseConfigured()){
+    return location.href='../../gestion/index.html';
+  }
+
   db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+
   const {data:{session}}=await db.auth.getSession();
   currentUser=session?.user||null;
   if(!currentUser)return location.href='../../gestion/index.html';
@@ -127,19 +335,26 @@ async function guard(){
   if(!currentProfile.company_rank)return location.href='../index.html';
 }
 
-function renderProfile(){
+function renderHeader(){
   $('rpName').textContent=currentProfile.rp_name||'Sans nom RP';
-  $('rank').textContent=ranks[currentProfile.company_rank]||currentProfile.company_rank||'—';
+  $('companyRank').textContent=ranks[currentProfile.company_rank]||currentProfile.company_rank||'—';
   $('memberNumber').textContent=currentProfile.member_number||'Non attribué';
-  $('rpEmail').textContent=currentProfile.membre_email_rp||'—';
-  $('siteRole').textContent=roles[currentProfile.role]||currentProfile.role||'Membre';
-  $('companyStatus').textContent=(ranks[currentProfile.company_rank]||'Membre')+' de Vory V Industry';
+  $('memberEmail').textContent=currentProfile.membre_email_rp||'—';
 
   if(currentProfile.avatar_url){
     const clean=String(currentProfile.avatar_url).split('?v=')[0];
     $('avatar').innerHTML='<img src="'+clean+'?v='+Date.now()+'" alt="Avatar">';
   }
 }
+
+document.querySelectorAll('.menu-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.menu-btn').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    btn.classList.add('active');
+    $(btn.dataset.panel).classList.add('active');
+  };
+});
 
 function statusBadge(status){
   if(status==='validated')return '<span class="badge ok">Validée</span>';
@@ -155,35 +370,215 @@ async function loadSales(){
 
   if(error){
     console.error(error);
-    $('msg').textContent='Impossible de charger tes ventes : '+error.message;
-    $('sales').innerHTML='<tr><td colspan="7" class="muted">Erreur de chargement.</td></tr>';
+    $('salesBody').innerHTML='<tr><td colspan="5" class="empty">Erreur de chargement.</td></tr>';
     return;
   }
 
   const sales=data||[];
   const valid=sales.filter(x=>x.status==='validated');
-  const pending=sales.filter(x=>x.status==='pending');
-  const rejected=sales.filter(x=>x.status==='rejected');
 
-  $('generated').textContent=money(valid.reduce((a,x)=>a+Number(x.total_amount||0),0));
+  $('salesTotal').textContent=money(valid.reduce((a,x)=>a+Number(x.total_amount||0),0));
   $('validatedCount').textContent=valid.length;
-  $('pendingCount').textContent=pending.length;
-  $('rejectedCount').textContent=rejected.length;
+  $('pendingCount').textContent=sales.filter(x=>x.status==='pending').length;
+  $('rejectedCount').textContent=sales.filter(x=>x.status==='rejected').length;
 
-  $('sales').innerHTML=sales.length ? sales.map(x=>`
+  $('salesBody').innerHTML=sales.length ? sales.map(x=>`
     <tr>
       <td>${new Date(x.created_at).toLocaleString('fr-FR')}</td>
       <td><b>${esc(x.product_name||'—')}</b></td>
       <td>${Number(x.quantity||0)}</td>
-      <td>${money(x.unit_price)}</td>
       <td><b>${money(x.total_amount)}</b></td>
-      <td>${x.treated ? '<span class="badge blue">Traitée</span>' : '<span class="muted">Non</span>'}</td>
       <td>${statusBadge(x.status)}</td>
     </tr>
-  `).join('') : '<tr><td colspan="7" class="muted">Aucune vente enregistrée pour le moment.</td></tr>';
+  `).join('') : '<tr><td colspan="5" class="empty">Aucune vente enregistrée.</td></tr>';
 }
 
-(async()=>{await guard();renderProfile();await loadSales();})();
+function renderRights(){
+  const rank=currentProfile.company_rank;
+
+  const rights=[
+    {
+      title:'Mes informations',
+      desc:'Accéder à tes ventes, tes demandes, tes droits et tes futures primes.',
+      allowed:true
+    },
+    {
+      title:'Informations salariés',
+      desc:'Consulter la liste et les ventes des salariés.',
+      allowed:['associate','manager','pdg'].includes(rank)
+    },
+    {
+      title:'Transactions',
+      desc:'Valider ou refuser les ventes de l’entreprise.',
+      allowed:['manager','pdg'].includes(rank)
+    },
+    {
+      title:'Inventaire',
+      desc:'Gérer les produits, les stocks et la caisse de l’entreprise.',
+      allowed:['manager','pdg'].includes(rank)
+    },
+    {
+      title:'Véhicules',
+      desc:'Gérer les informations et le suivi du parc automobile.',
+      allowed:['manager','pdg'].includes(rank)
+    }
+  ];
+
+  $('rightsGrid').innerHTML=rights.map(r=>`
+    <div class="right-card ${r.allowed?'allowed':'locked'}">
+      <h3>${r.allowed?'✅':'🔒'} ${esc(r.title)}</h3>
+      <p>${esc(r.desc)}</p>
+    </div>
+  `).join('');
+}
+
+function updateRequestFields(){
+  const type=$('requestType').value;
+
+  ['rankField','truckField','bonusField','productField'].forEach(id=>$(id).classList.remove('show'));
+
+  if(type==='rankup')$('rankField').classList.add('show');
+  if(type==='truck')$('truckField').classList.add('show');
+  if(type==='bonus')$('bonusField').classList.add('show');
+
+  if(type==='price_increase' || type==='buyback'){
+    $('productField').classList.add('show');
+    $('productValueLabel').textContent=type==='price_increase'
+      ? 'Nouveau prix souhaité'
+      : 'Prix de rachat proposé';
+  }
+}
+
+$('requestType').onchange=updateRequestFields;
+
+function requestDetails(r){
+  if(r.request_type==='rankup')return 'Rang souhaité : '+(r.target_rank ? (ranks[r.target_rank]||r.target_rank) : '—');
+  if(r.request_type==='truck')return 'Véhicule : '+(r.truck_name||'—');
+  if(r.request_type==='bonus')return 'Prime souhaitée : '+money(r.requested_amount||0);
+  if(r.request_type==='price_increase')return (r.product_name||'Objet')+' → '+money(r.requested_amount||0);
+  if(r.request_type==='buyback')return (r.product_name||'Objet')+' · rachat proposé '+money(r.requested_amount||0);
+  return '—';
+}
+
+function requestStatus(status){
+  if(status==='approved')return '<span class="badge ok">Acceptée</span>';
+  if(status==='rejected')return '<span class="badge bad">Refusée</span>';
+  return '<span class="badge pending">En attente</span>';
+}
+
+async function loadRequests(){
+  const {data,error}=await db.from('company_employee_requests')
+    .select('*')
+    .eq('user_id',currentUser.id)
+    .order('created_at',{ascending:false});
+
+  if(error){
+    console.error(error);
+    $('requestsBody').innerHTML='<tr><td colspan="4" class="empty">Impossible de charger les demandes.</td></tr>';
+    return;
+  }
+
+  const requests=data||[];
+
+  $('requestsBody').innerHTML=requests.length ? requests.map(r=>`
+    <tr>
+      <td>${new Date(r.created_at).toLocaleString('fr-FR')}</td>
+      <td><span class="badge info">${esc(requestLabels[r.request_type]||r.request_type)}</span></td>
+      <td>
+        <b>${esc(requestDetails(r))}</b>
+        ${r.message?'<div class="muted" style="margin-top:4px">'+esc(r.message)+'</div>':''}
+      </td>
+      <td>${requestStatus(r.status)}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="4" class="empty">Aucune demande envoyée.</td></tr>';
+}
+
+$('sendRequest').onclick=async()=>{
+  const type=$('requestType').value;
+  const message=$('requestMessage').value.trim();
+
+  const payload={
+    user_id:currentUser.id,
+    rp_name:currentProfile.rp_name||null,
+    request_type:type,
+    message:message||null,
+    target_rank:null,
+    truck_name:null,
+    product_name:null,
+    requested_amount:null
+  };
+
+  if(type==='rankup'){
+    payload.target_rank=$('targetRank').value||null;
+  }
+
+  if(type==='truck'){
+    payload.truck_name=$('truckName').value.trim()||null;
+    if(!payload.truck_name){
+      $('requestMsg').textContent='Indique le camion ou véhicule souhaité.';
+      return;
+    }
+  }
+
+  if(type==='bonus'){
+    const amount=Number($('bonusAmount').value);
+    if(!Number.isFinite(amount)||amount<=0){
+      $('requestMsg').textContent='Indique un montant de prime valide.';
+      return;
+    }
+    payload.requested_amount=amount;
+  }
+
+  if(type==='price_increase' || type==='buyback'){
+    payload.product_name=$('productName').value.trim()||null;
+    const value=Number($('productValue').value);
+
+    if(!payload.product_name){
+      $('requestMsg').textContent='Indique le nom de l’objet.';
+      return;
+    }
+
+    if(!Number.isFinite(value)||value<=0){
+      $('requestMsg').textContent='Indique un prix valide.';
+      return;
+    }
+
+    payload.requested_amount=value;
+  }
+
+  if(!message){
+    $('requestMsg').textContent='Ajoute un motif ou quelques informations sur ta demande.';
+    return;
+  }
+
+  $('requestMsg').textContent='Envoi de la demande...';
+
+  const {error}=await db.from('company_employee_requests').insert(payload);
+
+  if(error){
+    $('requestMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  $('requestMessage').value='';
+  $('truckName').value='';
+  $('bonusAmount').value='';
+  $('productName').value='';
+  $('productValue').value='';
+  $('requestMsg').style.color='#86efac';
+  $('requestMsg').textContent='Demande envoyée.';
+  setTimeout(()=>{$('requestMsg').style.color='';},1200);
+
+  await loadRequests();
+};
+
+(async()=>{
+  await guard();
+  renderHeader();
+  renderRights();
+  updateRequestFields();
+  await Promise.all([loadSales(),loadRequests()]);
+})();
 </script>
 </body>
 </html>
