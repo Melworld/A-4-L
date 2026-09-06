@@ -35,7 +35,7 @@ button,input,select{font:inherit}
 .row input:focus,.row select:focus{border-color:var(--orange)}
 .btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
 .secondary{background:#202025;color:#fff;border:1px solid #34343b}
-.secondary:hover{background:#29292f}
+.secondary:hover{background:#29292f}.approve{background:#17351f;color:#86efac;border:1px solid #245d32}.approve:hover{background:#1f472a}.reject{background:#3b1719;color:#fca5a5;border:1px solid #642329}.reject:hover{background:#4a1d20}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
 .stat{background:#0d0d10;border:1px solid var(--line);border-radius:13px;padding:14px}
 .stat span{display:block;color:var(--muted);font-size:11px}
@@ -73,6 +73,13 @@ tbody tr:hover{background:#141418}
 .detail.full{grid-column:1/-1}
 .note{
   white-space:pre-wrap;line-height:1.55;font-size:13px;color:#ddd
+}
+.resolve-actions{
+  display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:16px
+}
+.resolve-info{
+  margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;
+  background:#0d0d10;color:var(--muted);font-size:12px
 }
 @media(max-width:850px){
   .filters{grid-template-columns:1fr 1fr}
@@ -168,6 +175,7 @@ tbody tr:hover{background:#141418}
       <button class="close" id="closeModal">×</button>
     </div>
     <div class="detail-grid" id="detailGrid"></div>
+    <div id="resolveZone"></div>
   </div>
 </div>
 
@@ -394,7 +402,55 @@ function openDetail(id){
     ` : ''}
   `;
 
+  const zone=$('resolveZone');
+
+  if(r.status==='pending'){
+    zone.innerHTML=`
+      <div class="resolve-actions">
+        <button class="btn reject" id="rejectRequestBtn">✕ Refuser</button>
+        <button class="btn approve" id="approveRequestBtn">✓ Accepter</button>
+      </div>
+      <div class="msg" id="resolveMsg"></div>
+    `;
+
+    $('approveRequestBtn').onclick=()=>resolveRequest(r.id,'approved');
+    $('rejectRequestBtn').onclick=()=>resolveRequest(r.id,'rejected');
+  }else{
+    const label=r.status==='approved'?'acceptée':'refusée';
+    zone.innerHTML=`
+      <div class="resolve-info">
+        Cette demande a déjà été <b>${label}</b>
+        ${r.resolved_at ? ' le '+new Date(r.resolved_at).toLocaleString('fr-FR') : ''}.
+      </div>
+    `;
+  }
+
   $('detailModal').classList.add('open');
+}
+
+async function resolveRequest(id,status){
+  const action=status==='approved'?'accepter':'refuser';
+
+  if(!confirm('Confirmer : '+action+' cette demande ?'))return;
+
+  const msg=$('resolveMsg');
+  if(msg)msg.textContent='Traitement...';
+
+  const {error}=await db.rpc('resolve_company_employee_request',{
+    p_request_id:id,
+    p_status:status
+  });
+
+  if(error){
+    console.error(error);
+    if(msg)msg.textContent='Erreur : '+error.message;
+    return;
+  }
+
+  await loadRequests();
+
+  const updated=requests.find(x=>String(x.id)===String(id));
+  if(updated)openDetail(id);
 }
 
 function closeModal(){
