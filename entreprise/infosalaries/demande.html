@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vory V — Demandes salariés</title>
+<style>
+:root{
+  --bg:#09090b;--panel:#111113;--panel2:#17171b;--line:#28282f;--text:#fff;--muted:#92929d;
+  --orange:#f97316;--orange2:#fb923c;--green:#22c55e;--red:#ef4444;--blue:#60a5fa;--purple:#a855f7;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{
+  margin:0;min-height:100vh;
+  background:radial-gradient(circle at 15% 0,rgba(249,115,22,.08),transparent 25%),var(--bg);
+  color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif
+}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit}
+.shell{max-width:1320px;margin:auto;padding:30px 22px 70px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:26px}
+.kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}
+.top h1{margin:5px 0 0;font-size:34px}
+.back{color:#aaa;font-weight:800}.back:hover{color:#fff}
+.card{background:linear-gradient(180deg,#121215,#0f0f12);border:1px solid var(--line);border-radius:17px;padding:18px}
+.muted{color:var(--muted);font-size:13px}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:10px;align-items:end}
+.row{display:grid;gap:7px}
+.row label{font-size:12px;font-weight:850;color:#d4d4d8}
+.row input,.row select{
+  width:100%;background:#0b0b0d;color:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:11px;outline:none
+}
+.row input:focus,.row select:focus{border-color:var(--orange)}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
+.secondary{background:#202025;color:#fff;border:1px solid #34343b}
+.secondary:hover{background:#29292f}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.stat{background:#0d0d10;border:1px solid var(--line);border-radius:13px;padding:14px}
+.stat span{display:block;color:var(--muted);font-size:11px}
+.stat b{display:block;margin-top:5px;font-size:22px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+table{width:100%;border-collapse:collapse;min-width:1020px}
+th,td{text-align:left;padding:13px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+th{color:#aaa;background:#0d0d10;font-size:11px;text-transform:uppercase;letter-spacing:.05em}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:#141418}
+.badge{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:900;background:#202025}
+.ok{color:#86efac}.pending{color:#fdba74}.bad{color:#fca5a5}.info{color:#93c5fd}.purple{color:#d8b4fe}
+.request-main{font-weight:900}
+.request-msg{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.45;max-width:430px}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;
+  z-index:50;padding:18px
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(650px,100%);max-height:90vh;overflow:auto;background:#111113;
+  border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 25px 80px rgba(0,0,0,.55)
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.modal-head h2{margin:0}
+.close{border:0;background:transparent;color:#aaa;font-size:24px;cursor:pointer}
+.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.detail{
+  background:#0d0d10;border:1px solid var(--line);border-radius:12px;padding:12px
+}
+.detail span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.detail b{font-size:13px}
+.detail.full{grid-column:1/-1}
+.note{
+  white-space:pre-wrap;line-height:1.55;font-size:13px;color:#ddd
+}
+@media(max-width:850px){
+  .filters{grid-template-columns:1fr 1fr}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+  .shell{padding:22px 14px 55px}.top{align-items:flex-start}.top h1{font-size:28px}
+  .filters,.stats,.detail-grid{grid-template-columns:1fr}
+  .detail.full{grid-column:auto}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div>
+      <div class="kicker">Vory V Industry</div>
+      <h1>Demandes salariés</h1>
+    </div>
+    <a class="back" href="index.html">← Informations salariés</a>
+  </div>
+
+  <div class="card">
+    <b>Toutes les demandes de l'entreprise</b>
+    <div class="muted" style="margin-top:5px">
+      Rank Up, camion, prime, augmentation de prix et rachat d'un nouvel objet.
+      Pour le moment cette page sert à consulter les demandes ; le traitement sera ajouté après.
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>Total</span><b id="totalCount">0</b></div>
+    <div class="stat"><span>En attente</span><b id="pendingCount">0</b></div>
+    <div class="stat"><span>Acceptées</span><b id="approvedCount">0</b></div>
+    <div class="stat"><span>Refusées</span><b id="rejectedCount">0</b></div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px">
+    <div class="filters">
+      <div class="row">
+        <label>Rechercher un salarié / objet / véhicule</label>
+        <input id="searchInput" placeholder="Ex. M.Skow, Volvo, Lingot...">
+      </div>
+
+      <div class="row">
+        <label>Type</label>
+        <select id="typeFilter">
+          <option value="__all__">Tous</option>
+          <option value="rankup">Rank Up</option>
+          <option value="truck">Camion</option>
+          <option value="bonus">Prime</option>
+          <option value="price_increase">Augmentation de prix</option>
+          <option value="buyback">Rachat d'objet</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Statut</label>
+        <select id="statusFilter">
+          <option value="__all__">Tous</option>
+          <option value="pending">En attente</option>
+          <option value="approved">Acceptées</option>
+          <option value="rejected">Refusées</option>
+        </select>
+      </div>
+
+      <button class="btn secondary" id="refreshBtn">Actualiser</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Salarié</th>
+          <th>Type</th>
+          <th>Demande</th>
+          <th>Statut</th>
+        </tr>
+      </thead>
+      <tbody id="requestsBody">
+        <tr><td colspan="5" class="empty">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal" id="detailModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="detailTitle">Détail de la demande</h2>
+      <button class="close" id="closeModal">×</button>
+    </div>
+    <div class="detail-grid" id="detailGrid"></div>
+  </div>
+</div>
+
+<script src="../../database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $=id=>document.getElementById(id);
+
+let db=null,currentProfile=null,requests=[];
+
+const ranks={
+  employee:'Employé',
+  associate:'Associé',
+  manager:'Gestionnaire',
+  pdg:'Patron'
+};
+
+const typeLabels={
+  rankup:'Rank Up',
+  truck:'Camion',
+  bonus:'Prime',
+  price_increase:'Augmentation de prix',
+  buyback:'Rachat d’objet'
+};
+
+function esc(s=''){
+  return String(s??'').replace(/[&<>'"]/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
+
+function money(n){
+  return Number(n||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €';
+}
+
+function statusBadge(status){
+  if(status==='approved')return '<span class="badge ok">Acceptée</span>';
+  if(status==='rejected')return '<span class="badge bad">Refusée</span>';
+  return '<span class="badge pending">En attente</span>';
+}
+
+function typeBadge(type){
+  const cls={
+    rankup:'purple',
+    truck:'info',
+    bonus:'ok',
+    price_increase:'pending',
+    buyback:'info'
+  }[type]||'info';
+
+  return '<span class="badge '+cls+'">'+esc(typeLabels[type]||type)+'</span>';
+}
+
+function requestSummary(r){
+  if(r.request_type==='rankup'){
+    return 'Rang souhaité : '+(r.target_rank ? (ranks[r.target_rank]||r.target_rank) : '—');
+  }
+
+  if(r.request_type==='truck'){
+    return 'Véhicule souhaité : '+(r.truck_name||'—');
+  }
+
+  if(r.request_type==='bonus'){
+    return 'Prime souhaitée : '+money(r.requested_amount||0);
+  }
+
+  if(r.request_type==='price_increase'){
+    return (r.product_name||'Objet')+' → '+money(r.requested_amount||0);
+  }
+
+  if(r.request_type==='buyback'){
+    return (r.product_name||'Objet')+' · prix proposé : '+money(r.requested_amount||0);
+  }
+
+  return '—';
+}
+
+async function guard(){
+  if(!window.vorySupabaseConfigured || !window.vorySupabaseConfigured()){
+    return location.href='../../gestion/index.html';
+  }
+
+  db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+
+  const {data:{session}}=await db.auth.getSession();
+  if(!session?.user)return location.href='../../gestion/index.html';
+
+  const {data:p,error}=await db
+    .from('profiles')
+    .select('role,company_rank')
+    .eq('id',session.user.id)
+    .maybeSingle();
+
+  if(error||!p)return location.href='../index.html';
+
+  currentProfile=p;
+
+  const canAccess=
+    ['associate','manager','pdg'].includes(p.company_rank)
+    || ['moderator','admin'].includes(p.role);
+
+  if(!canAccess)return location.href='../index.html';
+}
+
+async function loadRequests(){
+  const {data,error}=await db
+    .from('company_employee_requests')
+    .select('*')
+    .order('created_at',{ascending:false});
+
+  if(error){
+    console.error(error);
+    $('requestsBody').innerHTML='<tr><td colspan="5" class="empty">Erreur : '+esc(error.message)+'</td></tr>';
+    return;
+  }
+
+  requests=data||[];
+  updateStats();
+  renderRequests();
+}
+
+function updateStats(){
+  $('totalCount').textContent=requests.length;
+  $('pendingCount').textContent=requests.filter(r=>r.status==='pending').length;
+  $('approvedCount').textContent=requests.filter(r=>r.status==='approved').length;
+  $('rejectedCount').textContent=requests.filter(r=>r.status==='rejected').length;
+}
+
+function filteredRequests(){
+  const q=$('searchInput').value.trim().toLowerCase();
+  const type=$('typeFilter').value;
+  const status=$('statusFilter').value;
+
+  return requests.filter(r=>{
+    if(type!=='__all__' && r.request_type!==type)return false;
+    if(status!=='__all__' && r.status!==status)return false;
+
+    if(q){
+      const haystack=[
+        r.rp_name,
+        r.truck_name,
+        r.product_name,
+        r.message,
+        r.target_rank,
+        requestSummary(r)
+      ].join(' ').toLowerCase();
+
+      if(!haystack.includes(q))return false;
+    }
+
+    return true;
+  });
+}
+
+function renderRequests(){
+  const list=filteredRequests();
+  const body=$('requestsBody');
+
+  if(!list.length){
+    body.innerHTML='<tr><td colspan="5" class="empty">Aucune demande trouvée.</td></tr>';
+    return;
+  }
+
+  body.innerHTML=list.map(r=>`
+    <tr data-id="${r.id}">
+      <td>${new Date(r.created_at).toLocaleString('fr-FR')}</td>
+      <td><b>${esc(r.rp_name||'Sans nom')}</b></td>
+      <td>${typeBadge(r.request_type)}</td>
+      <td>
+        <div class="request-main">${esc(requestSummary(r))}</div>
+        ${r.message?'<div class="request-msg">'+esc(r.message)+'</div>':''}
+      </td>
+      <td>${statusBadge(r.status)}</td>
+    </tr>
+  `).join('');
+
+  body.querySelectorAll('tr[data-id]').forEach(row=>{
+    row.onclick=()=>openDetail(row.dataset.id);
+  });
+}
+
+function openDetail(id){
+  const r=requests.find(x=>String(x.id)===String(id));
+  if(!r)return;
+
+  $('detailTitle').textContent='Demande — '+(r.rp_name||'Sans nom');
+
+  $('detailGrid').innerHTML=`
+    <div class="detail">
+      <span>Salarié</span>
+      <b>${esc(r.rp_name||'—')}</b>
+    </div>
+
+    <div class="detail">
+      <span>Date</span>
+      <b>${new Date(r.created_at).toLocaleString('fr-FR')}</b>
+    </div>
+
+    <div class="detail">
+      <span>Type</span>
+      <b>${esc(typeLabels[r.request_type]||r.request_type)}</b>
+    </div>
+
+    <div class="detail">
+      <span>Statut</span>
+      <b>${statusBadge(r.status)}</b>
+    </div>
+
+    <div class="detail full">
+      <span>Demande</span>
+      <b>${esc(requestSummary(r))}</b>
+    </div>
+
+    <div class="detail full">
+      <span>Motif / informations</span>
+      <div class="note">${esc(r.message||'Aucune information supplémentaire.')}</div>
+    </div>
+
+    ${r.response_note ? `
+      <div class="detail full">
+        <span>Réponse de la direction</span>
+        <div class="note">${esc(r.response_note)}</div>
+      </div>
+    ` : ''}
+  `;
+
+  $('detailModal').classList.add('open');
+}
+
+function closeModal(){
+  $('detailModal').classList.remove('open');
+}
+
+$('closeModal').onclick=closeModal;
+$('detailModal').addEventListener('click',e=>{
+  if(e.target===$('detailModal'))closeModal();
+});
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+});
+
+$('searchInput').oninput=renderRequests;
+$('typeFilter').onchange=renderRequests;
+$('statusFilter').onchange=renderRequests;
+$('refreshBtn').onclick=loadRequests;
+
+(async()=>{
+  await guard();
+  await loadRequests();
+})();
+</script>
+</body>
+</html>
