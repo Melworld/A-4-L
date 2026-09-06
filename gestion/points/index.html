@@ -79,6 +79,52 @@ a{color:inherit}
 .direct-map-text h2{margin:0 0 5px;font-size:19px}
 .direct-map-arrow{font-size:25px;font-weight:900;color:var(--accent)}
 
+
+.icon-picker{
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:8px;
+  margin-top:8px;
+}
+.icon-choice{
+  min-height:66px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#0c0c0e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  padding:7px;
+  transition:.15s border-color,.15s background,.15s transform;
+}
+.icon-choice:hover{
+  transform:translateY(-1px);
+  border-color:var(--accent);
+  background:#17171b;
+}
+.icon-choice.selected{
+  border-color:var(--accent);
+  background:rgba(249,115,22,.08);
+  box-shadow:0 0 0 2px rgba(249,115,22,.12);
+}
+.icon-choice img{
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  display:block;
+  pointer-events:none;
+}
+.icon-choice.none{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  text-align:center;
+}
+@media(max-width:760px){
+  .icon-picker{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+
 </style></head>
 <body><div class="page-shell">
 <div class="page-top"><div><div class="page-kicker">Vory V — Espace Gestion</div><h1>Points de carte</h1></div><a class="back-link" href="../">← Retour à la gestion</a></div>
@@ -122,7 +168,8 @@ a{color:inherit}
   <div class="row"><label>Description</label><textarea id="newDescription" placeholder="Description facultative"></textarea></div>
   <div class="row">
     <label>Icône</label>
-    <select id="newIcon"><option value="">Aucune icône</option></select>
+    <input id="newIcon" type="hidden" value="">
+    <div class="icon-picker" id="newIconPicker"></div>
     <div id="iconPreview" class="icon-preview muted">Aucune icône sélectionnée.</div>
   </div>
   <div class="actions add-centered"><button class="btn primary" id="addPointBtn">Ajouter le point</button></div>
@@ -183,7 +230,25 @@ async function loadIdentity(allowedRoles=['member','moderator','admin']){
 
 const TABLE='map_points';
 const CATEGORY_TABLE='map_categories';
-const ICON_TABLE='map_icons';
+
+const ICON_BUCKET='Icone Map';
+const ICON_FILES=Array.from({length:16},(_,i)=>`logo_${String(i+1).padStart(2,'0')}.png`);
+
+function mapIconUrl(value=''){
+  const v=String(value||'').trim();
+  if(!v || !db)return '';
+
+  // Compatibilité avec d'anciens points qui auraient déjà une URL complète.
+  if(/^https?:\/\//i.test(v))return v;
+
+  const file=v.split('/').pop();
+
+  const {data}=db.storage
+    .from(ICON_BUCKET)
+    .getPublicUrl(file);
+
+  return data?.publicUrl||'';
+}
 
 let points=[];
 let dbCategories=[];
@@ -214,25 +279,67 @@ async function loadCategories(){
 }
 
 async function loadIcons(){
-  const {data,error}=await db.from(ICON_TABLE).select('*').eq('enabled',true).order('sort_order',{ascending:true}).order('name',{ascending:true});
-  if(error){
-    console.warn('map_icons:',error.message);
-    dbIcons=[];
-  }else{
-    dbIcons=data||[];
-  }
+  if(!db)return;
 
-  const select=$('newIcon');
-  select.innerHTML='<option value="">Aucune icône</option>'+
-    dbIcons.map(i=>'<option value="'+esc(i.icon_url)+'">'+esc(i.name)+'</option>').join('');
+  dbIcons=ICON_FILES.map((file,index)=>({
+    name:'Icône '+String(index+1).padStart(2,'0'),
+    icon_url:file
+  }));
+
+  const picker=$('newIconPicker');
+  if(!picker)return;
+
+  picker.innerHTML='';
+
+  const none=document.createElement('button');
+  none.type='button';
+  none.className='icon-choice none selected';
+  none.dataset.icon='';
+  none.textContent='Aucune';
+  picker.appendChild(none);
+
+  dbIcons.forEach(icon=>{
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='icon-choice';
+    btn.dataset.icon=icon.icon_url;
+    btn.title=icon.icon_url;
+
+    const img=document.createElement('img');
+    img.src=mapIconUrl(icon.icon_url);
+    img.alt='';
+    img.draggable=false;
+
+    img.onerror=()=>{
+      btn.style.borderColor='#7f1d1d';
+      btn.title='Impossible de charger '+icon.icon_url;
+      console.error('Icône impossible à charger :',icon.icon_url,img.src);
+    };
+
+    btn.appendChild(img);
+    picker.appendChild(btn);
+  });
+
+  picker.querySelectorAll('.icon-choice').forEach(btn=>{
+    btn.onclick=()=>{
+      $('newIcon').value=btn.dataset.icon||'';
+
+      picker.querySelectorAll('.icon-choice').forEach(x=>{
+        x.classList.toggle('selected',x===btn);
+      });
+
+      renderIconPreview();
+    };
+  });
+
   renderIconPreview();
 }
 
 function renderIconPreview(){
-  const url=$('newIcon').value;
-  const icon=dbIcons.find(i=>i.icon_url===url);
-  $('iconPreview').innerHTML=url
-    ? '<img src="'+esc(url)+'" alt=""><span>'+esc(icon?.name||'Icône sélectionnée')+'</span>'
+  const value=$('newIcon').value;
+
+  $('iconPreview').innerHTML=value
+    ? '<img src="'+esc(mapIconUrl(value))+'" alt=""><span>Icône sélectionnée</span>'
     : 'Aucune icône sélectionnée.';
 }
 
@@ -273,7 +380,7 @@ function renderPoints(){
     icon.className='point-record-icon';
     if(p.icon_url){
       const img=document.createElement('img');
-      img.src=p.icon_url;
+      img.src=mapIconUrl(p.icon_url);
       img.alt='';
       icon.appendChild(img);
     }else{
@@ -360,6 +467,14 @@ $('addPointBtn').onclick=async()=>{
   ['newName','newX','newY','newDescription'].forEach(id=>$(id).value='');
   $('newCategory').value='';
   $('newIcon').value='';
+
+  const iconPicker=$('newIconPicker');
+  if(iconPicker){
+    iconPicker.querySelectorAll('.icon-choice').forEach(x=>{
+      x.classList.toggle('selected',x.dataset.icon==='');
+    });
+  }
+
   renderIconPreview();
   await loadPoints();
 };
@@ -400,7 +515,7 @@ async function editPoint(id){
 
 $('pointsCategoryFilter').onchange=renderPoints;
 $('refreshBtn').onclick=loadPoints;
-$('newIcon').onchange=renderIconPreview;
+
 
 async function initPage(){
   await Promise.all([loadCategories(),loadIcons()]);
