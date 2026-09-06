@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vory V — Informations véhicule</title>
+<style>
+:root{
+  --bg:#09090b;--panel:#111113;--panel2:#17171b;--line:#28282f;--text:#fff;--muted:#92929d;
+  --orange:#f97316;--orange2:#fb923c;--green:#22c55e;--greenSoft:#17351f;
+  --red:#ef4444;--redSoft:#3b1719;--yellow:#f59e0b;
+}
+*{box-sizing:border-box}
+html{color-scheme:dark}
+body{
+  margin:0;min-height:100vh;
+  background:radial-gradient(circle at 15% 0,rgba(249,115,22,.08),transparent 25%),var(--bg);
+  color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+.shell{max-width:1350px;margin:auto;padding:30px 22px 70px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:24px}
+.kicker{color:var(--orange);font-weight:950;letter-spacing:.15em;font-size:11px;text-transform:uppercase}
+.top h1{margin:5px 0 0;font-size:34px}
+.back{color:#aaa;font-weight:800}.back:hover{color:#fff}
+
+.notice{
+  text-align:center;margin-bottom:24px;padding:18px;border:1px solid var(--line);border-radius:17px;
+  background:linear-gradient(180deg,#121215,#0f0f12)
+}
+.notice b{display:block;font-size:20px;letter-spacing:.02em}
+.notice span{display:block;color:#c084fc;font-weight:800;margin-top:6px}
+
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:13px}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-weight:900;cursor:pointer}
+.primary{background:var(--orange);color:#151515}.primary:hover{background:var(--orange2)}
+.secondary{background:#202025;color:#fff;border:1px solid #34343b}
+.danger{background:#3c1719;color:#fecaca;border:1px solid #5b2428}
+
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px;background:#0d0d10}
+table{width:100%;border-collapse:collapse;min-width:1050px}
+th,td{text-align:center;padding:13px 12px;border-bottom:1px solid var(--line);font-size:13px}
+th{color:#aaa;background:#101014;font-size:11px;text-transform:uppercase;letter-spacing:.055em}
+td:first-child,th:first-child{text-align:left}
+tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#121217}
+.vehicle-name{font-weight:900}
+.plate{color:#cfcfd6;font-weight:800}
+
+.pill{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:88px;padding:6px 10px;border-radius:9px;font-size:12px;font-weight:900;
+  border:1px solid transparent
+}
+.yes{background:var(--greenSoft);color:#86efac;border-color:#245d32}
+.no{background:var(--redSoft);color:#fca5a5;border-color:#642329}
+.warn{background:#3b2c0f;color:#fcd34d;border-color:#694d16}
+
+.actions{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.empty-row td{padding:25px;color:var(--muted)}
+
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;
+  z-index:100;padding:18px
+}
+.modal.open{display:flex}
+.modal-card{
+  width:min(720px,100%);max-height:90vh;overflow:auto;
+  background:#111113;border:1px solid var(--line);border-radius:18px;padding:20px;
+  box-shadow:0 25px 80px rgba(0,0,0,.55)
+}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.modal-head h2{margin:0}
+.close{border:0;background:transparent;color:#aaa;font-size:24px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.row{display:grid;gap:7px}
+.row label{font-size:12px;font-weight:850;color:#d4d4d8}
+.row input,.row select,.row textarea{
+  background:#0b0b0d;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px;outline:none
+}
+.row input:focus,.row select:focus,.row textarea:focus{border-color:var(--orange)}
+.row textarea{min-height:90px;resize:vertical}
+.full{grid-column:1/-1}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.msg{min-height:18px;margin-top:10px;font-size:12px;color:#fca5a5}
+
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .shell{padding:22px 14px 55px}
+  .top{align-items:flex-start}
+  .top h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="top">
+    <div>
+      <div class="kicker">Vory V Industry</div>
+      <h1>Informations véhicule</h1>
+    </div>
+    <a class="back" href="../index.html">← Récap entreprise</a>
+  </div>
+
+  <div class="notice">
+    <b>INFORMATIONS VÉHICULE</b>
+    <span>(Information obligatoire — suivi du parc automobile)</span>
+  </div>
+
+  <div class="toolbar">
+    <div class="muted">Clique sur « Modifier » pour mettre à jour les informations d’un véhicule.</div>
+    <button class="btn primary" id="addBtn">＋ Ajouter un véhicule</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nom du véhicule</th>
+          <th>Assuré ?</th>
+          <th>Dernière personne (utilisation)</th>
+          <th>Date assurance</th>
+          <th>Vide ?</th>
+          <th>Kilométrage restant</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="vehicles">
+        <tr class="empty-row"><td colspan="7">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="msg" id="listMsg"></div>
+</div>
+
+<div class="modal" id="vehicleModal">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2 id="modalTitle">Ajouter un véhicule</h2>
+      <button class="close" id="closeModal">×</button>
+    </div>
+
+    <input type="hidden" id="editingId">
+
+    <div class="grid">
+      <div class="row">
+        <label>Nom / Modèle</label>
+        <input id="vehicleName" placeholder="Ex. Volvo FH16 460 LB">
+      </div>
+
+      <div class="row">
+        <label>Plaque</label>
+        <input id="plate" placeholder="Ex. XS-484-ZG">
+      </div>
+
+      <div class="row">
+        <label>Assuré ?</label>
+        <select id="insured">
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Vide ?</label>
+        <select id="empty">
+          <option value="true">Oui</option>
+          <option value="false">Non</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label>Début assurance</label>
+        <input id="insuranceStart" type="date">
+      </div>
+
+      <div class="row">
+        <label>Fin assurance</label>
+        <input id="insuranceEnd" type="date">
+      </div>
+
+      <div class="row">
+        <label>Dernière personne (utilisation)</label>
+        <input id="lastUser" placeholder="Ex. M.Skow">
+      </div>
+
+      <div class="row">
+        <label>Kilométrage restant</label>
+        <input id="remainingMileage" type="number" step="0.1" min="0" placeholder="Ex. 196.6">
+      </div>
+
+      <div class="row full">
+        <label>Notes</label>
+        <textarea id="notes" placeholder="Informations complémentaires..."></textarea>
+      </div>
+    </div>
+
+    <div class="msg" id="formMsg"></div>
+
+    <div class="modal-actions">
+      <button class="btn secondary" id="cancelBtn">Annuler</button>
+      <button class="btn primary" id="saveBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../database.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const $=id=>document.getElementById(id);
+let db=null,currentUser=null,currentProfile=null,vehicles=[];
+
+function esc(s=''){
+  return String(s??'').replace(/[&<>'"]/g,c=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'
+  }[c]));
+}
+
+function formatDate(v){
+  if(!v)return '—';
+  const d=new Date(v+'T00:00:00');
+  return Number.isNaN(d.getTime())?'—':d.toLocaleDateString('fr-FR');
+}
+
+function insuranceRange(v){
+  if(!v.is_insured)return '—';
+  const start=formatDate(v.insurance_start);
+  const end=formatDate(v.insurance_end);
+  if(start==='—' && end==='—')return '—';
+  return start+' / '+end;
+}
+
+async function guard(){
+  if(!window.vorySupabaseConfigured || !window.vorySupabaseConfigured()){
+    return location.href='../../gestion/index.html';
+  }
+
+  db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+
+  const {data:{session}}=await db.auth.getSession();
+  currentUser=session?.user||null;
+  if(!currentUser)return location.href='../../gestion/index.html';
+
+  const {data,error}=await db.from('profiles')
+    .select('id,rp_name,role,company_rank')
+    .eq('id',currentUser.id)
+    .maybeSingle();
+
+  if(error||!data)return location.href='../../gestion/index.html';
+
+  currentProfile=data;
+
+  // Strictement Gestionnaire / Patron.
+  if(!['manager','pdg'].includes(currentProfile.company_rank)){
+    return location.href='../index.html';
+  }
+}
+
+function render(){
+  const body=$('vehicles');
+
+  if(!vehicles.length){
+    body.innerHTML='<tr class="empty-row"><td colspan="7">Aucun véhicule enregistré.</td></tr>';
+    return;
+  }
+
+  body.innerHTML=vehicles.map(v=>{
+    const name='['+esc(v.plate||'—')+'] '+esc(v.name||'Sans nom');
+    const mileage=v.remaining_mileage===null || v.remaining_mileage===undefined
+      ? '—'
+      : Number(v.remaining_mileage).toLocaleString('fr-FR',{maximumFractionDigits:1});
+
+    return `
+      <tr>
+        <td><span class="vehicle-name">${name}</span></td>
+        <td>
+          <span class="pill ${v.is_insured?'yes':'no'}">
+            ${v.is_insured?'Oui':'Non'}
+          </span>
+        </td>
+        <td>${esc(v.last_user_rp||'—')}</td>
+        <td>${insuranceRange(v)}</td>
+        <td>
+          <span class="pill ${v.is_empty?'yes':'no'}">
+            ${v.is_empty?'Oui':'Non'}
+          </span>
+        </td>
+        <td>${mileage}</td>
+        <td>
+          <div class="actions">
+            <button class="btn secondary" data-edit="${v.id}">Modifier</button>
+            <button class="btn danger" data-delete="${v.id}">Supprimer</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  body.querySelectorAll('[data-edit]').forEach(btn=>{
+    btn.onclick=()=>openEdit(btn.dataset.edit);
+  });
+
+  body.querySelectorAll('[data-delete]').forEach(btn=>{
+    btn.onclick=()=>deleteVehicle(btn.dataset.delete);
+  });
+}
+
+async function loadVehicles(){
+  $('listMsg').textContent='';
+
+  const {data,error}=await db.from('company_vehicles')
+    .select('*')
+    .order('name',{ascending:true});
+
+  if(error){
+    console.error(error);
+    $('vehicles').innerHTML='<tr class="empty-row"><td colspan="7">Impossible de charger les véhicules.</td></tr>';
+    $('listMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  vehicles=data||[];
+  render();
+}
+
+function resetForm(){
+  $('editingId').value='';
+  $('vehicleName').value='';
+  $('plate').value='';
+  $('insured').value='true';
+  $('empty').value='true';
+  $('insuranceStart').value='';
+  $('insuranceEnd').value='';
+  $('lastUser').value='';
+  $('remainingMileage').value='';
+  $('notes').value='';
+  $('formMsg').textContent='';
+}
+
+function openModal(){
+  $('vehicleModal').classList.add('open');
+}
+
+function closeModal(){
+  $('vehicleModal').classList.remove('open');
+  resetForm();
+}
+
+$('addBtn').onclick=()=>{
+  resetForm();
+  $('modalTitle').textContent='Ajouter un véhicule';
+  $('saveBtn').textContent='Ajouter le véhicule';
+  openModal();
+};
+
+function openEdit(id){
+  const v=vehicles.find(x=>String(x.id)===String(id));
+  if(!v)return;
+
+  $('editingId').value=v.id;
+  $('vehicleName').value=v.name||'';
+  $('plate').value=v.plate||'';
+  $('insured').value=String(!!v.is_insured);
+  $('empty').value=String(!!v.is_empty);
+  $('insuranceStart').value=v.insurance_start||'';
+  $('insuranceEnd').value=v.insurance_end||'';
+  $('lastUser').value=v.last_user_rp||'';
+  $('remainingMileage').value=v.remaining_mileage ?? '';
+  $('notes').value=v.notes||'';
+
+  $('modalTitle').textContent='Modifier le véhicule';
+  $('saveBtn').textContent='Enregistrer les modifications';
+  openModal();
+}
+
+async function deleteVehicle(id){
+  const v=vehicles.find(x=>String(x.id)===String(id));
+  if(!confirm('Supprimer '+(v?.name||'ce véhicule')+' ?'))return;
+
+  const {error}=await db.from('company_vehicles').delete().eq('id',id);
+  if(error)return alert('Erreur : '+error.message);
+
+  await loadVehicles();
+}
+
+$('saveBtn').onclick=async()=>{
+  const id=$('editingId').value;
+  const name=$('vehicleName').value.trim();
+  const plate=$('plate').value.trim();
+
+  if(!name||!plate){
+    $('formMsg').textContent='Le nom du véhicule et la plaque sont obligatoires.';
+    return;
+  }
+
+  const insured=$('insured').value==='true';
+  const payload={
+    name,
+    plate,
+    is_insured:insured,
+    insurance_start:insured ? ($('insuranceStart').value||null) : null,
+    insurance_end:insured ? ($('insuranceEnd').value||null) : null,
+    last_user_rp:$('lastUser').value.trim()||null,
+    is_empty:$('empty').value==='true',
+    remaining_mileage:$('remainingMileage').value==='' ? null : Number($('remainingMileage').value),
+    notes:$('notes').value.trim()||null,
+    updated_by:currentUser.id,
+    updated_at:new Date().toISOString()
+  };
+
+  $('formMsg').textContent=id?'Modification...':'Ajout...';
+
+  const result=id
+    ? await db.from('company_vehicles').update(payload).eq('id',id)
+    : await db.from('company_vehicles').insert({...payload,created_by:currentUser.id});
+
+  if(result.error){
+    $('formMsg').textContent='Erreur : '+result.error.message;
+    return;
+  }
+
+  closeModal();
+  await loadVehicles();
+};
+
+$('closeModal').onclick=closeModal;
+$('cancelBtn').onclick=closeModal;
+$('vehicleModal').addEventListener('click',e=>{
+  if(e.target===$('vehicleModal'))closeModal();
+});
+window.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && $('vehicleModal').classList.contains('open'))closeModal();
+});
+
+(async()=>{
+  await guard();
+  await loadVehicles();
+})();
+</script>
+</body>
+</html>
