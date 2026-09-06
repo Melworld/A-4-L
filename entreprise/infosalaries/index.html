@@ -7,7 +7,7 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.shell{max
 .nav-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:18px}.nav-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:var(--panel);transition:.18s}.nav-card:hover{transform:translateY(-3px);border-color:#5a3a22}.nav-card h3{margin:8px 0}.nav-card p{color:var(--muted);margin:0;line-height:1.55}.locked{opacity:.5;cursor:not-allowed}.section-title{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:28px 0 12px}.section-title h2{margin:0}
 @media(max-width:850px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr 1fr}.top{align-items:flex-start}}@media(max-width:600px){.grid4,.grid3,.nav-cards{grid-template-columns:1fr}.shell{padding:22px 14px 55px}.top h1{font-size:28px}}
 </style></head>
-<body><div class="shell"><div class="top"><div><div class="kicker">Vory V Industry</div><h1>Informations salariés</h1></div><a class="back" href="../index.html">← Récap entreprise</a></div>
+<body><div class="shell"><div class="top"><div><div class="kicker">Vory V Industry</div><h1>Informations salariés</h1></div><div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap"><a class="btn secondary" href="demande.html">📩 Voir les demandes</a><a class="back" href="../index.html">← Récap entreprise</a></div></div>
 <div class="card" style="margin-bottom:18px"><b>Équipe de l'entreprise</b><div class="muted" style="margin-top:5px">Employés, Associés, Gestionnaires et Patron. Clique sur un salarié pour afficher son historique de ventes.</div></div>
 <div class="table-wrap"><table><thead><tr><th>Rang</th><th>Identité</th><th>Argent généré</th><th>Mail RP</th><th>Numéro</th><th>Ventes</th></tr></thead><tbody id="staff"></tbody></table></div>
 <div class="section-title"><div><h2 id="historyTitle">Historique des ventes</h2><div class="muted">Sélectionne un salarié.</div></div></div>
@@ -15,7 +15,26 @@ a{color:inherit;text-decoration:none}button,input,select{font:inherit}.shell{max
 </div><script src="../../database.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const $=x=>document.getElementById(x),money=n=>Number(n||0).toLocaleString('fr-FR')+' €';let db,allSales=[];
 const ranks={employee:'Employé',associate:'Associé',manager:'Gestionnaire',pdg:'Patron'};
-async function guard(){db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session?.user)return location.href='../../gestion/index.html';const {data:p}=await db.from('profiles').select('company_rank').eq('id',session.user.id).single();if(!p?.company_rank)location.href='../index.html'}
+async function guard(){
+  db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);
+
+  const {data:{session}}=await db.auth.getSession();
+  if(!session?.user)return location.href='../../gestion/index.html';
+
+  const {data:p,error}=await db
+    .from('profiles')
+    .select('role,company_rank')
+    .eq('id',session.user.id)
+    .maybeSingle();
+
+  if(error||!p)return location.href='../index.html';
+
+  const canAccess=
+    ['associate','manager','pdg'].includes(p.company_rank)
+    || ['moderator','admin'].includes(p.role);
+
+  if(!canAccess)return location.href='../index.html';
+}
 function showSales(id,name){const s=allSales.filter(x=>x.seller_id===id);$('historyTitle').textContent='Historique — '+name;$('sales').innerHTML=s.length?s.map(x=>`<tr><td>${new Date(x.created_at).toLocaleDateString('fr-FR')}</td><td>${x.product_name}</td><td>${x.quantity}</td><td><b>${money(x.total_amount)}</b></td><td><span class="badge ${x.status==='validated'?'ok':'pending'}">${x.status==='validated'?'Validée':'En attente'}</span></td></tr>`).join(''):'<tr><td colspan="5" class="muted">Aucune vente pour ce salarié.</td></tr>'}
 async function load(){
   const {data:staff,error:staffError}=await db
