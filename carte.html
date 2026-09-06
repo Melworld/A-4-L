@@ -10,6 +10,22 @@
 .marker.custom-icon .marker-visual{
   width:36px;
   height:36px;
+  position:relative;
+}
+.marker.custom-icon .marker-visual::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:100%;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.75),
+    0 2px 4px rgba(0,0,0,.55);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
 }
 .marker.custom-icon .marker-icon{
   width:100%;
