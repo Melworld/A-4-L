@@ -283,12 +283,11 @@ async function loadTreatmentPercentage(){
 
 async function products(){
   $('saleProduct').innerHTML='<option value="">Chargement...</option>';
+  $('addSale').disabled=true;
 
-  const {data,error}=await db
-    .from('company_inventory')
-    .select('id,product_name,unit_price,enabled,treated')
-    .eq('enabled',true)
-    .order('product_name');
+  // Les employés n'ont pas besoin d'un accès direct à company_inventory.
+  // Cette RPC renvoie uniquement les informations nécessaires à la création d'une vente.
+  const {data,error}=await db.rpc('get_company_sale_products');
 
   if(error){
     PRODUCTS=[];
@@ -314,6 +313,7 @@ async function products(){
     return;
   }
 
+  $('saleMsg').textContent='';
   $('addSale').disabled=false;
 
   $('saleProduct').innerHTML=PRODUCTS
