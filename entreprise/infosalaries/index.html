@@ -17,5 +17,53 @@ const $=x=>document.getElementById(x),money=n=>Number(n||0).toLocaleString('fr-F
 const ranks={employee:'Employé',associate:'Associé',manager:'Gestionnaire',pdg:'Patron'};
 async function guard(){db=window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY);const {data:{session}}=await db.auth.getSession();if(!session?.user)return location.href='../../gestion/index.html';const {data:p}=await db.from('profiles').select('company_rank').eq('id',session.user.id).single();if(!p?.company_rank)location.href='../index.html'}
 function showSales(id,name){const s=allSales.filter(x=>x.seller_id===id);$('historyTitle').textContent='Historique — '+name;$('sales').innerHTML=s.length?s.map(x=>`<tr><td>${new Date(x.created_at).toLocaleDateString('fr-FR')}</td><td>${x.product_name}</td><td>${x.quantity}</td><td><b>${money(x.total_amount)}</b></td><td><span class="badge ${x.status==='validated'?'ok':'pending'}">${x.status==='validated'?'Validée':'En attente'}</span></td></tr>`).join(''):'<tr><td colspan="5" class="muted">Aucune vente pour ce salarié.</td></tr>'}
-async function load(){const {data:staff}=await db.from('profiles').select('id,rp_name,company_rank,membre_email_rp,member_number').not('company_rank','is',null);const {data:sales}=await db.from('company_sales').select('*').order('created_at',{ascending:false});allSales=sales||[];$('staff').innerHTML=(staff||[]).filter(p=>ranks[p.company_rank]).map(p=>{const valid=allSales.filter(x=>x.seller_id===p.id&&x.status==='validated'),total=valid.reduce((a,x)=>a+Number(x.total_amount||0),0);return `<tr style="cursor:pointer" onclick="showSales('${p.id}',${JSON.stringify(p.rp_name||'Sans nom')})"><td><span class="badge">${ranks[p.company_rank]}</span></td><td><b>${p.rp_name||'—'}</b></td><td>${money(total)}</td><td>${p.membre_email_rp||'—'}</td><td>${p.member_number||'—'}</td><td>${valid.length}</td></tr>`}).join('')}
+async function load(){
+  const {data:staff,error:staffError}=await db
+    .from('profiles')
+    .select('id,rp_name,company_rank,membre_email_rp,member_number')
+    .not('company_rank','is',null);
+
+  const {data:sales,error:salesError}=await db
+    .from('company_sales')
+    .select('*')
+    .order('created_at',{ascending:false});
+
+  if(staffError){
+    console.error('Erreur chargement salariés :',staffError);
+    $('staff').innerHTML='<tr><td colspan="6" class="muted">Erreur lors du chargement des salariés.</td></tr>';
+    return;
+  }
+
+  if(salesError){
+    console.error('Erreur chargement ventes :',salesError);
+  }
+
+  allSales=sales||[];
+
+  const staffBody=$('staff');
+  staffBody.innerHTML='';
+
+  (staff||[])
+    .filter(p=>ranks[p.company_rank])
+    .forEach(p=>{
+      const valid=allSales.filter(x=>String(x.seller_id)===String(p.id)&&x.status==='validated');
+      const total=valid.reduce((a,x)=>a+Number(x.total_amount||0),0);
+
+      const tr=document.createElement('tr');
+      tr.style.cursor='pointer';
+      tr.innerHTML=`
+        <td><span class="badge">${ranks[p.company_rank]}</span></td>
+        <td><b>${p.rp_name||'—'}</b></td>
+        <td>${money(total)}</td>
+        <td>${p.membre_email_rp||'—'}</td>
+        <td>${p.member_number||'—'}</td>
+        <td>${valid.length}</td>
+      `;
+
+      // Évite le onclick inline qui cassait dès que le nom RP contenait des guillemets/apostrophes.
+      tr.addEventListener('click',()=>showSales(p.id,p.rp_name||'Sans nom'));
+
+      staffBody.appendChild(tr);
+    });
+}
 (async()=>{await guard();load()})();</script></body></html>
