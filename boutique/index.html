@@ -10,17 +10,98 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 .hero{padding:58px 0 28px}.hero small{color:#c4b5fd;font-weight:950;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,68px);margin:8px 0 12px}.hero p{color:var(--muted);max-width:760px;line-height:1.7}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;align-items:start;padding-bottom:80px}.toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:17px}.toolbar h2{margin:0}
 .search{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 15px;outline:none}.panel{display:none}.panel.active{display:block}.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.shop-category{margin-bottom:34px}
+.shop-category:last-child{margin-bottom:0}
+.shop-category-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}
+.shop-category-head h3{margin:0;font-size:21px}
+.shop-category-head span{color:var(--muted);font-size:12px}
 .card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:hidden}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
 .cart{position:sticky;top:94px;background:#0d1322;border:1px solid var(--line);border-radius:20px;padding:18px}.carthead{display:flex;justify-content:space-between;align-items:center}.carthead h2{margin:0}.count{background:var(--orange);color:#111;min-width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-weight:950}
 .items{display:grid;gap:8px;margin:15px 0;max-height:300px;overflow:auto}.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px}.item{background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:10px}.itemtop{display:flex;justify-content:space-between;font-size:13px;font-weight:850}.qty{display:flex;gap:7px;align-items:center;margin-top:8px}.qty button{width:27px;height:27px;background:#171f34;border:1px solid var(--line);color:#fff;border-radius:7px;cursor:pointer}.remove{margin-left:auto}.total{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:18px;font-weight:950}.actions{display:grid;gap:9px;margin-top:14px}.secondary{border:1px solid var(--line);border-radius:10px;padding:10px;background:#171f34;color:#fff;font-weight:900;cursor:pointer}.primary{padding:11px}.primary:disabled{opacity:.45}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{width:min(520px,100%);background:#111a2e;border:1px solid var(--line);border-radius:20px;padding:21px}.order-box{width:min(900px,100%)}.boxtop{display:flex;justify-content:space-between;align-items:center}.boxtop h2{margin:0}.close{border:0;background:none;color:#aaa;font-size:25px;cursor:pointer}.order-columns{display:grid;grid-template-columns:minmax(0,.9fr) 1px minmax(0,1.1fr);gap:24px;margin-top:18px;align-items:start}.order-separator{width:1px;background:var(--line);height:100%;min-height:330px}.order-list-title{margin:0 0 12px;font-size:16px}.order-list-panel{display:grid;gap:8px;max-height:330px;overflow:auto;padding-right:4px}.order-list-item{background:#0b1222;border:1px solid var(--line);border-radius:10px;padding:10px}.order-list-item-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:850}.order-list-item small{display:block;color:var(--muted);margin-top:5px}.field{display:grid;gap:6px;margin-top:12px}.field:first-child{margin-top:0}.field label{font-size:12px;font-weight:850}.field input{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.msg{font-size:12px;min-height:18px;margin-top:8px}.ok{color:#86efac}.err{color:#fca5a5}
 @media(max-width:1050px){.layout{grid-template-columns:1fr}.cart{position:static}.products{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.order-columns{grid-template-columns:1fr}.order-separator{display:none}}@media(max-width:650px){.products{grid-template-columns:1fr}.nav,.toolbar{align-items:flex-start;flex-direction:column}.search{width:100%}}
+
+.category-picker{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:9px;
+  margin-bottom:18px;
+}
+.category-btn{
+  border:1px solid var(--line);
+  background:#0b1222;
+  color:#cbd5e1;
+  border-radius:12px;
+  padding:12px 9px;
+  cursor:pointer;
+  font-weight:900;
+  transition:.15s;
+}
+.category-btn:hover{
+  border-color:rgba(147,51,234,.55);
+  background:#151d31;
+  color:#fff;
+}
+.category-btn.active{
+  background:linear-gradient(100deg,rgba(147,51,234,.22),rgba(255,63,104,.16));
+  border-color:rgba(168,85,247,.65);
+  color:#fff;
+}
+.category-content-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:12px;
+  margin:0 0 13px;
+}
+.category-content-head h3{margin:0;font-size:22px}
+.weapon-select{
+  border:0;border-radius:10px;padding:9px 11px;
+  background:linear-gradient(100deg,var(--purple),var(--pink));
+  color:#fff;font-weight:900;cursor:pointer;
+}
+.weapon-box{width:min(820px,100%)}
+.weapon-info{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:18px;
+  align-items:start;
+  margin-top:16px;
+}
+.weapon-preview{
+  min-height:180px;
+  background:#0b1222;
+  border:1px solid var(--line);
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  color:#64748b;
+  font-size:12px;
+  font-weight:800;
+}
+.weapon-details h3{margin:0 0 6px}
+.compat-title{margin:22px 0 10px;font-size:16px}
+.compat-list{display:grid;gap:9px}
+.compat-item{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:11px;
+}
+.compat-item strong{display:block}
+.compat-item small{display:block;color:var(--muted);margin-top:3px}
+@media(max-width:900px){.category-picker{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){
+  .category-picker{grid-template-columns:repeat(2,1fr)}
+  .weapon-info{grid-template-columns:1fr}
+}
+
 </style></head><body>
-<header><div class="container nav"><a class="brand" href="/A-4-L/">Vory V Industry — Boutique</a><div class="tabs"><button class="tab active" data-tab="best">Meilleures ventes</button><button class="tab" data-tab="selection">Notre sélection</button><button class="tab" data-tab="packs">Les packs</button><a class="back" href="/A-4-L/">← Site principal</a></div></div></header>
+<header><div class="container nav"><a class="brand" href="/A-4-L/">Vory V Industry — Boutique</a><div class="tabs"><button class="tab active" data-tab="shop">Boutique</button><button class="tab" data-tab="packs">Les packs</button><a class="back" href="/A-4-L/">← Site principal</a></div></div></header>
 <main class="container"><section class="hero"><small>Vory V Industry</small><h1>La boutique.</h1><p>Choisis tes produits, règle les quantités puis envoie ta demande directement à l'équipe Vory V.</p></section>
-<div class="layout"><section><div class="toolbar"><h2 id="title">Meilleures ventes</h2><input id="search" class="search" placeholder="Rechercher..."></div>
-<div class="panel active" id="best"><div class="products" id="bestProducts"></div></div>
-<div class="panel" id="selection"><div class="products" id="selectionProducts"></div></div>
+<div class="layout"><section><div class="toolbar"><h2 id="title">Boutique</h2><input id="search" class="search" placeholder="Rechercher..."></div>
+<div class="panel active" id="shop">
+  <div class="category-picker" id="categoryPicker"></div>
+  <div id="categoryProducts"></div>
+</div>
 <div class="panel" id="packs"><div class="products" id="packProducts"></div></div></section>
 <aside class="cart"><div class="carthead"><h2>Mes achats</h2><span class="count" id="count">0</span></div><div class="items" id="cart"></div><div class="total"><span>Total</span><span id="total">0 $</span></div><div class="actions"><button class="secondary" id="list">Liste de nos achats</button><button class="primary" id="order" disabled>Passer commande</button></div></aside></div></main>
 <div class="modal" id="orderModal">
@@ -69,18 +150,249 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
     </div>
   </div>
 </div>
+
+<div class="modal" id="weaponModal">
+  <div class="box weapon-box">
+    <div class="boxtop">
+      <h2>Choisir une arme</h2>
+      <button class="close" data-close="weaponModal">×</button>
+    </div>
+    <div id="weaponModalContent"></div>
+  </div>
+</div>
+
 <div class="modal" id="listModal"><div class="box"><div class="boxtop"><h2>Liste de nos achats</h2><button class="close" data-close="listModal">×</button></div><div class="items" id="listItems"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script>
 <script>
-const db=(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())?window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY):null;
-const catalog={best:[['Optique','RCO / ARCO','Optique polyvalente.',1000],['Arme','SPAR-16','Fusil polyvalent.',5000],['Arme','R4-C','Configuration compacte.',5000],['Protection','Gilet P2','Protection individuelle.',5000]],selection:[['Arme','MK20','Plateforme bullpup légère.',5000],['Arme','TRG-21','Configuration compacte.',5000],['Munition','Chargeur 5.56','Chargeur 30 coups.',800],['Accessoire','Bipied','Accessoire de stabilisation.',1000]],packs:[['Pack','KIT R4-C','R4-C + RCO + chargeurs + Gilet P2.',12000],['Pack','KIT SPAR-16','SPAR-16 + RCO + chargeurs + Gilet P2.',12000]]};
-let cart=[];const $=id=>document.getElementById(id),money=n=>Number(n||0).toLocaleString('fr-FR')+' $',sum=()=>cart.reduce((s,i)=>s+i.price*i.quantity,0);
-function card(p){return `<article class="card" data-search="${(p[0]+' '+p[1]).toLowerCase()}"><div class="img">Image ${p[1]}</div><div class="body"><div class="cat">${p[0]}</div><h3>${p[1]}</h3><p>${p[2]}</p><div class="row"><span class="price">${money(p[3])}</span><button class="add" data-name="${p[1]}" data-price="${p[3]}">Ajouter</button></div></div></article>`}
-$('bestProducts').innerHTML=catalog.best.map(card).join('');$('selectionProducts').innerHTML=catalog.selection.map(card).join('');$('packProducts').innerHTML=catalog.packs.map(card).join('');
+const db=(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())
+  ? window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY)
+  : null;
+
+const $=id=>document.getElementById(id);
+const money=n=>Number(n||0).toLocaleString('fr-FR')+' $';
+let cart=[];
+const sum=()=>cart.reduce((s,i)=>s+i.price*i.quantity,0);
+
+const catalog={
+  categories:{
+    'Arme':[
+      {
+        id:'arme_1',
+        category:'Arme',
+        name:'Arme 1',
+        description:'Arme à personnaliser.',
+        price:0,
+        compatibleMagazines:['chargeur_1','chargeur_2']
+      },
+      {
+        id:'arme_2',
+        category:'Arme',
+        name:'Arme 2',
+        description:'Arme à personnaliser.',
+        price:0,
+        compatibleMagazines:['chargeur_2','chargeur_3']
+      },
+      {
+        id:'arme_3',
+        category:'Arme',
+        name:'Arme 3',
+        description:'Arme à personnaliser.',
+        price:0,
+        compatibleMagazines:['chargeur_1','chargeur_3']
+      }
+    ],
+
+    'Munition':[
+      {id:'chargeur_1',category:'Munition',name:'Chargeur 1',description:'Chargeur / munition à personnaliser.',price:0},
+      {id:'chargeur_2',category:'Munition',name:'Chargeur 2',description:'Chargeur / munition à personnaliser.',price:0},
+      {id:'chargeur_3',category:'Munition',name:'Chargeur 3',description:'Chargeur / munition à personnaliser.',price:0}
+    ],
+
+    'Viseur':[
+      {id:'viseur_1',category:'Viseur',name:'Viseur 1',description:'Produit à personnaliser.',price:0},
+      {id:'viseur_2',category:'Viseur',name:'Viseur 2',description:'Produit à personnaliser.',price:0},
+      {id:'viseur_3',category:'Viseur',name:'Viseur 3',description:'Produit à personnaliser.',price:0}
+    ],
+
+    'Grenade':[
+      {id:'grenade_1',category:'Grenade',name:'Grenade 1',description:'Produit à personnaliser.',price:0},
+      {id:'grenade_2',category:'Grenade',name:'Grenade 2',description:'Produit à personnaliser.',price:0},
+      {id:'grenade_3',category:'Grenade',name:'Grenade 3',description:'Produit à personnaliser.',price:0}
+    ],
+
+    'Drogue':[
+      {id:'drogue_1',category:'Drogue',name:'Drogue 1',description:'Produit à personnaliser.',price:0},
+      {id:'drogue_2',category:'Drogue',name:'Drogue 2',description:'Produit à personnaliser.',price:0},
+      {id:'drogue_3',category:'Drogue',name:'Drogue 3',description:'Produit à personnaliser.',price:0}
+    ]
+  },
+
+  packs:[
+    {id:'pack_1',category:'Pack',name:'KIT 1',description:'Pack à personnaliser.',price:0},
+    {id:'pack_2',category:'Pack',name:'KIT 2',description:'Pack à personnaliser.',price:0}
+  ]
+};
+
+let activeCategory='Arme';
+
+function allProducts(){
+  return [
+    ...Object.values(catalog.categories).flat(),
+    ...catalog.packs
+  ];
+}
+
+function productCard(p){
+  const weaponButton=p.category==='Arme'
+    ? `<button class="weapon-select" data-weapon="${p.id}">Choisir</button>`
+    : `<button class="add" data-name="${escAttr(p.name)}" data-price="${p.price}">Ajouter</button>`;
+
+  return `<article class="card" data-search="${escAttr((p.category+' '+p.name).toLowerCase())}">
+    <div class="img">Image ${p.name}</div>
+    <div class="body">
+      <div class="cat">${p.category}</div>
+      <h3>${p.name}</h3>
+      <p>${p.description}</p>
+      <div class="row">
+        <span class="price">${money(p.price)}</span>
+        ${weaponButton}
+      </div>
+    </div>
+  </article>`;
+}
+
+function escAttr(s=''){
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/"/g,'&quot;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+
+function renderCategoryPicker(){
+  const picker=$('categoryPicker');
+  picker.innerHTML=Object.keys(catalog.categories).map(category=>`
+    <button class="category-btn ${category===activeCategory?'active':''}" data-category="${category}">
+      ${category}
+    </button>
+  `).join('');
+
+  picker.querySelectorAll('.category-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      activeCategory=btn.dataset.category;
+      renderCategoryPicker();
+      renderCategoryProducts();
+      $('search').value='';
+    };
+  });
+}
+
+function renderCategoryProducts(){
+  const products=catalog.categories[activeCategory]||[];
+
+  $('categoryProducts').innerHTML=`
+    <div class="category-content-head">
+      <div>
+        <h3>${activeCategory}</h3>
+        <div class="muted">${products.length} produit${products.length>1?'s':''}</div>
+      </div>
+    </div>
+    <div class="products">${products.map(productCard).join('')}</div>
+  `;
+}
+
+function openWeapon(weaponId){
+  const weapon=(catalog.categories.Arme||[]).find(p=>p.id===weaponId);
+  if(!weapon)return;
+
+  const magazines=(catalog.categories.Munition||[])
+    .filter(m=>weapon.compatibleMagazines?.includes(m.id));
+
+  $('weaponModalContent').innerHTML=`
+    <div class="weapon-info">
+      <div class="weapon-preview">Image ${weapon.name}</div>
+      <div class="weapon-details">
+        <div class="cat">${weapon.category}</div>
+        <h3>${weapon.name}</h3>
+        <p style="color:var(--muted);line-height:1.55">${weapon.description}</p>
+        <div class="row" style="margin-top:14px">
+          <span class="price">${money(weapon.price)}</span>
+          <button class="add" data-name="${escAttr(weapon.name)}" data-price="${weapon.price}">Ajouter l'arme</button>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="compat-title">Munitions / chargeurs compatibles</h3>
+
+    <div class="compat-list">
+      ${magazines.length ? magazines.map(m=>`
+        <div class="compat-item">
+          <div>
+            <strong>${m.name}</strong>
+            <small>${m.description}</small>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="price" style="font-size:16px">${money(m.price)}</span>
+            <button class="add" data-name="${escAttr(m.name)}" data-price="${m.price}">Ajouter</button>
+          </div>
+        </div>
+      `).join('') : '<div class="empty">Aucune munition / aucun chargeur compatible renseigné.</div>'}
+    </div>
+  `;
+
+  show('weaponModal');
+}
+
+renderCategoryPicker();
+renderCategoryProducts();
+$('packProducts').innerHTML=catalog.packs.map(productCard).join('');
+
 function render(){const box=$('cart');box.innerHTML=cart.length?'':'<div class="empty">Aucun achat ajouté.</div>';cart.forEach((i,n)=>box.insertAdjacentHTML('beforeend',`<div class="item"><div class="itemtop"><span>${i.name}</span><span>${money(i.price*i.quantity)}</span></div><div class="qty"><button data-a="minus" data-i="${n}">−</button><span>${i.quantity}</span><button data-a="plus" data-i="${n}">+</button><button class="remove" data-a="remove" data-i="${n}">×</button></div></div>`));$('count').textContent=cart.reduce((s,i)=>s+i.quantity,0);$('total').textContent=money(sum());$('order').disabled=!cart.length}
-document.addEventListener('click',e=>{if(e.target.matches('.add')){let x=cart.find(i=>i.name===e.target.dataset.name);x?x.quantity++:cart.push({name:e.target.dataset.name,price:+e.target.dataset.price,quantity:1});render()}if(e.target.dataset.a){let n=+e.target.dataset.i,a=e.target.dataset.a;if(a==='plus')cart[n].quantity++;if(a==='minus'&&--cart[n].quantity<=0)cart.splice(n,1);if(a==='remove')cart.splice(n,1);render()}});
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active');$('title').textContent=b.textContent;$('search').value='';document.querySelectorAll('.card').forEach(c=>c.style.display='')});
-$('search').oninput=e=>document.querySelectorAll('.panel.active .card').forEach(c=>c.style.display=c.dataset.search.includes(e.target.value.toLowerCase())?'':'none');
+document.addEventListener('click',e=>{
+  if(e.target.matches('.weapon-select')){
+    openWeapon(e.target.dataset.weapon);
+    return;
+  }
+
+  if(e.target.matches('.add')){
+    let x=cart.find(i=>i.name===e.target.dataset.name);
+    x?x.quantity++:cart.push({
+      name:e.target.dataset.name,
+      price:+e.target.dataset.price,
+      quantity:1
+    });
+    render();
+  }
+
+  if(e.target.dataset.a){
+    let n=+e.target.dataset.i,a=e.target.dataset.a;
+    if(a==='plus')cart[n].quantity++;
+    if(a==='minus'&&--cart[n].quantity<=0)cart.splice(n,1);
+    if(a==='remove')cart.splice(n,1);
+    render();
+  }
+});
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  $(b.dataset.tab).classList.add('active');
+  $('title').textContent=b.textContent;
+  $('search').value='';
+
+  if(b.dataset.tab==='shop'){
+    renderCategoryPicker();
+    renderCategoryProducts();
+  }
+
+  document.querySelectorAll('.card').forEach(c=>c.style.display='');
+});
+$('search').oninput=e=>{
+  const q=e.target.value.toLowerCase();
+
+  document.querySelectorAll('.panel.active .card').forEach(c=>{
+    c.style.display=(c.dataset.search||'').includes(q)?'':'none';
+  });
+};
 function show(id){$(id).classList.add('show')}function hide(id){$(id).classList.remove('show')}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>hide(b.dataset.close));
 $('list').onclick=()=>{let b=$('listItems');b.innerHTML=cart.length?'':'<div class="empty">Aucun achat.</div>';cart.forEach(i=>b.insertAdjacentHTML('beforeend',`<div class="item"><div class="itemtop"><span>${i.quantity}× ${i.name}</span><span>${money(i.price*i.quantity)}</span></div></div>`));show('listModal')};
 $('order').onclick=()=>{
