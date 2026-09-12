@@ -105,8 +105,138 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
   .weapon-info{grid-template-columns:1fr}
 }
 
+
+.product-gallery{
+  position:relative;
+  width:100%;
+  height:100%;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.product-gallery img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:12px;
+}
+.gallery-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:2;
+  width:34px;
+  height:34px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(5,10,20,.72);
+  color:#fff;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  font-size:18px;
+  font-weight:950;
+  backdrop-filter:blur(6px);
+}
+.gallery-arrow:hover{background:rgba(147,51,234,.85)}
+.gallery-arrow.prev{left:8px}
+.gallery-arrow.next{right:8px}
+.gallery-counter{
+  position:absolute;
+  left:50%;
+  bottom:7px;
+  transform:translateX(-50%);
+  z-index:2;
+  padding:3px 7px;
+  border-radius:999px;
+  background:rgba(5,10,20,.72);
+  color:#cbd5e1;
+  font-size:10px;
+  font-weight:900;
+}
+.weapon-preview .gallery-arrow{width:36px;height:36px}
+.weapon-preview .gallery-arrow.prev{left:10px}
+.weapon-preview .gallery-arrow.next{right:10px}
+
+
+.admin-shop-btn{
+  display:none;
+  border:1px solid rgba(249,115,22,.45);
+  background:rgba(249,115,22,.10);
+  color:#fdba74;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+}
+.admin-shop-btn:hover{background:rgba(249,115,22,.18);color:#fff}
+.product-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.product-badge{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:4px 7px;
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.badge-stock{background:rgba(239,68,68,.13);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
+.badge-best{background:rgba(234,179,8,.13);color:#fde68a;border:1px solid rgba(234,179,8,.25)}
+.badge-sale{background:rgba(34,197,94,.13);color:#86efac;border:1px solid rgba(34,197,94,.25)}
+.price-stack{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.old-price{font-size:12px;color:#7f8ba3;text-decoration:line-through;font-weight:800}
+.sale-price{color:#86efac}
+.add:disabled{
+  background:#252b3a;
+  color:#7f8ba3;
+  cursor:not-allowed;
+  opacity:.72;
+}
+.admin-shop-box{width:min(1050px,100%)}
+.admin-shop-note{color:var(--muted);font-size:12px;line-height:1.55;margin-top:7px}
+.admin-products{
+  display:grid;
+  gap:8px;
+  max-height:58vh;
+  overflow:auto;
+  margin-top:18px;
+  padding-right:4px;
+}
+.admin-product-row{
+  display:grid;
+  grid-template-columns:minmax(180px,1.5fr) 130px 145px 150px;
+  gap:12px;
+  align-items:center;
+  background:#0b1222;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:11px;
+}
+.admin-product-name b{display:block}
+.admin-product-name small{display:block;color:var(--muted);margin-top:3px}
+.admin-toggle{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:850}
+.admin-toggle input{width:17px;height:17px;accent-color:var(--purple)}
+.admin-discount{display:grid;gap:5px}
+.admin-discount label{font-size:10px;color:var(--muted);font-weight:850}
+.admin-discount input{
+  width:100%;
+  background:#111a2e;
+  color:#fff;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:9px;
+  outline:none;
+}
+.admin-shop-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:15px}
+@media(max-width:760px){
+  .admin-product-row{grid-template-columns:1fr 1fr}
+  .admin-product-name{grid-column:1/-1}
+}
+
 </style></head><body>
-<header><div class="container nav"><a class="brand" href="/A-4-L/">Vory V Industry — Boutique</a><div class="tabs"><button class="tab active" data-tab="shop">Boutique</button><button class="tab" data-tab="packs">Les packs</button><a class="back" href="/A-4-L/">← Site principal</a></div></div></header>
+<header><div class="container nav"><a class="brand" href="/A-4-L/">Vory V Industry — Boutique</a><div class="tabs"><button class="tab active" data-tab="shop">Boutique</button><button class="tab" data-tab="packs">Les packs</button><button class="admin-shop-btn" id="adminShopBtn">⚙ Admin Boutique</button><a class="back" href="/A-4-L/">← Site principal</a></div></div></header>
 <main class="container"><section class="hero"><small>Vory V Industry</small><h1>La boutique.</h1><p>Choisis tes produits, règle les quantités puis envoie ta demande directement à l'équipe Vory V.</p></section>
 <div class="layout"><section><div class="toolbar"><h2 id="title">Boutique</h2><input id="search" class="search" placeholder="Rechercher..."></div>
 <div class="panel active" id="shop">
@@ -172,6 +302,30 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
   </div>
 </div>
 
+
+<div class="modal" id="adminShopModal">
+  <div class="box admin-shop-box">
+    <div class="boxtop">
+      <div>
+        <h2>Administration de la boutique</h2>
+        <div class="admin-shop-note">
+          Ces réglages sont visibles par tout le monde mais modifiables uniquement par un compte ayant le grade site <b>admin</b>.
+        </div>
+      </div>
+      <button class="close" data-close="adminShopModal">×</button>
+    </div>
+
+    <div class="admin-products" id="adminProducts"></div>
+
+    <div class="msg" id="adminShopMsg"></div>
+
+    <div class="admin-shop-actions">
+      <button class="secondary" data-close="adminShopModal">Annuler</button>
+      <button class="primary" id="saveAdminShop">Enregistrer les modifications</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="listModal"><div class="box"><div class="boxtop"><h2>Liste de nos achats</h2><button class="close" data-close="listModal">×</button></div><div class="items" id="listItems"></div></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="../database.js"></script>
 <script>
@@ -194,20 +348,264 @@ function shopImageUrl(file=''){
   return data?.publicUrl||'';
 }
 
-function productImage(p){
-  const url=shopImageUrl(p?.image);
+function productImages(p){
+  if(Array.isArray(p?.images) && p.images.length){
+    return p.images;
+  }
 
-  if(!url){
+  if(p?.image){
+    return [p.image];
+  }
+
+  return [];
+}
+
+function productGallery(p,context='card'){
+  const images=productImages(p);
+  const galleryId=(context+'-'+String(p?.id||Math.random())).replace(/[^a-zA-Z0-9_-]/g,'_');
+
+  if(!images.length){
     return `<span>Image ${p?.name||'produit'}</span>`;
   }
 
-  return `<img src="${escAttr(url)}" alt="${escAttr(p?.name||'Produit')}">`;
+  const firstUrl=shopImageUrl(images[0]);
+
+  if(!firstUrl){
+    return `<span>Image ${p?.name||'produit'}</span>`;
+  }
+
+  return `
+    <div class="product-gallery"
+         data-gallery-id="${galleryId}"
+         data-images="${escAttr(JSON.stringify(images))}"
+         data-index="0">
+      <img src="${escAttr(firstUrl)}" alt="${escAttr(p?.name||'Produit')}">
+      ${images.length>1 ? `
+        <button class="gallery-arrow prev" type="button" data-gallery-action="prev" aria-label="Image précédente">‹</button>
+        <button class="gallery-arrow next" type="button" data-gallery-action="next" aria-label="Image suivante">›</button>
+        <div class="gallery-counter">1 / ${images.length}</div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function changeGalleryImage(gallery,direction){
+  if(!gallery)return;
+
+  let images=[];
+  try{
+    images=JSON.parse(gallery.dataset.images||'[]');
+  }catch{
+    images=[];
+  }
+
+  if(images.length<2)return;
+
+  let index=Number(gallery.dataset.index||0);
+
+  if(direction==='next'){
+    index=(index+1)%images.length;
+  }else{
+    index=(index-1+images.length)%images.length;
+  }
+
+  gallery.dataset.index=String(index);
+
+  const img=gallery.querySelector('img');
+  if(img){
+    img.src=shopImageUrl(images[index]);
+  }
+
+  const counter=gallery.querySelector('.gallery-counter');
+  if(counter){
+    counter.textContent=(index+1)+' / '+images.length;
+  }
 }
 
 const $=id=>document.getElementById(id);
 const money=n=>Number(n||0).toLocaleString('fr-FR')+' $';
 let cart=[];
 const sum=()=>cart.reduce((s,i)=>s+i.price*i.quantity,0);
+
+let PRODUCT_SETTINGS={};
+let shopAdminUser=null;
+let shopAdminProfile=null;
+
+function getProductSetting(productId){
+  return PRODUCT_SETTINGS[String(productId)]||{
+    out_of_stock:false,
+    best_buy:false,
+    discount_percent:0
+  };
+}
+
+function effectivePrice(p){
+  const setting=getProductSetting(p.id);
+  const discount=Math.min(100,Math.max(0,Number(setting.discount_percent||0)));
+  return Number(p.price||0)*(1-discount/100);
+}
+
+function productBadges(p){
+  const setting=getProductSetting(p.id);
+  const badges=[];
+
+  if(setting.out_of_stock){
+    badges.push('<span class="product-badge badge-stock">Rupture de stock</span>');
+  }
+
+  if(setting.best_buy){
+    badges.push('<span class="product-badge badge-best">★ Meilleur achat</span>');
+  }
+
+  if(Number(setting.discount_percent||0)>0){
+    badges.push(`<span class="product-badge badge-sale">-${Number(setting.discount_percent).toLocaleString('fr-FR',{maximumFractionDigits:2})}%</span>`);
+  }
+
+  return badges.length
+    ? `<div class="product-badges">${badges.join('')}</div>`
+    : '';
+}
+
+function productPriceHtml(p,small=false){
+  const setting=getProductSetting(p.id);
+  const discount=Number(setting.discount_percent||0);
+  const finalPrice=effectivePrice(p);
+
+  if(discount>0){
+    return `<div class="price-stack">
+      <span class="old-price">${money(p.price)}</span>
+      <span class="price sale-price" ${small?'style="font-size:16px"':''}>${money(finalPrice)}</span>
+    </div>`;
+  }
+
+  return `<span class="price" ${small?'style="font-size:16px"':''}>${money(p.price)}</span>`;
+}
+
+async function loadProductSettings(){
+  PRODUCT_SETTINGS={};
+
+  if(!db)return;
+
+  const {data,error}=await db
+    .from('shop_product_settings')
+    .select('product_id,out_of_stock,best_buy,discount_percent');
+
+  if(error){
+    console.warn('Réglages boutique :',error.message);
+    return;
+  }
+
+  (data||[]).forEach(row=>{
+    PRODUCT_SETTINGS[String(row.product_id)]=row;
+  });
+}
+
+async function initShopAdmin(){
+  if(!db)return;
+
+  const {data:{session}}=await db.auth.getSession();
+  shopAdminUser=session?.user||null;
+
+  if(!shopAdminUser)return;
+
+  const {data:profile,error}=await db
+    .from('profiles')
+    .select('role')
+    .eq('id',shopAdminUser.id)
+    .maybeSingle();
+
+  if(error||profile?.role!=='admin')return;
+
+  shopAdminProfile=profile;
+  $('adminShopBtn').style.display='inline-flex';
+}
+
+function renderAdminProducts(){
+  const products=allProducts();
+
+  $('adminProducts').innerHTML=products.map(p=>{
+    const setting=getProductSetting(p.id);
+
+    return `
+      <div class="admin-product-row" data-admin-product="${escAttr(p.id)}">
+        <div class="admin-product-name">
+          <b>${p.name}</b>
+          <small>${p.category} · Prix normal : ${money(p.price)}</small>
+        </div>
+
+        <label class="admin-toggle">
+          <input type="checkbox" data-setting="out_of_stock" ${setting.out_of_stock?'checked':''}>
+          Rupture
+        </label>
+
+        <label class="admin-toggle">
+          <input type="checkbox" data-setting="best_buy" ${setting.best_buy?'checked':''}>
+          Meilleur achat
+        </label>
+
+        <div class="admin-discount">
+          <label>Réduction (%)</label>
+          <input
+            type="number"
+            min="0"
+            max="100"
+            step="1"
+            data-setting="discount_percent"
+            value="${Number(setting.discount_percent||0)}"
+          >
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function saveAdminProductSettings(){
+  if(!shopAdminUser || shopAdminProfile?.role!=='admin'){
+    $('adminShopMsg').className='msg err';
+    $('adminShopMsg').textContent='Accès administrateur requis.';
+    return;
+  }
+
+  const rows=[...document.querySelectorAll('[data-admin-product]')];
+
+  const payload=rows.map(row=>{
+    const productId=row.dataset.adminProduct;
+    const discountInput=row.querySelector('[data-setting="discount_percent"]');
+    const discount=Math.min(100,Math.max(0,Number(discountInput?.value||0)));
+
+    return {
+      product_id:productId,
+      out_of_stock:row.querySelector('[data-setting="out_of_stock"]')?.checked===true,
+      best_buy:row.querySelector('[data-setting="best_buy"]')?.checked===true,
+      discount_percent:discount,
+      updated_at:new Date().toISOString(),
+      updated_by:shopAdminUser.id
+    };
+  });
+
+  $('saveAdminShop').disabled=true;
+  $('adminShopMsg').className='msg';
+  $('adminShopMsg').textContent='Enregistrement...';
+
+  const {error}=await db
+    .from('shop_product_settings')
+    .upsert(payload,{onConflict:'product_id'});
+
+  $('saveAdminShop').disabled=false;
+
+  if(error){
+    $('adminShopMsg').className='msg err';
+    $('adminShopMsg').textContent='Erreur : '+error.message;
+    return;
+  }
+
+  await loadProductSettings();
+  renderCategoryProducts();
+  $('packProducts').innerHTML=catalog.packs.map(productCard).join('');
+
+  $('adminShopMsg').className='msg ok';
+  $('adminShopMsg').textContent='Boutique mise à jour ✓';
+}
 
 const catalog={
   categories:{
@@ -216,7 +614,7 @@ const catalog={
         id:'arme_1',
         category:'Arme',
         name:'Arme 1',
-        image:'armes/arme_1.png',
+        images:['armes/arme_1_1.png','armes/arme_1_2.png','armes/arme_1_3.png'],
         description:'Arme à personnaliser.',
         price:0,
         compatibleMagazines:['chargeur_1','chargeur_2']
@@ -282,18 +680,24 @@ function allProducts(){
 }
 
 function productCard(p){
+  const setting=getProductSetting(p.id);
+  const finalPrice=effectivePrice(p);
+
   const weaponButton=p.category==='Arme'
     ? `<button class="weapon-select" data-weapon="${p.id}">Choisir</button>`
-    : `<button class="add" data-name="${escAttr(p.name)}" data-price="${p.price}">Ajouter</button>`;
+    : `<button class="add" data-name="${escAttr(p.name)}" data-price="${finalPrice}" ${setting.out_of_stock?'disabled':''}>
+         ${setting.out_of_stock?'Rupture':'Ajouter'}
+       </button>`;
 
   return `<article class="card" data-search="${escAttr((p.category+' '+p.name).toLowerCase())}">
-    <div class="img">${productImage(p)}</div>
+    <div class="img">${productGallery(p,'card')}</div>
     <div class="body">
+      ${productBadges(p)}
       <div class="cat">${p.category}</div>
       <h3>${p.name}</h3>
       <p>${p.description}</p>
       <div class="row">
-        <span class="price">${money(p.price)}</span>
+        ${productPriceHtml(p)}
         ${weaponButton}
       </div>
     </div>
@@ -344,19 +748,26 @@ function openWeapon(weaponId){
   const weapon=(catalog.categories.Arme||[]).find(p=>p.id===weaponId);
   if(!weapon)return;
 
+  const weaponSetting=getProductSetting(weapon.id);
   const magazines=(catalog.categories.Munition||[])
     .filter(m=>weapon.compatibleMagazines?.includes(m.id));
 
   $('weaponModalContent').innerHTML=`
     <div class="weapon-info">
-      <div class="weapon-preview">${productImage(weapon)}</div>
+      <div class="weapon-preview">${productGallery(weapon,'weapon')}</div>
       <div class="weapon-details">
+        ${productBadges(weapon)}
         <div class="cat">${weapon.category}</div>
         <h3>${weapon.name}</h3>
         <p style="color:var(--muted);line-height:1.55">${weapon.description}</p>
         <div class="row" style="margin-top:14px">
-          <span class="price">${money(weapon.price)}</span>
-          <button class="add" data-name="${escAttr(weapon.name)}" data-price="${weapon.price}">Ajouter l'arme</button>
+          ${productPriceHtml(weapon)}
+          <button
+            class="add"
+            data-name="${escAttr(weapon.name)}"
+            data-price="${effectivePrice(weapon)}"
+            ${weaponSetting.out_of_stock?'disabled':''}
+          >${weaponSetting.out_of_stock?'Rupture de stock':"Ajouter l'arme"}</button>
         </div>
       </div>
     </div>
@@ -364,33 +775,51 @@ function openWeapon(weaponId){
     <h3 class="compat-title">Munitions / chargeurs compatibles</h3>
 
     <div class="compat-list">
-      ${magazines.length ? magazines.map(m=>`
-        <div class="compat-item">
-          <div class="compat-info">
-            <div class="compat-thumb">${productImage(m)}</div>
-            <div>
-              <strong>${m.name}</strong>
-              <small>${m.description}</small>
+      ${magazines.length ? magazines.map(m=>{
+        const mSetting=getProductSetting(m.id);
+
+        return `
+          <div class="compat-item">
+            <div class="compat-info">
+              <div class="compat-thumb">${productGallery(m,'magazine')}</div>
+              <div>
+                ${productBadges(m)}
+                <strong>${m.name}</strong>
+                <small>${m.description}</small>
+              </div>
+            </div>
+
+            <div style="display:flex;align-items:center;gap:10px">
+              ${productPriceHtml(m,true)}
+              <button
+                class="add"
+                data-name="${escAttr(m.name)}"
+                data-price="${effectivePrice(m)}"
+                ${mSetting.out_of_stock?'disabled':''}
+              >${mSetting.out_of_stock?'Rupture':'Ajouter'}</button>
             </div>
           </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <span class="price" style="font-size:16px">${money(m.price)}</span>
-            <button class="add" data-name="${escAttr(m.name)}" data-price="${m.price}">Ajouter</button>
-          </div>
-        </div>
-      `).join('') : '<div class="empty">Aucune munition / aucun chargeur compatible renseigné.</div>'}
+        `;
+      }).join('') : '<div class="empty">Aucune munition / aucun chargeur compatible renseigné.</div>'}
     </div>
   `;
 
   show('weaponModal');
 }
 
-renderCategoryPicker();
-renderCategoryProducts();
-$('packProducts').innerHTML=catalog.packs.map(productCard).join('');
+
 
 function render(){const box=$('cart');box.innerHTML=cart.length?'':'<div class="empty">Aucun achat ajouté.</div>';cart.forEach((i,n)=>box.insertAdjacentHTML('beforeend',`<div class="item"><div class="itemtop"><span>${i.name}</span><span>${money(i.price*i.quantity)}</span></div><div class="qty"><button data-a="minus" data-i="${n}">−</button><span>${i.quantity}</span><button data-a="plus" data-i="${n}">+</button><button class="remove" data-a="remove" data-i="${n}">×</button></div></div>`));$('count').textContent=cart.reduce((s,i)=>s+i.quantity,0);$('total').textContent=money(sum());$('order').disabled=!cart.length}
 document.addEventListener('click',e=>{
+  if(e.target.matches('[data-gallery-action]')){
+    e.preventDefault();
+    e.stopPropagation();
+
+    const gallery=e.target.closest('.product-gallery');
+    changeGalleryImage(gallery,e.target.dataset.galleryAction);
+    return;
+  }
+
   if(e.target.matches('.weapon-select')){
     openWeapon(e.target.dataset.weapon);
     return;
@@ -414,6 +843,14 @@ document.addEventListener('click',e=>{
     render();
   }
 });
+$('adminShopBtn').onclick=()=>{
+  renderAdminProducts();
+  $('adminShopMsg').textContent='';
+  show('adminShopModal');
+};
+
+$('saveAdminShop').onclick=saveAdminProductSettings;
+
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));
   b.classList.add('active');
@@ -516,5 +953,14 @@ $('rpName').addEventListener('keydown',e=>{
 });
 
 $('send').onclick=async()=>{let name=$('rpName').value.trim(),num=$('rpNumber').value.trim(),email=$('rpEmail').value.trim();if(!name||!num||!email){$('msg').className='msg err';$('msg').textContent='Remplis toutes les informations RP.';return}if(!db){$('msg').className='msg err';$('msg').textContent='Supabase non configuré.';return}$('send').disabled=true;let {error}=await db.from('shop_orders').insert({buyer_name:name,buyer_number:num,buyer_email:email,items:cart,total:sum(),status:'pending'});$('send').disabled=false;if(error){$('msg').className='msg err';$('msg').textContent=error.message;return}$('msg').className='msg ok';$('msg').textContent='Commande envoyée ✓';cart=[];render();setTimeout(()=>hide('orderModal'),1000)};
-render();
+(async()=>{
+  await loadProductSettings();
+
+  renderCategoryPicker();
+  renderCategoryProducts();
+  $('packProducts').innerHTML=catalog.packs.map(productCard).join('');
+
+  await initShopAdmin();
+  render();
+})();
 </script></body></html>
