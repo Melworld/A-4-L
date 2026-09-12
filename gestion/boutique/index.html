@@ -58,18 +58,52 @@ a{color:inherit}
   font-size:clamp(32px,4vw,44px);
   letter-spacing:-.03em;
 }
-.back-link{
+.top-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.back-link,
+.shop-link{
   text-decoration:none;
-  color:#c7c7ce;
-  border:1px solid var(--line);
-  background:#151518;
   padding:11px 15px;
   border-radius:11px;
   font-size:13px;
-  font-weight:850;
+  font-weight:900;
   white-space:nowrap;
+  transition:.18s ease;
 }
-.back-link:hover{background:#1b1b20;color:#fff}
+
+.back-link{
+  color:#c7c7ce;
+  border:1px solid var(--line);
+  background:#151518;
+}
+
+.back-link:hover{
+  background:#1b1b20;
+  color:#fff;
+  transform:translateY(-1px);
+}
+
+.shop-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  color:#111;
+  border:1px solid rgba(249,115,22,.75);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 8px 24px rgba(249,115,22,.16);
+}
+
+.shop-link:hover{
+  transform:translateY(-2px);
+  box-shadow:0 11px 30px rgba(249,115,22,.26);
+  filter:brightness(1.05);
+}
 
 .summary-grid{
   display:grid;
@@ -263,6 +297,16 @@ a{color:inherit}
     flex-direction:column;
     margin-bottom:28px;
   }
+  .top-actions{
+    width:100%;
+    justify-content:flex-start;
+  }
+  .shop-link,
+  .back-link{
+    flex:1;
+    text-align:center;
+    justify-content:center;
+  }
   .summary-grid{
     grid-template-columns:1fr;
     gap:12px;
@@ -293,8 +337,10 @@ a{color:inherit}
       <div class="kicker">Vory V — Gestion</div>
       <h1>Demandes boutique</h1>
     </div>
-    <a class="back-link" href="voryv.fun/boutique">← Accède à la boutique</a>
-    <a class="back-link" href="../">← Retour à la gestion</a>
+    <div class="top-actions">
+      <a class="shop-link" href="../../boutique/">🛒 Accéder à la boutique</a>
+      <a class="back-link" href="../">← Retour à la gestion</a>
+    </div>
   </div>
 
   <div class="summary-grid">
