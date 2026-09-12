@@ -15,7 +15,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 .shop-category-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}
 .shop-category-head h3{margin:0;font-size:21px}
 .shop-category-head span{color:var(--muted);font-size:12px}
-.card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:hidden}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
+.card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:hidden}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800;overflow:hidden}.img img{width:100%;height:100%;object-fit:contain;padding:12px}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
 .cart{position:sticky;top:94px;background:#0d1322;border:1px solid var(--line);border-radius:20px;padding:18px}.carthead{display:flex;justify-content:space-between;align-items:center}.carthead h2{margin:0}.count{background:var(--orange);color:#111;min-width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-weight:950}
 .items{display:grid;gap:8px;margin:15px 0;max-height:300px;overflow:auto}.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px}.item{background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:10px}.itemtop{display:flex;justify-content:space-between;font-size:13px;font-weight:850}.qty{display:flex;gap:7px;align-items:center;margin-top:8px}.qty button{width:27px;height:27px;background:#171f34;border:1px solid var(--line);color:#fff;border-radius:7px;cursor:pointer}.remove{margin-left:auto}.total{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:18px;font-weight:950}.actions{display:grid;gap:9px;margin-top:14px}.secondary{border:1px solid var(--line);border-radius:10px;padding:10px;background:#171f34;color:#fff;font-weight:900;cursor:pointer}.primary{padding:11px}.primary:disabled{opacity:.45}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{width:min(520px,100%);background:#111a2e;border:1px solid var(--line);border-radius:20px;padding:21px}.order-box{width:min(900px,100%)}.boxtop{display:flex;justify-content:space-between;align-items:center}.boxtop h2{margin:0}.close{border:0;background:none;color:#aaa;font-size:25px;cursor:pointer}.order-columns{display:grid;grid-template-columns:minmax(0,.9fr) 1px minmax(0,1.1fr);gap:24px;margin-top:18px;align-items:start}.order-separator{width:1px;background:var(--line);height:100%;min-height:330px}.order-list-title{margin:0 0 12px;font-size:16px}.order-list-panel{display:grid;gap:8px;max-height:330px;overflow:auto;padding-right:4px}.order-list-item{background:#0b1222;border:1px solid var(--line);border-radius:10px;padding:10px}.order-list-item-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:850}.order-list-item small{display:block;color:var(--muted);margin-top:5px}.field{display:grid;gap:6px;margin-top:12px}.field:first-child{margin-top:0}.field label{font-size:12px;font-weight:850}.field input{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.msg{font-size:12px;min-height:18px;margin-top:8px}.ok{color:#86efac}.err{color:#fca5a5}
@@ -70,6 +70,7 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 }
 .weapon-preview{
   min-height:180px;
+  height:180px;
   background:#0b1222;
   border:1px solid var(--line);
   border-radius:14px;
@@ -78,6 +79,13 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
   color:#64748b;
   font-size:12px;
   font-weight:800;
+  overflow:hidden;
+}
+.weapon-preview img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:14px;
 }
 .weapon-details h3{margin:0 0 6px}
 .compat-title{margin:22px 0 10px;font-size:16px}
@@ -86,6 +94,9 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
   display:flex;align-items:center;justify-content:space-between;gap:12px;
   background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:11px;
 }
+.compat-thumb{width:54px;height:54px;flex:none;border-radius:9px;overflow:hidden;background:#111a2e;border:1px solid var(--line);display:grid;place-items:center}
+.compat-thumb img{width:100%;height:100%;object-fit:contain;padding:5px}
+.compat-info{display:flex;align-items:center;gap:10px;min-width:0}
 .compat-item strong{display:block}
 .compat-item small{display:block;color:var(--muted);margin-top:3px}
 @media(max-width:900px){.category-picker{grid-template-columns:repeat(3,1fr)}}
@@ -168,6 +179,31 @@ const db=(window.vorySupabaseConfigured&&window.vorySupabaseConfigured())
   ? window.supabase.createClient(window.VORY_SUPABASE_URL,window.VORY_SUPABASE_KEY)
   : null;
 
+const SHOP_IMAGE_BUCKET='Boutique Images';
+
+function shopImageUrl(file=''){
+  const value=String(file||'').trim();
+
+  if(!value || !db) return '';
+  if(/^https?:\/\//i.test(value)) return value;
+
+  const {data}=db.storage
+    .from(SHOP_IMAGE_BUCKET)
+    .getPublicUrl(value);
+
+  return data?.publicUrl||'';
+}
+
+function productImage(p){
+  const url=shopImageUrl(p?.image);
+
+  if(!url){
+    return `<span>Image ${p?.name||'produit'}</span>`;
+  }
+
+  return `<img src="${escAttr(url)}" alt="${escAttr(p?.name||'Produit')}">`;
+}
+
 const $=id=>document.getElementById(id);
 const money=n=>Number(n||0).toLocaleString('fr-FR')+' $';
 let cart=[];
@@ -180,6 +216,7 @@ const catalog={
         id:'arme_1',
         category:'Arme',
         name:'Arme 1',
+        image:'armes/arme_1.png',
         description:'Arme à personnaliser.',
         price:0,
         compatibleMagazines:['chargeur_1','chargeur_2']
@@ -188,6 +225,7 @@ const catalog={
         id:'arme_2',
         category:'Arme',
         name:'Arme 2',
+        image:'armes/arme_2.png',
         description:'Arme à personnaliser.',
         price:0,
         compatibleMagazines:['chargeur_2','chargeur_3']
@@ -196,6 +234,7 @@ const catalog={
         id:'arme_3',
         category:'Arme',
         name:'Arme 3',
+        image:'armes/arme_3.png',
         description:'Arme à personnaliser.',
         price:0,
         compatibleMagazines:['chargeur_1','chargeur_3']
@@ -203,33 +242,33 @@ const catalog={
     ],
 
     'Munition':[
-      {id:'chargeur_1',category:'Munition',name:'Chargeur 1',description:'Chargeur / munition à personnaliser.',price:0},
-      {id:'chargeur_2',category:'Munition',name:'Chargeur 2',description:'Chargeur / munition à personnaliser.',price:0},
-      {id:'chargeur_3',category:'Munition',name:'Chargeur 3',description:'Chargeur / munition à personnaliser.',price:0}
+      {id:'chargeur_1',category:'Munition',name:'Chargeur 1',image:'munitions/chargeur_1.png',description:'Chargeur / munition à personnaliser.',price:0},
+      {id:'chargeur_2',category:'Munition',name:'Chargeur 2',image:'munitions/chargeur_2.png',description:'Chargeur / munition à personnaliser.',price:0},
+      {id:'chargeur_3',category:'Munition',name:'Chargeur 3',image:'munitions/chargeur_3.png',description:'Chargeur / munition à personnaliser.',price:0}
     ],
 
     'Viseur':[
-      {id:'viseur_1',category:'Viseur',name:'Viseur 1',description:'Produit à personnaliser.',price:0},
-      {id:'viseur_2',category:'Viseur',name:'Viseur 2',description:'Produit à personnaliser.',price:0},
-      {id:'viseur_3',category:'Viseur',name:'Viseur 3',description:'Produit à personnaliser.',price:0}
+      {id:'viseur_1',category:'Viseur',name:'Viseur 1',image:'viseurs/viseur_1.png',description:'Produit à personnaliser.',price:0},
+      {id:'viseur_2',category:'Viseur',name:'Viseur 2',image:'viseurs/viseur_2.png',description:'Produit à personnaliser.',price:0},
+      {id:'viseur_3',category:'Viseur',name:'Viseur 3',image:'viseurs/viseur_3.png',description:'Produit à personnaliser.',price:0}
     ],
 
     'Grenade':[
-      {id:'grenade_1',category:'Grenade',name:'Grenade 1',description:'Produit à personnaliser.',price:0},
-      {id:'grenade_2',category:'Grenade',name:'Grenade 2',description:'Produit à personnaliser.',price:0},
-      {id:'grenade_3',category:'Grenade',name:'Grenade 3',description:'Produit à personnaliser.',price:0}
+      {id:'grenade_1',category:'Grenade',name:'Grenade 1',image:'grenades/grenade_1.png',description:'Produit à personnaliser.',price:0},
+      {id:'grenade_2',category:'Grenade',name:'Grenade 2',image:'grenades/grenade_2.png',description:'Produit à personnaliser.',price:0},
+      {id:'grenade_3',category:'Grenade',name:'Grenade 3',image:'grenades/grenade_3.png',description:'Produit à personnaliser.',price:0}
     ],
 
     'Drogue':[
-      {id:'drogue_1',category:'Drogue',name:'Drogue 1',description:'Produit à personnaliser.',price:0},
-      {id:'drogue_2',category:'Drogue',name:'Drogue 2',description:'Produit à personnaliser.',price:0},
-      {id:'drogue_3',category:'Drogue',name:'Drogue 3',description:'Produit à personnaliser.',price:0}
+      {id:'drogue_1',category:'Drogue',name:'Drogue 1',image:'drogues/drogue_1.png',description:'Produit à personnaliser.',price:0},
+      {id:'drogue_2',category:'Drogue',name:'Drogue 2',image:'drogues/drogue_2.png',description:'Produit à personnaliser.',price:0},
+      {id:'drogue_3',category:'Drogue',name:'Drogue 3',image:'drogues/drogue_3.png',description:'Produit à personnaliser.',price:0}
     ]
   },
 
   packs:[
-    {id:'pack_1',category:'Pack',name:'KIT 1',description:'Pack à personnaliser.',price:0},
-    {id:'pack_2',category:'Pack',name:'KIT 2',description:'Pack à personnaliser.',price:0}
+    {id:'pack_1',category:'Pack',name:'KIT 1',image:'packs/kit_1.png',description:'Pack à personnaliser.',price:0},
+    {id:'pack_2',category:'Pack',name:'KIT 2',image:'packs/kit_2.png',description:'Pack à personnaliser.',price:0}
   ]
 };
 
@@ -248,7 +287,7 @@ function productCard(p){
     : `<button class="add" data-name="${escAttr(p.name)}" data-price="${p.price}">Ajouter</button>`;
 
   return `<article class="card" data-search="${escAttr((p.category+' '+p.name).toLowerCase())}">
-    <div class="img">Image ${p.name}</div>
+    <div class="img">${productImage(p)}</div>
     <div class="body">
       <div class="cat">${p.category}</div>
       <h3>${p.name}</h3>
@@ -310,7 +349,7 @@ function openWeapon(weaponId){
 
   $('weaponModalContent').innerHTML=`
     <div class="weapon-info">
-      <div class="weapon-preview">Image ${weapon.name}</div>
+      <div class="weapon-preview">${productImage(weapon)}</div>
       <div class="weapon-details">
         <div class="cat">${weapon.category}</div>
         <h3>${weapon.name}</h3>
@@ -327,9 +366,12 @@ function openWeapon(weaponId){
     <div class="compat-list">
       ${magazines.length ? magazines.map(m=>`
         <div class="compat-item">
-          <div>
-            <strong>${m.name}</strong>
-            <small>${m.description}</small>
+          <div class="compat-info">
+            <div class="compat-thumb">${productImage(m)}</div>
+            <div>
+              <strong>${m.name}</strong>
+              <small>${m.description}</small>
+            </div>
           </div>
           <div style="display:flex;align-items:center;gap:10px">
             <span class="price" style="font-size:16px">${money(m.price)}</span>
