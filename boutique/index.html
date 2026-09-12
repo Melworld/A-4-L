@@ -9,13 +9,13 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 .tabs button,.back{border:0;background:transparent;color:#cbd5e1;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:850;cursor:pointer}.tabs button.active,.tabs button:hover{background:rgba(255,255,255,.06);color:#fff}.back{border:1px solid var(--line)}
 .hero{padding:58px 0 28px}.hero small{color:#c4b5fd;font-weight:950;letter-spacing:.16em;text-transform:uppercase}.hero h1{font-size:clamp(42px,6vw,68px);margin:8px 0 12px}.hero p{color:var(--muted);max-width:760px;line-height:1.7}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;align-items:start;padding-bottom:80px}.toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:17px}.toolbar h2{margin:0}
-.search{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 15px;outline:none}.panel{display:none}.panel.active{display:block}.products{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.search{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:999px;padding:11px 15px;outline:none}.panel{display:none}.panel.active{display:block}.products{display:grid;grid-template-columns:repeat(3,1fr);column-gap:15px;row-gap:26px;padding-top:8px}
 .shop-category{margin-bottom:34px}
 .shop-category:last-child{margin-bottom:0}
 .shop-category-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 13px}
 .shop-category-head h3{margin:0;font-size:21px}
 .shop-category-head span{color:var(--muted);font-size:12px}
-.card{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:hidden}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800;overflow:hidden}.img img{width:100%;height:100%;object-fit:contain;padding:12px}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
+.card{position:relative;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:18px;overflow:visible}.img{height:155px;background:#0b1222;display:grid;place-items:center;color:#64748b;font-size:12px;font-weight:800;overflow:hidden;border-radius:17px 17px 0 0}.img img{width:100%;height:100%;object-fit:contain;padding:12px}.body{padding:15px}.cat{color:#a78bfa;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.body h3{margin:6px 0}.body p{color:var(--muted);font-size:12px;min-height:35px}.row{display:flex;align-items:center;justify-content:space-between;gap:10px}.price{font-size:19px;font-weight:950}.add,.primary{border:0;border-radius:10px;padding:9px 11px;background:linear-gradient(100deg,var(--purple),var(--pink));color:#fff;font-weight:900;cursor:pointer}
 .cart{position:sticky;top:94px;background:#0d1322;border:1px solid var(--line);border-radius:20px;padding:18px}.carthead{display:flex;justify-content:space-between;align-items:center}.carthead h2{margin:0}.count{background:var(--orange);color:#111;min-width:30px;height:30px;border-radius:999px;display:grid;place-items:center;font-weight:950}
 .items{display:grid;gap:8px;margin:15px 0;max-height:300px;overflow:auto}.empty{color:var(--muted);font-size:13px;text-align:center;padding:18px}.item{background:#0b1222;border:1px solid var(--line);border-radius:11px;padding:10px}.itemtop{display:flex;justify-content:space-between;font-size:13px;font-weight:850}.qty{display:flex;gap:7px;align-items:center;margin-top:8px}.qty button{width:27px;height:27px;background:#171f34;border:1px solid var(--line);color:#fff;border-radius:7px;cursor:pointer}.remove{margin-left:auto}.total{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px;font-size:18px;font-weight:950}.actions{display:grid;gap:9px;margin-top:14px}.secondary{border:1px solid var(--line);border-radius:10px;padding:10px;background:#171f34;color:#fff;font-weight:900;cursor:pointer}.primary{padding:11px}.primary:disabled{opacity:.45}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;place-items:center;padding:18px}.modal.show{display:grid}.box{width:min(520px,100%);background:#111a2e;border:1px solid var(--line);border-radius:20px;padding:21px}.order-box{width:min(900px,100%)}.boxtop{display:flex;justify-content:space-between;align-items:center}.boxtop h2{margin:0}.close{border:0;background:none;color:#aaa;font-size:25px;cursor:pointer}.order-columns{display:grid;grid-template-columns:minmax(0,.9fr) 1px minmax(0,1.1fr);gap:24px;margin-top:18px;align-items:start}.order-separator{width:1px;background:var(--line);height:100%;min-height:330px}.order-list-title{margin:0 0 12px;font-size:16px}.order-list-panel{display:grid;gap:8px;max-height:330px;overflow:auto;padding-right:4px}.order-list-item{background:#0b1222;border:1px solid var(--line);border-radius:10px;padding:10px}.order-list-item-top{display:flex;justify-content:space-between;gap:12px;font-size:13px;font-weight:850}.order-list-item small{display:block;color:var(--muted);margin-top:5px}.field{display:grid;gap:6px;margin-top:12px}.field:first-child{margin-top:0}.field label{font-size:12px;font-weight:850}.field input{background:#0b1222;color:#fff;border:1px solid var(--line);border-radius:10px;padding:11px}.msg{font-size:12px;min-height:18px;margin-top:8px}.ok{color:#86efac}.err{color:#fca5a5}
@@ -172,15 +172,25 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 }
 .admin-shop-btn:hover{background:rgba(249,115,22,.18);color:#fff}
 .product-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.card > .product-badges{
+  position:absolute;
+  top:0;
+  left:14px;
+  z-index:6;
+  margin:0;
+  transform:translateY(-52%);
+}
 .product-badge{
   display:inline-flex;
   align-items:center;
   border-radius:999px;
-  padding:4px 7px;
+  padding:5px 9px;
   font-size:9px;
   font-weight:950;
   letter-spacing:.05em;
   text-transform:uppercase;
+  box-shadow:0 6px 16px rgba(0,0,0,.24);
+  backdrop-filter:blur(8px);
 }
 .badge-stock{background:rgba(239,68,68,.13);color:#fca5a5;border:1px solid rgba(239,68,68,.25)}
 .badge-best{background:rgba(234,179,8,.13);color:#fde68a;border:1px solid rgba(234,179,8,.25)}
@@ -188,6 +198,27 @@ header{position:sticky;top:0;z-index:20;background:rgba(10,17,32,.92);backdrop-f
 .price-stack{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
 .old-price{font-size:12px;color:#7f8ba3;text-decoration:line-through;font-weight:800}
 .sale-price{color:#86efac}
+.product-action{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.discount-action-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:31px;
+  padding:6px 9px;
+  border-radius:9px;
+  border:1px solid rgba(34,197,94,.30);
+  background:rgba(34,197,94,.12);
+  color:#86efac;
+  font-size:10px;
+  font-weight:950;
+  white-space:nowrap;
+}
 .add:disabled{
   background:#252b3a;
   color:#7f8ba3;
@@ -677,13 +708,22 @@ function productBadges(p){
     badges.push('<span class="product-badge badge-best">★ Meilleur achat</span>');
   }
 
-  if(discountIsActive(setting)){
-    badges.push(`<span class="product-badge badge-sale">-${Number(setting.discount_percent).toLocaleString('fr-FR',{maximumFractionDigits:2})}%</span>`);
-  }
-
   return badges.length
     ? `<div class="product-badges">${badges.join('')}</div>`
     : '';
+}
+
+function productDiscountActionBadge(p){
+  const setting=getProductSetting(p.id);
+
+  if(!discountIsActive(setting)){
+    return '';
+  }
+
+  const discount=Number(setting.discount_percent||0)
+    .toLocaleString('fr-FR',{maximumFractionDigits:2});
+
+  return `<span class="discount-action-badge">-${discount}%</span>`;
 }
 
 function productSaleEndHtml(p){
@@ -979,16 +1019,19 @@ function productCard(p){
     data-search="${escAttr((p.category+' '+p.name).toLowerCase())}"
     data-product-id="${escAttr(p.id)}"
   >
+    ${productBadges(p)}
     ${adminEditing?'<div class="admin-card-hint">Modifier</div>':''}
     <div class="img">${productGallery(p,'card')}</div>
     <div class="body">
-      ${productBadges(p)}
       <div class="cat">${p.category}</div>
       <h3>${p.name}</h3>
       <p>${p.description}</p>
       <div class="row">
         ${productPriceHtml(p)}
-        ${actionButton}
+        <div class="product-action">
+          ${productDiscountActionBadge(p)}
+          ${actionButton}
+        </div>
       </div>
     </div>
   </article>`;
@@ -1052,12 +1095,15 @@ function openWeapon(weaponId){
         <p style="color:var(--muted);line-height:1.55">${weapon.description}</p>
         <div class="row" style="margin-top:14px">
           ${productPriceHtml(weapon)}
-          <button
-            class="add"
-            data-name="${escAttr(weapon.name)}"
-            data-price="${effectivePrice(weapon)}"
-            ${weaponSetting.out_of_stock?'disabled':''}
-          >${weaponSetting.out_of_stock?'Rupture de stock':"Ajouter l'arme"}</button>
+          <div class="product-action">
+            ${productDiscountActionBadge(weapon)}
+            <button
+              class="add"
+              data-name="${escAttr(weapon.name)}"
+              data-price="${effectivePrice(weapon)}"
+              ${weaponSetting.out_of_stock?'disabled':''}
+            >${weaponSetting.out_of_stock?'Rupture de stock':"Ajouter l'arme"}</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1081,6 +1127,7 @@ function openWeapon(weaponId){
 
             <div style="display:flex;align-items:center;gap:10px">
               ${productPriceHtml(m,true)}
+              ${productDiscountActionBadge(m)}
               <button
                 class="add"
                 data-name="${escAttr(m.name)}"
